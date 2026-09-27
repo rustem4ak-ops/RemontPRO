@@ -1,0 +1,16 @@
+RewriteEngine On
+
+RewriteRule ^api/calculate/?$ api/calculate.php [L,QSA]
+RewriteRule ^api/lead/?$ api/lead.php [L,QSA]
+
+<FilesMatch "^(README-BEGET\.md|.*\.sql)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^leads\.json$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^config\.php$">
+    Require all denied
+</FilesMatch>
