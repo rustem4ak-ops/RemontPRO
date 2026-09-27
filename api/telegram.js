@@ -92,7 +92,6 @@ async function askElectrical(chatId, s) {
       [{ text: 'Нет', callback_data: 'E0' }],
       [{ text: 'Частичная замена', callback_data: 'E1' }],
       [{ text: 'Полная замена', callback_data: 'E2' }],
-      [{ text: 'Своя цена ₽/м²', callback_data: 'EM' }]
     ])
   });
 }
@@ -106,7 +105,6 @@ async function askPlumbing(chatId, s) {
       [{ text: 'Нет', callback_data: 'P0' }],
       [{ text: 'Частичная замена', callback_data: 'P1' }],
       [{ text: 'Полная замена', callback_data: 'P2' }],
-      [{ text: 'Своя цена ₽/м²', callback_data: 'PM' }]
     ])
   });
 }
@@ -125,26 +123,22 @@ async function askBathroom(chatId, s) {
 }
 
 async function askFloor(chatId, s) {
-  saveSession(chatId, { ...s, step: 'tile' });
-  return telegram('sendMessage', {
-    chat_id: chatId,
-    text: '🧱 Пол — плитка\n\nВыберите вариант:',
-    ...inline([
-      [{ text: 'Нет плитки', callback_data: 'T0' }],
-      [{ text: 'Плитка на весь основной пол', callback_data: 'T1' }],
-      [{ text: 'Плитка — указать площадь', callback_data: 'TM' }]
-    ])
-  });
+  return sendNumeric(
+    chatId,
+    'tileArea',
+    '🧱 Пол — плитка (коридоры, комнаты)\n\nНапишите площадь плитки в м², например: 12',
+    { ...s, step: 'tileArea' }
+  );
 }
 
 async function askLaminate(chatId, s) {
   saveSession(chatId, { ...s, step: 'laminate' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🏠 Ламинат / кварцвинил\n\nДобавить на оставшуюся площадь?',
+    text: '🏠 Оставшиеся полы\n\nВыберите вариант:',
     ...inline([
-      [{ text: 'Да', callback_data: 'L1' }],
-      [{ text: 'Нет', callback_data: 'L0' }]
+      [{ text: 'Кварцвинил', callback_data: 'LQ' }],
+      [{ text: 'Ламинат', callback_data: 'LL' }]
     ])
   });
 }
@@ -171,7 +165,6 @@ async function askWalls(chatId, s) {
       [{ text: 'Обои', callback_data: 'W1' }],
       [{ text: 'Покраска', callback_data: 'W2' }],
       [{ text: 'Декоративка', callback_data: 'W3' }],
-      [{ text: 'Пропустить', callback_data: 'W0' }]
     ])
   });
 }
@@ -269,7 +262,6 @@ function resultText(result, s) {
     ...lines,
     '',
     'Стоимость работ: <b>' + money(result.subtotal) + '</b>',
-    'Наценка: <b>' + result.markup + '%</b>',
     'ИТОГО: <b>' + money(result.total) + '</b>',
     'Цена за м² по полу: <b>' + money(result.pricePerM2) + '</b>',
     '',
@@ -301,31 +293,22 @@ async function answerCallback(query) {
     case 'E0': s.electrical = 'none'; return askPlumbing(chatId, s);
     case 'E1': s.electrical = 'partial'; return askPlumbing(chatId, s);
     case 'E2': s.electrical = 'full'; return askPlumbing(chatId, s);
-    case 'EM': return sendNumeric(chatId, 'electricalRate', '⚡ Введите вашу цену электрики за 1 м², например: 2800', s);
 
     case 'P0': s.plumbing = 'none'; return askBathroom(chatId, s);
     case 'P1': s.plumbing = 'partial'; return askBathroom(chatId, s);
     case 'P2': s.plumbing = 'full'; return askBathroom(chatId, s);
-    case 'PM': return sendNumeric(chatId, 'plumbingRate', '🚰 Введите вашу цену сантехники за 1 м², например: 1500', s);
 
     case 'B0': s.bathroom = 'none'; return askFloor(chatId, s);
     case 'B1': s.bathroom = 'classic'; return askFloor(chatId, s);
     case 'BM': return sendNumeric(chatId, 'bathroomArea', '🚿 Введите площадь санузла для расчёта, например: 4', s);
 
-    case 'T0': s.tile = 'none'; return askLaminate(chatId, s);
-    case 'T1': s.tile = 'fixed'; return askLaminate(chatId, s);
-    case 'TM': return sendNumeric(chatId, 'tileArea', '🧱 Введите площадь плитки в м², например: 12', s);
-
-    case 'L0': s.laminate = false; return askPlinth(chatId, s);
-    case 'L1': s.laminate = true; return askPlinth(chatId, s);
+    case 'LQ': s.laminate = true; s.laminateType = 'quartzvinyl'; return askPlinth(chatId, s);
+    case 'LL': s.laminate = true; s.laminateType = 'laminate'; return askPlinth(chatId, s);
 
     case 'PL0': s.plinth = 'none'; return askWalls(chatId, s);
     case 'PL1': s.plinth = 'plastic'; return askWalls(chatId, s);
     case 'PL2': s.plinth = 'polyurethane'; return askWalls(chatId, s);
 
-    case 'W0':
-      s.walls = {};
-      return askCleanElectrical(chatId, s);
     case 'W1':
       s.walls = { ...(s.walls || {}), wallpaper: { area: 0 } };
       return askWallsContinue(chatId, s);
@@ -391,16 +374,6 @@ async function handleNumeric(chatId, text, s) {
       s.balcony = v;
       return askElectrical(chatId, s);
 
-    case 'electricalRate':
-      s.electrical = 'manual';
-      s.electricalRate = v;
-      return askPlumbing(chatId, s);
-
-    case 'plumbingRate':
-      s.plumbing = 'manual';
-      s.plumbingRate = v;
-      return askBathroom(chatId, s);
-
     case 'bathroomArea':
       s.bathroom = 'manual';
       s.bathroomArea = v;
@@ -426,7 +399,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА Telegram Bot',
-      version: '2.0.0',
+      version: '2.1.0',
       configured: Boolean(TOKEN)
     });
   }
