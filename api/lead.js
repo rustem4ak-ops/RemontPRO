@@ -21,7 +21,7 @@ module.exports=async function handler(req,res){
       '🆕 <b>Новая заявка РЕМОНТФОРМА</b>','',
       '👤 '+esc(b.name||'Не указано'),
       '📞 <b>'+esc(phone)+'</b>',
-      '📍 Источник: <b>'+esc(b.source||'site')+'</b>','',
+      '📍 Источник: <b>'+esc(b.source||'site')+'</b>',\n      '📊 Канал: '+esc(b.medium||'—')+' | Кампания: '+esc(b.campaign||'—'),
       '🏠 Объект: '+esc(o.type||'Не указан'),
       '📐 Площадь: '+esc(o.floor||0)+' м²',
       '🚿 Санузел: '+esc(o.bath||0)+' м²',
@@ -47,7 +47,7 @@ module.exports=async function handler(req,res){
         TITLE:'РЕМОНТФОРМА — '+(o.type||'объект')+' '+(o.floor||'')+' м²',
         NAME:String(b.name||''),
         PHONE:[{VALUE:phone,VALUE_TYPE:'WORK'}],
-        SOURCE_DESCRIPTION:'Сайт РЕМОНТФОРМА | '+String(b.source||'site'),
+        SOURCE_DESCRIPTION:'Сайт РЕМОНТФОРМА | '+String(b.source||'site')+' | '+String(b.medium||'')+' | '+String(b.campaign||'')+' | ref:'+String(b.referrer||''),
         COMMENTS:'Предварительный расчёт: '+money(q.total)+'; цена/м²: '+money(q.pricePerM2)+'; объект: '+String(o.type||'')+'; площадь: '+String(o.floor||'')+' м²; санузел: '+String(o.bath||0)+' м². '+String(b.comment||'')
       };
       const br=await fetch(process.env.BITRIX24_WEBHOOK_URL+'crm.lead.add.json',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({fields})});
