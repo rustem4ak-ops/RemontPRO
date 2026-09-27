@@ -3,6 +3,12 @@ const { calculate } = require('../shared/remontforma-pricing.js');
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const API_BASE = 'https://api.telegram.org/bot';
 
+// v2 uses a compact per-chat session encoded in Telegram ForceReply messages.
+// It does not depend on input_field_placeholder, which is unreliable in some
+// Telegram Web clients. The state is also mirrored in a process-local Map for
+// fast handling while a Vercel instance remains warm.
+const sessions = globalThis.__RF_TELEGRAM_SESSIONS || (globalThis.__RF_TELEGRAM_SESSIONS = new Map());
+
 async function telegram(method, body) {
   if (!TOKEN) throw new Error('TELEGRAM_BOT_TOKEN is not configured');
   const response = await fetch(API_BASE + TOKEN + '/' + method, {
@@ -19,380 +25,548 @@ const kb = (rows) => ({
   reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: true }
 });
 
-const force = (placeholder, requestContact = false) => ({
-  reply_markup: requestContact
-    ? { keyboard: [[{ text: '📞 Отправить номер телефона', request_contact: true }]], resize_keyboard: true, one_time_keyboard: true }
-    : { force_reply: true, input_field_placeholder: placeholder }
+const inline = (rows) => ({
+  reply_markup: { inline_keyboard: rows }
 });
 
-const inline = (rows) => ({ reply_markup: { inline_keyboard: rows } });
+function forceReply(text) {
+  return {
+    reply_markup: {
+      force_reply: true,
+      selective: true
+    }
+  };
+}
 
 function cleanNumber(text) {
-  const v = Number(String(text).replace(',', '.').replace(/[^0-9.]/g, ''));
+  const normalized = String(text || '').replace(',', '.').replace(/[^0-9.]/g, '');
+  if (!normalized) return null;
+  const v = Number(normalized);
   return Number.isFinite(v) && v >= 0 ? v : null;
 }
 
-// Compact state. It is carried by Telegram itself, so this MVP does not need a database.
-// f=floor,b=bath,l=balcony,e=electrical,p=plumbing,ba=bathroom,
-// t=tile,lm=laminate,pl=plinth,w=wall,ce=clean electrical,cp=clean plumbing,
-// cl=cleaning,tr=trash. Empty/0 means none.
-function pack(s) {
-  return [
-    s.o || 'a', s.f ?? '', s.b ?? '', s.l ?? '',
-    s.e || '0', s.er ?? '', s.p || '0', s.pr ?? '', s.ba || '0',
-    s.t || '0', s.ta ?? '', s.lm || '0', s.pl || '0',
-    s.w || '0', s.ce ? 1 : 0, s.cp ? 1 : 0, s.cl ? 1 : 0, s.tr ? 1 : 0
-  ].join(',');
+function sessionKey(chatId) {
+  return String(chatId);
 }
 
-function unpack(v) {
-  const a = String(v || '').split(',');
-  return {
-    o:a[0]||'a', f:num(a[1]), b:num(a[2]), l:num(a[3]),
-    e:a[4]||'0', er:num(a[5]), p:a[6]||'0', pr:num(a[7]), ba:a[8]||'0',
-    t:a[9]||'0', ta:num(a[10]), lm:a[11]||'0', pl:a[12]||'0', w:a[13]||'0',
-    ce:a[14]==='1', cp:a[15]==='1', cl:a[16]==='1', tr:a[17]==='1'
-  };
-}
-function num(v) {
-  if (v === '' || v == null) return undefined;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
+function saveSession(chatId, state) {
+  sessions.set(sessionKey(chatId), state);
 }
 
-function nextNumeric(chatId, question, state, placeholder) {
+function getSession(chatId) {
+  return sessions.get(sessionKey(chatId));
+}
+
+function clearSession(chatId) {
+  sessions.delete(sessionKey(chatId));
+}
+
+function objectName(o) {
+  return o === 'h' ? 'Дом' : o === 'c' ? 'Коммерция' : 'Квартира';
+}
+
+async function sendNumeric(chatId, step, question, state) {
+  saveSession(chatId, { ...state, step });
   return telegram('sendMessage', {
     chat_id: chatId,
     text: question,
-    ...force(placeholder || pack(state))
+    ...forceReply()
   });
 }
 
 async function start(chatId) {
+  clearSession(chatId);
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🏠 РЕМОНТФОРМА\\n\\nРассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
+    text: '🏠 РЕМОНТФОРМА\n\nРассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
     ...kb([['🏠 Квартира'], ['🏡 Дом'], ['🏢 Коммерция']])
   });
 }
 
 async function askElectrical(chatId, s) {
+  saveSession(chatId, { ...s, step: 'electrical' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '⚡ Электрика. Выберите вариант:',
+    text: '⚡ Электрика\n\nВыберите вариант:',
     ...inline([
-      [{text:'Нет',callback_data:'E|'+pack(s)}],
-      [{text:'Частичная замена',callback_data:'e1|'+pack(s)}],
-      [{text:'Полная замена',callback_data:'e2|'+pack(s)}],
-      [{text:'Своя цена ₽/м²',callback_data:'em|'+pack(s)}]
+      [{ text: 'Нет', callback_data: 'E0' }],
+      [{ text: 'Частичная замена', callback_data: 'E1' }],
+      [{ text: 'Полная замена', callback_data: 'E2' }],
+      [{ text: 'Своя цена ₽/м²', callback_data: 'EM' }]
     ])
   });
 }
 
 async function askPlumbing(chatId, s) {
+  saveSession(chatId, { ...s, step: 'plumbing' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🚰 Сантехника. Выберите вариант:',
+    text: '🚰 Сантехника\n\nВыберите вариант:',
     ...inline([
-      [{text:'Нет',callback_data:'P0|'+pack(s)}],
-      [{text:'Частичная замена',callback_data:'P1|'+pack(s)}],
-      [{text:'Полная замена',callback_data:'P2|'+pack(s)}],
-      [{text:'Своя цена ₽/м²',callback_data:'PM|'+pack(s)}]
+      [{ text: 'Нет', callback_data: 'P0' }],
+      [{ text: 'Частичная замена', callback_data: 'P1' }],
+      [{ text: 'Полная замена', callback_data: 'P2' }],
+      [{ text: 'Своя цена ₽/м²', callback_data: 'PM' }]
     ])
   });
 }
 
 async function askBathroom(chatId, s) {
+  saveSession(chatId, { ...s, step: 'bathroom' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🚿 Санузел. Выберите вариант:',
+    text: '🚿 Санузел\n\nВыберите вариант:',
     ...inline([
-      [{text:'Нет',callback_data:'B0|'+pack(s)}],
-      [{text:'Классический санузел',callback_data:'B1|'+pack(s)}]
+      [{ text: 'Нет', callback_data: 'B0' }],
+      [{ text: 'Классический санузел', callback_data: 'B1' }],
+      [{ text: 'Ручной ввод площади', callback_data: 'BM' }]
     ])
   });
 }
 
 async function askFloor(chatId, s) {
+  saveSession(chatId, { ...s, step: 'tile' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🧱 Пол. Выберите вариант:',
+    text: '🧱 Пол — плитка\n\nВыберите вариант:',
     ...inline([
-      [{text:'Плитка на весь основной пол',callback_data:'T1|'+pack(s)}],
-      [{text:'Плитка — указать площадь',callback_data:'TM|'+pack(s)}],
-      [{text:'Без плитки',callback_data:'T0|'+pack(s)}]
+      [{ text: 'Нет плитки', callback_data: 'T0' }],
+      [{ text: 'Плитка на весь основной пол', callback_data: 'T1' }],
+      [{ text: 'Плитка — указать площадь', callback_data: 'TM' }]
     ])
   });
 }
 
 async function askLaminate(chatId, s) {
+  saveSession(chatId, { ...s, step: 'laminate' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🏠 Добавить ламинат / кварцвинил на оставшуюся площадь?',
+    text: '🏠 Ламинат / кварцвинил\n\nДобавить на оставшуюся площадь?',
     ...inline([
-      [{text:'Да',callback_data:'L1|'+pack(s)}],
-      [{text:'Нет',callback_data:'L0|'+pack(s)}]
+      [{ text: 'Да', callback_data: 'L1' }],
+      [{ text: 'Нет', callback_data: 'L0' }]
     ])
   });
 }
 
 async function askPlinth(chatId, s) {
+  saveSession(chatId, { ...s, step: 'plinth' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '📏 Плинтус:',
+    text: '📏 Плинтус\n\nВыберите вариант:',
     ...inline([
-      [{text:'Нет',callback_data:'PL0|'+pack(s)}],
-      [{text:'Пластиковый',callback_data:'PL1|'+pack(s)}],
-      [{text:'Полиуретановый',callback_data:'PL2|'+pack(s)}]
+      [{ text: 'Нет', callback_data: 'PL0' }],
+      [{ text: 'Пластиковый', callback_data: 'PL1' }],
+      [{ text: 'Полиуретановый', callback_data: 'PL2' }]
     ])
   });
 }
 
-async function askWall(chatId, s) {
+async function askWalls(chatId, s) {
+  saveSession(chatId, { ...s, step: 'walls' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🧱 Стены. Выберите основной вариант отделки:',
+    text: '🧱 Стены\n\nВыберите отделку. Можно выбрать несколько вариантов:',
     ...inline([
-      [{text:'Нет',callback_data:'W0|'+pack(s)}],
-      [{text:'Обои',callback_data:'W1|'+pack(s)}],
-      [{text:'Покраска',callback_data:'W2|'+pack(s)}],
-      [{text:'Декоративка',callback_data:'W3|'+pack(s)}]
+      [{ text: 'Обои', callback_data: 'W1' }],
+      [{ text: 'Покраска', callback_data: 'W2' }],
+      [{ text: 'Декоративка', callback_data: 'W3' }],
+      [{ text: 'Пропустить', callback_data: 'W0' }]
     ])
   });
 }
 
-async function askFinishing(chatId, s) {
+async function askCleanElectrical(chatId, s) {
+  saveSession(chatId, { ...s, step: 'cleanElectrical' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '✨ Чистовая электрика:',
+    text: '💡 Чистовая электрика',
     ...inline([
-      [{text:'Да',callback_data:'CE1|'+pack(s)}],
-      [{text:'Нет',callback_data:'CE0|'+pack(s)}]
+      [{ text: 'Да', callback_data: 'CE1' }],
+      [{ text: 'Нет', callback_data: 'CE0' }]
     ])
   });
 }
 
 async function askCleanPlumbing(chatId, s) {
+  saveSession(chatId, { ...s, step: 'cleanPlumbing' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🚿 Чистовая сантехника:',
+    text: '🚿 Чистовая сантехника',
     ...inline([
-      [{text:'Да',callback_data:'CP1|'+pack(s)}],
-      [{text:'Нет',callback_data:'CP0|'+pack(s)}]
+      [{ text: 'Да', callback_data: 'CP1' }],
+      [{ text: 'Нет', callback_data: 'CP0' }]
     ])
   });
 }
 
 async function askCleaning(chatId, s) {
+  saveSession(chatId, { ...s, step: 'cleaning' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🧹 Клининг:',
+    text: '🧹 Клининг',
     ...inline([
-      [{text:'Да',callback_data:'CL1|'+pack(s)}],
-      [{text:'Нет',callback_data:'CL0|'+pack(s)}]
+      [{ text: 'Да', callback_data: 'CL1' }],
+      [{ text: 'Нет', callback_data: 'CL0' }]
     ])
   });
 }
 
 async function askTrash(chatId, s) {
+  saveSession(chatId, { ...s, step: 'trash' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🚛 Вывоз мусора:',
+    text: '🚛 Вывоз мусора',
     ...inline([
-      [{text:'Да',callback_data:'TR1|'+pack(s)}],
-      [{text:'Нет',callback_data:'TR0|'+pack(s)}]
+      [{ text: 'Да', callback_data: 'TR1' }],
+      [{ text: 'Нет', callback_data: 'TR0' }]
     ])
   });
 }
 
 function toInput(s) {
-  const input = {
-    floor:s.f, bath:s.b, balcony:s.l,
-    electrical:s.e==='1'?'partial':s.e==='2'?'full':s.e==='m'?'manual':'none',
-    electricalRate:s.er,
-    plumbing:s.p==='1'?'partial':s.p==='2'?'full':s.p==='m'?'manual':'none',
-    plumbingRate:s.pr,
-    bathroom:s.ba==='1'?'classic':'none',
-    tile:s.t==='1'?'fixed':s.t==='m'?'manual':'none',
-    tileArea:s.ta,
-    laminate:s.lm==='1',
-    plinth:s.pl==='1'?'plastic':s.pl==='2'?'polyurethane':'none',
-    walls: {
-      wallpaper:s.w==='1',
-      paint:s.w==='2',
-      decorative:s.w==='3'
-    },
-    cleanElectrical:!!s.ce,
-    cleanPlumbing:!!s.cp,
-    cleaning:!!s.cl,
-    trash:!!s.tr
+  return {
+    floor: s.floor,
+    bath: s.bath,
+    balcony: s.balcony,
+    electrical: s.electrical || 'none',
+    electricalRate: s.electricalRate,
+    plumbing: s.plumbing || 'none',
+    plumbingRate: s.plumbingRate,
+    bathroom: s.bathroom || 'none',
+    bathroomArea: s.bathroomArea,
+    tile: s.tile || 'none',
+    tileArea: s.tileArea,
+    laminate: !!s.laminate,
+    plinth: s.plinth || 'none',
+    walls: s.walls || {},
+    cleanElectrical: !!s.cleanElectrical,
+    cleanPlumbing: !!s.cleanPlumbing,
+    cleaning: !!s.cleaning,
+    trash: !!s.trash,
+    customWorks: s.customWorks || [],
+    markup: Number(s.markup || 0)
   };
-  return input;
 }
 
 function money(n) {
-  return new Intl.NumberFormat('ru-RU').format(Math.round(n || 0)) + ' ₽';
+  return new Intl.NumberFormat('ru-RU').format(Math.round(Number(n) || 0)) + ' ₽';
+}
+
+function resultText(result, s) {
+  const rows = result.rows || [];
+  const lines = rows.length
+    ? rows.map(r => '• ' + r.name + ': ' + money(r.cost))
+    : ['• Работы не выбраны'];
+
+  return [
+    '🧮 <b>Предварительный расчёт РЕМОНТФОРМА</b>',
+    '',
+    '🏠 Объект: <b>' + objectName(s.objectType) + '</b>',
+    '📐 Общая площадь: <b>' + result.floor + ' м²</b>',
+    '📐 Основная площадь: <b>' + result.mainArea + ' м²</b>',
+    '',
+    ...lines,
+    '',
+    'Стоимость работ: <b>' + money(result.subtotal) + '</b>',
+    'Наценка: <b>' + result.markup + '%</b>',
+    'ИТОГО: <b>' + money(result.total) + '</b>',
+    'Цена за м² по полу: <b>' + money(result.pricePerM2) + '</b>',
+    '',
+    '📞 Хотите получить точный расчёт и консультацию?'
+  ].join('\n');
 }
 
 async function showResult(chatId, s) {
   const result = calculate(toInput(s));
-  const lines = result.rows.map(r => '• '+r.name+': '+money(r.cost)+' ('+r.quantity+' '+r.unit+' × '+money(r.price)+')');
-  const text = [
-    '🧮 <b>Предварительный расчёт РЕМОНТФОРМА</b>',
-    '',
-    'Площадь: '+result.floor+' м²',
-    'Основная площадь: '+result.mainArea+' м²',
-    '',
-    ...(lines.length ? lines : ['• Работы не выбраны']),
-    '',
-    'Подытог: <b>'+money(result.subtotal)+'</b>',
-    'Наценка: '+result.markup+'%',
-    'ИТОГО: <b>'+money(result.total)+'</b>',
-    'Цена за м² по полу: <b>'+money(result.pricePerM2)+'</b>',
-    '',
-    'Хотите, чтобы мы связались с вами и подготовили точный расчёт?'
-  ].join('\\n');
-
-  await telegram('sendMessage', {
+  saveSession(chatId, { ...s, step: 'phone', result });
+  return telegram('sendMessage', {
     chat_id: chatId,
-    text,
-    parse_mode:'HTML',
-    ...force('Введите номер телефона', true)
+    text: resultText(result, s),
+    parse_mode: 'HTML',
+    ...kb([['📞 Отправить номер телефона'], ['🔄 Рассчитать заново']])
   });
 }
 
 async function answerCallback(query) {
   const chatId = query.message?.chat?.id;
   if (!chatId) return;
-  const [action, packed] = String(query.data || '').split('|');
-  let s = unpack(packed);
+
+  const action = String(query.data || '');
+  let s = getSession(chatId) || {};
 
   await telegram('answerCallbackQuery', { callback_query_id: query.id });
 
-  switch(action) {
-    case 'E':
-    case 'e1': case 'e2': s.e = action==='E'?'0':action==='e1'?'1':'2'; return askPlumbing(chatId,s);
-    case 'em': return nextNumeric(chatId,'Введите вашу цену электрики за 1 м², например: 2800',s,'EM|'+pack(s));
-    case 'P0': case 'P1': case 'P2': s.p=action.slice(1); return askBathroom(chatId,s);
-    case 'PM': return nextNumeric(chatId,'Введите вашу цену сантехники за 1 м², например: 1500',s,'PM|'+pack(s));
-    case 'B0': case 'B1': s.ba=action.slice(1); return askFloor(chatId,s);
-    case 'T0': case 'T1': s.t=action.slice(1); return askLaminate(chatId,s);
-    case 'TM': return nextNumeric(chatId,'Введите площадь плитки в м², например: 12',s,'TM|'+pack(s));
-    case 'L0': case 'L1': s.lm=action.slice(1); return askPlinth(chatId,s);
-    case 'PL0': case 'PL1': case 'PL2': s.pl=action.slice(2); return askWall(chatId,s);
-    case 'W0': case 'W1': case 'W2': case 'W3': s.w=action.slice(1); return askFinishing(chatId,s);
-    case 'CE0': case 'CE1': s.ce=action==='CE1'; return askCleanPlumbing(chatId,s);
-    case 'CP0': case 'CP1': s.cp=action==='CP1'; return askCleaning(chatId,s);
-    case 'CL0': case 'CL1': s.cl=action==='CL1'; return askTrash(chatId,s);
-    case 'TR0': case 'TR1': s.tr=action==='TR1'; return showResult(chatId,s);
-    default: return;
+  switch (action) {
+    case 'E0': s.electrical = 'none'; return askPlumbing(chatId, s);
+    case 'E1': s.electrical = 'partial'; return askPlumbing(chatId, s);
+    case 'E2': s.electrical = 'full'; return askPlumbing(chatId, s);
+    case 'EM': return sendNumeric(chatId, 'electricalRate', '⚡ Введите вашу цену электрики за 1 м², например: 2800', s);
+
+    case 'P0': s.plumbing = 'none'; return askBathroom(chatId, s);
+    case 'P1': s.plumbing = 'partial'; return askBathroom(chatId, s);
+    case 'P2': s.plumbing = 'full'; return askBathroom(chatId, s);
+    case 'PM': return sendNumeric(chatId, 'plumbingRate', '🚰 Введите вашу цену сантехники за 1 м², например: 1500', s);
+
+    case 'B0': s.bathroom = 'none'; return askFloor(chatId, s);
+    case 'B1': s.bathroom = 'classic'; return askFloor(chatId, s);
+    case 'BM': return sendNumeric(chatId, 'bathroomArea', '🚿 Введите площадь санузла для расчёта, например: 4', s);
+
+    case 'T0': s.tile = 'none'; return askLaminate(chatId, s);
+    case 'T1': s.tile = 'fixed'; return askLaminate(chatId, s);
+    case 'TM': return sendNumeric(chatId, 'tileArea', '🧱 Введите площадь плитки в м², например: 12', s);
+
+    case 'L0': s.laminate = false; return askPlinth(chatId, s);
+    case 'L1': s.laminate = true; return askPlinth(chatId, s);
+
+    case 'PL0': s.plinth = 'none'; return askWalls(chatId, s);
+    case 'PL1': s.plinth = 'plastic'; return askWalls(chatId, s);
+    case 'PL2': s.plinth = 'polyurethane'; return askWalls(chatId, s);
+
+    case 'W0':
+      s.walls = {};
+      return askCleanElectrical(chatId, s);
+    case 'W1':
+      s.walls = { ...(s.walls || {}), wallpaper: { area: 0 } };
+      return askWallsContinue(chatId, s);
+    case 'W2':
+      s.walls = { ...(s.walls || {}), paint: { area: 0 } };
+      return askWallsContinue(chatId, s);
+    case 'W3':
+      s.walls = { ...(s.walls || {}), decorative: { area: 0 } };
+      return askWallsContinue(chatId, s);
+
+    case 'W_DONE':
+      return askCleanElectrical(chatId, s);
+
+    case 'CE0': s.cleanElectrical = false; return askCleanPlumbing(chatId, s);
+    case 'CE1': s.cleanElectrical = true; return askCleanPlumbing(chatId, s);
+    case 'CP0': s.cleanPlumbing = false; return askCleaning(chatId, s);
+    case 'CP1': s.cleanPlumbing = true; return askCleaning(chatId, s);
+    case 'CL0': s.cleaning = false; return askTrash(chatId, s);
+    case 'CL1': s.cleaning = true; return askTrash(chatId, s);
+    case 'TR0': s.trash = false; return showResult(chatId, s);
+    case 'TR1': s.trash = true; return showResult(chatId, s);
+
+    default:
+      return telegram('sendMessage', {
+        chat_id: chatId,
+        text: '⚠️ Этот пункт устарел. Нажмите «🏠 Начать» и запустите новый расчёт.'
+      });
+  }
+}
+
+async function askWallsContinue(chatId, s) {
+  saveSession(chatId, { ...s, step: 'wallsChoice' });
+  return telegram('sendMessage', {
+    chat_id: chatId,
+    text: '🧱 Выбрано: ' + Object.keys(s.walls || {}).map(k => k === 'wallpaper' ? 'обои' : k === 'paint' ? 'покраска' : 'декоративка').join(', ') + '\n\nМожно добавить ещё вариант или продолжить:',
+    ...inline([
+      [{ text: '➕ Обои', callback_data: 'W1' }, { text: '🎨 Покраска', callback_data: 'W2' }],
+      [{ text: '✨ Декоративка', callback_data: 'W3' }],
+      [{ text: '➡️ Продолжить', callback_data: 'W_DONE' }]
+    ])
+  });
+}
+
+async function handleNumeric(chatId, text, s) {
+  const v = cleanNumber(text);
+  if (v === null) {
+    return telegram('sendMessage', {
+      chat_id: chatId,
+      text: '⚠️ Нужно ввести число. Например: 65'
+    });
+  }
+
+  switch (s.step) {
+    case 'floor':
+      s.floor = v;
+      return sendNumeric(chatId, 'bath', '🚿 Напишите площадь санузла в м². Если санузла нет — 0', s);
+
+    case 'bath':
+      s.bath = v;
+      return sendNumeric(chatId, 'balcony', '🪟 Напишите площадь балкона в м². Если балкона нет — 0', s);
+
+    case 'balcony':
+      s.balcony = v;
+      return askElectrical(chatId, s);
+
+    case 'electricalRate':
+      s.electrical = 'manual';
+      s.electricalRate = v;
+      return askPlumbing(chatId, s);
+
+    case 'plumbingRate':
+      s.plumbing = 'manual';
+      s.plumbingRate = v;
+      return askBathroom(chatId, s);
+
+    case 'bathroomArea':
+      s.bathroom = 'manual';
+      s.bathroomArea = v;
+      return askFloor(chatId, s);
+
+    case 'tileArea': {
+      const main = Math.max(0, Number(s.floor || 0) - Number(s.bath || 0) - Number(s.balcony || 0));
+      s.tile = 'manual';
+      s.tileArea = Math.min(v, main);
+      return askLaminate(chatId, s);
+    }
+
+    default:
+      return telegram('sendMessage', {
+        chat_id: chatId,
+        text: '⚠️ Сейчас бот не ожидает число. Нажмите «🏠 Начать», чтобы начать расчёт заново.'
+      });
   }
 }
 
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
     return res.status(200).json({
-      ok:true,
-      service:'РЕМОНТФОРМА Telegram Bot',
-      configured:Boolean(TOKEN),
-      version:'1.1.0'
+      ok: true,
+      service: 'РЕМОНТФОРМА Telegram Bot',
+      version: '2.0.0',
+      configured: Boolean(TOKEN)
     });
   }
-  if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
 
   try {
-    const update = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+    const update = typeof req.body === 'string'
+      ? JSON.parse(req.body || '{}')
+      : (req.body || {});
 
     if (update.callback_query) {
       await answerCallback(update.callback_query);
-      return res.status(200).json({ok:true});
+      return res.status(200).json({ ok: true });
     }
 
     const message = update.message;
-    if (!message?.chat?.id) return res.status(200).json({ok:true,ignored:true});
+    if (!message?.chat?.id) {
+      return res.status(200).json({ ok: true, ignored: true });
+    }
 
     const chatId = message.chat.id;
     const text = String(message.text || '').trim();
 
     if (message.contact?.phone_number) {
+      const s = getSession(chatId);
       const phone = message.contact.phone_number;
+      clearSession(chatId);
+
       await telegram('sendMessage', {
-        chat_id:chatId,
-        text:'✅ Спасибо! Заявка принята.\\n\\n📞 '+phone+'\\n\\nМы свяжемся с вами для уточнения деталей и подготовки точной сметы.',
-        ...kb([['🧮 Рассчитать стоимость'],['🏠 Начать']])
+        chat_id: chatId,
+        text: '✅ Спасибо! Заявка принята.\n\n📞 ' + phone + '\n\nМы сохранили предварительный расчёт. Следующим этапом подключим автоматическую передачу заявки в CRM.',
+        ...kb([['🧮 Рассчитать стоимость'], ['🏠 Начать']])
       });
-      return res.status(200).json({ok:true});
+
+      return res.status(200).json({ ok: true, lead: true, phone, hasCalculation: Boolean(s?.result) });
     }
 
-    if (text==='/start' || text==='🏠 Начать' || text==='🧮 Рассчитать стоимость') {
-      await start(chatId);
-      return res.status(200).json({ok:true});
-    }
-    if (text==='📋 Наши услуги') {
-      await telegram('sendMessage',{chat_id:chatId,text:'📋 РЕМОНТФОРМА — ремонт квартир, домов и коммерческих помещений под ключ в Казани.'});
-      return res.status(200).json({ok:true});
-    }
-    if (text==='📸 Наши работы') {
-      await telegram('sendMessage',{chat_id:chatId,text:'📸 Портфолио подключим следующим этапом.'});
-      return res.status(200).json({ok:true});
-    }
-    if (text==='📞 Связаться с нами') {
-      await telegram('sendMessage',{chat_id:chatId,text:'📞 Нажмите кнопку ниже и отправьте номер телефона.',...force('Введите номер телефона',true)});
-      return res.status(200).json({ok:true});
+    if (text === '📞 Отправить номер телефона') {
+      return res.status(200).json(await telegram('sendMessage', {
+        chat_id: chatId,
+        text: '📞 Нажмите кнопку ниже, чтобы отправить номер телефона.',
+        reply_markup: {
+          keyboard: [[{ text: '📞 Отправить номер телефона', request_contact: true }]],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      }));
     }
 
-    const isObject = /^🏠 Квартира$|^🏡 Дом$|^🏢 Коммерция$/.test(text);
-    if (isObject) {
-      const o = text.startsWith('🏠')?'a':text.startsWith('🏡')?'h':'c';
-      const s = {o};
-      return res.status(200).json(await nextNumeric(chatId,'📐 Напишите общую площадь объекта в м², например: 80',s,'F|'+pack(s)));
+    if (text === '🔄 Рассчитать заново' || text === '/start' || text === '🏠 Начать' || text === '🧮 Рассчитать стоимость') {
+      return res.status(200).json(await start(chatId));
     }
 
-    const reply = message.reply_to_message;
-    const placeholder = reply?.reply_markup?.input_field_placeholder || '';
-    if (placeholder) {
-      const [step, packed] = placeholder.split('|');
-      let s = unpack(packed);
-
-      if (step==='F') {
-        const v=cleanNumber(text); if (v===null) throw new Error('Введите площадь числом, например 80');
-        s.f=v;
-        return res.status(200).json(await nextNumeric(chatId,'🚿 Площадь санузла в м² (если нет — 0)',s,'B|'+pack(s)));
-      }
-      if (step==='B') {
-        const v=cleanNumber(text); if (v===null) throw new Error('Введите площадь числом');
-        s.b=v;
-        return res.status(200).json(await nextNumeric(chatId,'🪟 Площадь балкона в м² (если нет — 0)',s,'A|'+pack(s)));
-      }
-      if (step==='A') {
-        const v=cleanNumber(text); if (v===null) throw new Error('Введите площадь числом');
-        s.l=v;
-        return res.status(200).json(await askElectrical(chatId,s));
-      }
-      if (step==='EM') {
-        const v=cleanNumber(text); if (v===null) throw new Error('Введите цену числом');
-        s.er=v; s.e='m'; return res.status(200).json(await askPlumbing(chatId,s));
-      }
-      if (step==='PM') {
-        const v=cleanNumber(text); if (v===null) throw new Error('Введите цену числом');
-        s.pr=v; s.p='m'; return res.status(200).json(await askBathroom(chatId,s));
-      }
-      if (step==='TM') {
-        const v=cleanNumber(text); if (v===null) throw new Error('Введите площадь числом');
-        s.ta=Math.min(v, Math.max(0,(s.f||0)-(s.b||0)-(s.l||0))); s.t='m';
-        return res.status(200).json(await askLaminate(chatId,s));
-      }
+    if (text === '📋 Наши услуги') {
+      return res.status(200).json(await telegram('sendMessage', {
+        chat_id: chatId,
+        text: '📋 РЕМОНТФОРМА — ремонт квартир, домов и коммерческих помещений под ключ в Казани.'
+      }));
     }
 
-    await telegram('sendMessage',{
-      chat_id:chatId,
-      text:'Нажмите «🧮 Рассчитать стоимость» или «🏠 Начать», чтобы запустить расчёт.'
-    });
-    return res.status(200).json({ok:true});
-  } catch(error) {
-    try {
-      await telegram('sendMessage',{chat_id:req.body?.message?.chat?.id,text:'⚠️ '+(error.message||'Ошибка')+'\\n\\nПопробуйте ещё раз.'});
-    } catch (_) {}
-    return res.status(200).json({ok:false,error:error.message||'Bot error'});
+    if (text === '📸 Наши работы') {
+      return res.status(200).json(await telegram('sendMessage', {
+        chat_id: chatId,
+        text: '📸 Портфолио подключим следующим этапом.'
+      }));
+    }
+
+    if (text === '📞 Связаться с нами') {
+      return res.status(200).json(await telegram('sendMessage', {
+        chat_id: chatId,
+        text: '📞 Отправьте номер телефона — мы свяжемся с вами.',
+        reply_markup: {
+          keyboard: [[{ text: '📞 Отправить номер телефона', request_contact: true }]],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      }));
+    }
+
+    if (/^🏠 Квартира$|^🏡 Дом$|^🏢 Коммерция$/.test(text)) {
+      const objectType = text.startsWith('🏠') ? 'a' : text.startsWith('🏡') ? 'h' : 'c';
+      return res.status(200).json(await sendNumeric(
+        chatId,
+        'floor',
+        '📐 Напишите общую площадь объекта в м², например: 80',
+        { objectType }
+      ));
+    }
+
+    const session = getSession(chatId);
+
+    if (session && [
+      'floor', 'bath', 'balcony',
+      'electricalRate', 'plumbingRate', 'bathroomArea', 'tileArea'
+    ].includes(session.step)) {
+      return res.status(200).json(await handleNumeric(chatId, text, session));
+    }
+
+    // Fallback: if Telegram delivered the numeric reply without a warm server session,
+    // inspect the replied-to bot message and recover the expected step.
+    const repliedText = String(message.reply_to_message?.text || '');
+    if (repliedText.includes('общую площадь объекта')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'floor', objectType: session?.objectType || 'a' }));
+    }
+    if (repliedText.includes('площадь санузла')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'bath', ...(session || {}) }));
+    }
+    if (repliedText.includes('площадь балкона')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'balcony', ...(session || {}) }));
+    }
+    if (repliedText.includes('цену электрики')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'electricalRate', ...(session || {}) }));
+    }
+    if (repliedText.includes('цену сантехники')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'plumbingRate', ...(session || {}) }));
+    }
+    if (repliedText.includes('площадь санузла для расчёта')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'bathroomArea', ...(session || {}) }));
+    }
+    if (repliedText.includes('площадь плитки')) {
+      return res.status(200).json(await handleNumeric(chatId, text, { step: 'tileArea', ...(session || {}) }));
+    }
+
+    return res.status(200).json(await telegram('sendMessage', {
+      chat_id: chatId,
+      text: 'Нажмите «🧮 Рассчитать стоимость» или «🏠 Начать», чтобы запустить расчёт.'
+    }));
+  } catch (error) {
+    const chatId = req.body?.message?.chat?.id;
+    if (chatId) {
+      try {
+        await telegram('sendMessage', {
+          chat_id: chatId,
+          text: '⚠️ ' + (error.message || 'Ошибка') + '\n\nНажмите «🏠 Начать» и попробуйте ещё раз.'
+        });
+      } catch (_) {}
+    }
+    return res.status(200).json({ ok: false, error: error.message || 'Bot error' });
   }
 };
