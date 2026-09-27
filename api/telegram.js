@@ -87,11 +87,11 @@ async function askElectrical(chatId, s) {
   saveSession(chatId, { ...s, step: 'electrical' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '⚡ Электрика\n\nВыберите вариант:',
+    text: '⚡ Электрика\n\nВыберите вариант монтажа:',
     ...inline([
       [{ text: 'Нет', callback_data: 'E0' }],
-      [{ text: 'Частичная замена', callback_data: 'E1' }],
-      [{ text: 'Полная замена', callback_data: 'E2' }],
+      [{ text: 'Частичный монтаж', callback_data: 'E1' }],
+      [{ text: 'Полный монтаж', callback_data: 'E2' }],
     ])
   });
 }
@@ -100,11 +100,11 @@ async function askPlumbing(chatId, s) {
   saveSession(chatId, { ...s, step: 'plumbing' });
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🚰 Сантехника\n\nВыберите вариант:',
+    text: '🚰 Сантехника\n\nВыберите вариант монтажа:',
     ...inline([
       [{ text: 'Нет', callback_data: 'P0' }],
-      [{ text: 'Частичная замена', callback_data: 'P1' }],
-      [{ text: 'Полная замена', callback_data: 'P2' }],
+      [{ text: 'Частичный монтаж', callback_data: 'P1' }],
+      [{ text: 'Полный монтаж', callback_data: 'P2' }],
     ])
   });
 }
@@ -117,7 +117,6 @@ async function askBathroom(chatId, s) {
     ...inline([
       [{ text: 'Нет', callback_data: 'B0' }],
       [{ text: 'Классический санузел', callback_data: 'B1' }],
-      [{ text: 'Ручной ввод площади', callback_data: 'BM' }]
     ])
   });
 }
@@ -300,7 +299,6 @@ async function answerCallback(query) {
 
     case 'B0': s.bathroom = 'none'; return askFloor(chatId, s);
     case 'B1': s.bathroom = 'classic'; return askFloor(chatId, s);
-    case 'BM': return sendNumeric(chatId, 'bathroomArea', '🚿 Введите площадь санузла для расчёта, например: 4', s);
 
     case 'LQ': s.laminate = true; s.laminateType = 'quartzvinyl'; return askPlinth(chatId, s);
     case 'LL': s.laminate = true; s.laminateType = 'laminate'; return askPlinth(chatId, s);
@@ -311,13 +309,13 @@ async function answerCallback(query) {
 
     case 'W1':
       s.walls = { ...(s.walls || {}), wallpaper: { area: 0 } };
-      return askWallsContinue(chatId, s);
+      return askCleanElectrical(chatId, s);
     case 'W2':
       s.walls = { ...(s.walls || {}), paint: { area: 0 } };
-      return askWallsContinue(chatId, s);
+      return askCleanElectrical(chatId, s);
     case 'W3':
       s.walls = { ...(s.walls || {}), decorative: { area: 0 } };
-      return askWallsContinue(chatId, s);
+      return askCleanElectrical(chatId, s);
 
     case 'W_DONE':
       return askCleanElectrical(chatId, s);
@@ -364,14 +362,12 @@ async function handleNumeric(chatId, text, s) {
   switch (s.step) {
     case 'floor':
       s.floor = v;
+      s.balcony = 0;
       return sendNumeric(chatId, 'bath', '🚿 Напишите площадь санузла в м². Если санузла нет — 0', s);
 
     case 'bath':
       s.bath = v;
-      return sendNumeric(chatId, 'balcony', '🪟 Напишите площадь балкона в м². Если балкона нет — 0', s);
-
-    case 'balcony':
-      s.balcony = v;
+      s.balcony = 0;
       return askElectrical(chatId, s);
 
     case 'bathroomArea':
@@ -399,7 +395,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА Telegram Bot',
-      version: '2.1.0',
+      version: '2.2.0',
       configured: Boolean(TOKEN)
     });
   }
@@ -495,7 +491,7 @@ module.exports = async function handler(req, res) {
     const session = getSession(chatId);
 
     if (session && [
-      'floor', 'bath', 'balcony',
+      'floor', 'bath',
       'electricalRate', 'plumbingRate', 'bathroomArea', 'tileArea'
     ].includes(session.step)) {
       return res.status(200).json(await handleNumeric(chatId, text, session));
@@ -509,9 +505,6 @@ module.exports = async function handler(req, res) {
     }
     if (repliedText.includes('площадь санузла')) {
       return res.status(200).json(await handleNumeric(chatId, text, { step: 'bath', ...(session || {}) }));
-    }
-    if (repliedText.includes('площадь балкона')) {
-      return res.status(200).json(await handleNumeric(chatId, text, { step: 'balcony', ...(session || {}) }));
     }
     if (repliedText.includes('цену электрики')) {
       return res.status(200).json(await handleNumeric(chatId, text, { step: 'electricalRate', ...(session || {}) }));
