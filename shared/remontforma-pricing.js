@@ -5,7 +5,7 @@ const DEFAULT_RATES = {
   electrical: { partial: 2500, full: 3500 },
   plumbing: { partial: 1000, full: 2500 },
   bathroom: 50000,
-  tile: { under4: 10000, from4: 8000, from10: 4000, from20: 3000, from40: 2500 },
+  tile: { fixed: 10000, under4: 10000, from4: 8000, from10: 4000, from20: 3000, from40: 2500 },
   laminate: 1000,
   plasticPlinth: 400,
   polyurethanePlinth: 1300,
