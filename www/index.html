@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111827">
-<title>РемонтPRO v15</title>
+<title>РемонтPRO v16</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f3f4f6;color:#111827;font:15px system-ui,-apple-system,Segoe UI,Arial}
@@ -35,10 +35,11 @@ details summary::-webkit-details-marker{display:none}
 .hint{padding:9px;border-radius:9px;background:#eff6ff;color:#1e40af;margin-top:8px}
 @media(max-width:700px){
  .grid{grid-template-columns:1fr}
- .check{position:relative;padding-right:50px}
- .check{grid-template-columns:24px minmax(0,1fr) 90px 1px minmax(0,1fr)}
- .check .editBtn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;z-index:3}
- .check .cost{grid-column:2/5;text-align:left}.check input[type=number]{grid-column:2/5}
+ .check{position:relative;padding:10px 8px;grid-template-columns:24px minmax(0,1fr) 42px;gap:8px;overflow:visible}
+ .check .editBtn{position:static!important;transform:none!important;grid-column:3;grid-row:1 / span 3;align-self:center;justify-self:end;width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;display:flex!important;visibility:visible!important;opacity:1!important;z-index:10;border:2px solid #2563eb!important;border-radius:9px!important;background:#fff!important;color:#2563eb!important;font-size:19px!important;font-weight:700!important;line-height:1!important}
+ .check .rate{grid-column:2;white-space:normal}
+ .check .cost{grid-column:2/4;text-align:left}
+ .check input[type=number]{grid-column:2/4}
  .workrow{grid-template-columns:24px 1fr 105px 110px}
  .workrow .unit{display:none}
  .priceRow{grid-template-columns:28px 1fr 100px}
@@ -52,7 +53,7 @@ details summary::-webkit-details-marker{display:none}
 <body>
 <div class="app">
 <div class="top no-print" style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
-  <div><h1>🔨 РемонтPRO v15</h1><div class="muted">Быстрый подсчёт стоимости ремонта под ключ</div></div>
+  <div><h1>🔨 РемонтPRO v16</h1><div class="muted">Быстрый подсчёт стоимости ремонта под ключ</div></div>
   <div class="actions">
     <button class="btn secondary" onclick="resetCalc()">Очистить</button>
     <button class="btn blue" onclick="window.print()">Печать / PDF</button>
@@ -72,64 +73,64 @@ details summary::-webkit-details-marker{display:none}
 <div class="card">
 <h2>2. Электрика</h2>
 <label class="check"><input type="radio" name="el" value="0" checked><span>Нет</span><span class="rate">—</span><span></span><span id="elCost" class="cost"></span></label>
-<label class="check"><input type="radio" name="el" value="2500"><span>Частичная замена</span><span id="elRate2" class="rate">2 500 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('elPartial')">✎</button><span id="elCost2" class="cost"></span></label>
-<label class="check"><input type="radio" name="el" value="3500"><span>Полная замена</span><span id="elRate3" class="rate">3 500 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('elFull')">✎</button><span id="elCost3" class="cost"></span></label>
-<label class="check"><input type="radio" name="el" value="manual"><span>Ручной ввод</span><span id="elManualRate" class="rate">Своя цена ₽/м²</span><button class="editBtn" title="Задать цену" onclick="openRateEditor('elManual')">✎</button><input id="elrate" type="number" min="0" placeholder="₽/м²"><span id="elCostM" class="cost"></span></label>
+<label class="check"><input type="radio" name="el" value="2500"><span>Частичная замена</span><span id="elRate2" class="rate">2 500 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('elPartial')">✎</button><span id="elCost2" class="cost"></span></label>
+<label class="check"><input type="radio" name="el" value="3500"><span>Полная замена</span><span id="elRate3" class="rate">3 500 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('elFull')">✎</button><span id="elCost3" class="cost"></span></label>
+<label class="check"><input type="radio" name="el" value="manual"><span>Ручной ввод</span><span id="elManualRate" class="rate">Своя цена ₽/м²</span><button type="button" class="editBtn" title="Задать цену" onclick="openRateEditor('elManual')">✎</button><input id="elrate" type="number" min="0" placeholder="₽/м²"><span id="elCostM" class="cost"></span></label>
 <div class="muted">Цена сохраняется и будет использоваться при следующих расчётах.</div>
 </div>
 <div class="card">
 <h2>3. Сантехника</h2>
 <label class="check"><input type="radio" name="pl" value="0" checked><span>Нет</span><span class="rate">—</span><span></span><span id="plCost" class="cost"></span></label>
-<label class="check"><input type="radio" name="pl" value="1000"><span>Частичная замена</span><span id="plRate2" class="rate">1 000 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('plPartial')">✎</button><span id="plCost2" class="cost"></span></label>
-<label class="check"><input type="radio" name="pl" value="2500"><span>Полная замена</span><span id="plRate3" class="rate">2 500 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('plFull')">✎</button><span id="plCost3" class="cost"></span></label>
-<label class="check"><input type="radio" name="pl" value="manual"><span>Ручной ввод</span><span id="plManualRate" class="rate">Своя цена ₽/м²</span><button class="editBtn" title="Задать цену" onclick="openRateEditor('plManual')">✎</button><input id="plrate" type="number" min="0" placeholder="₽/м²"><span id="plCostM" class="cost"></span></label>
+<label class="check"><input type="radio" name="pl" value="1000"><span>Частичная замена</span><span id="plRate2" class="rate">1 000 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('plPartial')">✎</button><span id="plCost2" class="cost"></span></label>
+<label class="check"><input type="radio" name="pl" value="2500"><span>Полная замена</span><span id="plRate3" class="rate">2 500 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('plFull')">✎</button><span id="plCost3" class="cost"></span></label>
+<label class="check"><input type="radio" name="pl" value="manual"><span>Ручной ввод</span><span id="plManualRate" class="rate">Своя цена ₽/м²</span><button type="button" class="editBtn" title="Задать цену" onclick="openRateEditor('plManual')">✎</button><input id="plrate" type="number" min="0" placeholder="₽/м²"><span id="plCostM" class="cost"></span></label>
 </div>
 <div class="card">
 <h2>4. Санузел</h2>
 <label class="check"><input type="radio" name="bathroomWork" value="0" checked><span>Нет</span><span class="rate">—</span><span></span><span id="bathWork0" class="cost"></span></label>
-<label class="check"><input type="radio" name="bathroomWork" value="classic"><span>Классический санузел</span><span id="bathClassicRate" class="rate">50 000 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('bathClassic')">✎</button><span id="bathClassicCost" class="cost"></span></label>
-<label class="check"><input class="bathManualRadio" type="radio" name="bathroomWork" value="manual"><span>Ручной ввод площади</span><span id="bathManualRate" class="rate">50 000 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('bathManual')">✎</button><input id="bathManualArea" type="number" min="0" step=".01" placeholder="м²"><span id="bathManualCost" class="cost"></span></label>
+<label class="check"><input type="radio" name="bathroomWork" value="classic"><span>Классический санузел</span><span id="bathClassicRate" class="rate">50 000 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('bathClassic')">✎</button><span id="bathClassicCost" class="cost"></span></label>
+<label class="check"><input class="bathManualRadio" type="radio" name="bathroomWork" value="manual"><span>Ручной ввод площади</span><span id="bathManualRate" class="rate">50 000 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('bathManual')">✎</button><input id="bathManualArea" type="number" min="0" step=".01" placeholder="м²"><span id="bathManualCost" class="cost"></span></label>
 <div class="muted">Классический санузел: площадь санузла из пункта 1 × цена. При ручном вводе используется введённая здесь площадь × цена.</div>
 </div>
 <div class="card">
 <h2>5. Полы</h2>
 <h3>Плитка</h3>
 <label class="check"><input type="radio" name="tile" value="0" checked><span>Нет</span><span class="rate">—</span><span></span><span id="tileCost0" class="cost"></span></label>
-<label class="check"><input type="radio" name="tile" value="fixed"><span>Плитка</span><span id="tileFixedRate" class="rate">10 000 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('tileFixed')">✎</button><span id="tileCostF" class="cost"></span></label>
-<label class="check"><input type="radio" name="tile" value="manual"><span>Ручной ввод площади</span><span id="tileManualRate" class="rate">Тариф по площади</span><button class="editBtn" title="Изменить тарифы" onclick="openRateEditor('tileManual')">✎</button><input id="tilearea" type="number" min="0" step=".01" placeholder="м²"><span id="tileCostM" class="cost"></span></label>
+<label class="check"><input type="radio" name="tile" value="fixed"><span>Плитка</span><span id="tileFixedRate" class="rate">10 000 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('tileFixed')">✎</button><span id="tileCostF" class="cost"></span></label>
+<label class="check"><input type="radio" name="tile" value="manual"><span>Ручной ввод площади</span><span id="tileManualRate" class="rate">Тариф по площади</span><button type="button" class="editBtn" title="Изменить тарифы" onclick="openRateEditor('tileManual')">✎</button><input id="tilearea" type="number" min="0" step=".01" placeholder="м²"><span id="tileCostM" class="cost"></span></label>
 <div class="muted" id="tileRatesHint">Ручная площадь плитки: &lt;4 → 10 000; 4–&lt;10 → 8 000; 10–&lt;20 → 4 000; 20–&lt;40 → 3 000; ≥40 → 2 500 ₽/м².</div>
 <h3>Ламинат / кварцвинил</h3>
-<label class="check"><input type="checkbox" id="lam"><span>Ламинат / кварцвинил</span><span id="lamRate" class="rate">1 000 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('lam')">✎</button><span id="lamCost" class="cost"></span></label>
+<label class="check"><input type="checkbox" id="lam"><span>Ламинат / кварцвинил</span><span id="lamRate" class="rate">1 000 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('lam')">✎</button><span id="lamCost" class="cost"></span></label>
 </div>
 <div class="card">
 <h2>6. Плинтуса</h2>
 <label class="check"><input type="radio" name="base" value="0" checked><span>Нет</span><span class="rate">—</span><span></span><span id="baseCost0" class="cost"></span></label>
-<label class="check"><input type="radio" name="base" value="400"><span>Пластиковые</span><span id="plasticRate" class="rate">400 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('plastic')">✎</button><input id="plasticQty" type="number" min="0" step=".01" placeholder="авто: основная площадь"><span id="baseCostP" class="cost"></span></label>
-<label class="check"><input type="radio" name="base" value="1300"><span>Полиуретановые</span><span id="polyRate" class="rate">1 300 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('poly')">✎</button><input id="polyQty" type="number" min="0" step=".01" placeholder="авто: основная площадь"><span id="baseCostU" class="cost"></span></label>
+<label class="check"><input type="radio" name="base" value="400"><span>Пластиковые</span><span id="plasticRate" class="rate">400 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('plastic')">✎</button><input id="plasticQty" type="number" min="0" step=".01" placeholder="авто: основная площадь"><span id="baseCostP" class="cost"></span></label>
+<label class="check"><input type="radio" name="base" value="1300"><span>Полиуретановые</span><span id="polyRate" class="rate">1 300 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('poly')">✎</button><input id="polyQty" type="number" min="0" step=".01" placeholder="авто: основная площадь"><span id="baseCostU" class="cost"></span></label>
 </div>
 <div class="card">
 <h2>7. Стены</h2>
-<label class="check"><input type="checkbox" id="wp"><span>Подготовка под обои + обои</span><span id="wpRate" class="rate">1 500 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('wp')">✎</button><input id="wpq" type="number" min="0" step=".01" placeholder="авто: остаток"><span class="cost" id="wpCost"></span></label>
-<label class="check"><input type="checkbox" id="paint"><span>Подготовка под покраску + покраска</span><span id="paintRate" class="rate">4 000 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('paint')">✎</button><input id="paintq" type="number" min="0" step=".01" placeholder="авто: остаток"><span class="cost" id="paintCost"></span></label>
-<label class="check"><input type="checkbox" id="decor"><span>Подготовка под декоративку + декоративка</span><span id="decorRate" class="rate">2 500 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('decor')">✎</button><input id="decorq" type="number" min="0" step=".01" placeholder="авто: остаток"><span class="cost" id="decorCost"></span></label>
+<label class="check"><input type="checkbox" id="wp"><span>Подготовка под обои + обои</span><span id="wpRate" class="rate">1 500 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('wp')">✎</button><input id="wpq" type="number" min="0" step=".01" placeholder="авто: остаток"><span class="cost" id="wpCost"></span></label>
+<label class="check"><input type="checkbox" id="paint"><span>Подготовка под покраску + покраска</span><span id="paintRate" class="rate">4 000 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('paint')">✎</button><input id="paintq" type="number" min="0" step=".01" placeholder="авто: остаток"><span class="cost" id="paintCost"></span></label>
+<label class="check"><input type="checkbox" id="decor"><span>Подготовка под декоративку + декоративка</span><span id="decorRate" class="rate">2 500 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('decor')">✎</button><input id="decorq" type="number" min="0" step=".01" placeholder="авто: остаток"><span class="cost" id="decorCost"></span></label>
 <div class="muted">Если площадь выбранной позиции не введена, ей автоматически распределяется остаток площади стен после вычета вручную указанных площадей.</div>
 </div>
 <div class="card">
 <h2>8. Чистовая электрика</h2>
-<label class="check"><input type="checkbox" id="cleanEl"><span>Установка чистовой электрики</span><span id="cleanElRate" class="rate">Тариф по площади</span><button class="editBtn" title="Изменить тарифы" onclick="openRateEditor('cleanEl')">✎</button><span id="cleanElCost" class="cost"></span></label>
+<label class="check"><input type="checkbox" id="cleanEl"><span>Установка чистовой электрики</span><span id="cleanElRate" class="rate">Тариф по площади</span><button type="button" class="editBtn" title="Изменить тарифы" onclick="openRateEditor('cleanEl')">✎</button><span id="cleanElCost" class="cost"></span></label>
 <div class="muted" id="cleanElHint">&lt;40 → 1 000; 40–80 → 700; 80–150 → 600; &gt;150 → 500 ₽/м².</div>
 </div>
 <div class="card">
 <h2>9. Чистовая сантехника</h2>
-<label class="check"><input type="checkbox" id="cleanPl"><span>Установка чистовой сантехники</span><span id="cleanPlRate" class="rate">6 000 ₽/м² санузла</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('cleanPl')">✎</button><span id="cleanPlCost" class="cost"></span></label>
+<label class="check"><input type="checkbox" id="cleanPl"><span>Установка чистовой сантехники</span><span id="cleanPlRate" class="rate">6 000 ₽/м² санузла</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('cleanPl')">✎</button><span id="cleanPlCost" class="cost"></span></label>
 </div>
 <div class="card">
 <h2>10. Клининг</h2>
-<label class="check"><input type="checkbox" id="clean"><span>Клининг</span><span id="cleanRate" class="rate">400 ₽/м²</span><button class="editBtn" title="Изменить цену" onclick="openRateEditor('clean')">✎</button><span id="cleanCost" class="cost"></span></label>
+<label class="check"><input type="checkbox" id="clean"><span>Клининг</span><span id="cleanRate" class="rate">400 ₽/м²</span><button type="button" class="editBtn" title="Изменить цену" onclick="openRateEditor('clean')">✎</button><span id="cleanCost" class="cost"></span></label>
 </div>
 <div class="card">
 <h2>11. Вывоз мусора</h2>
-<label class="check"><input type="checkbox" id="trash"><span>Вывоз мусора</span><span id="trashRate" class="rate">Тариф по площади</span><button class="editBtn" title="Изменить тарифы" onclick="openRateEditor('trash')">✎</button><span id="trashCost" class="cost"></span></label>
+<label class="check"><input type="checkbox" id="trash"><span>Вывоз мусора</span><span id="trashRate" class="rate">Тариф по площади</span><button type="button" class="editBtn" title="Изменить тарифы" onclick="openRateEditor('trash')">✎</button><span id="trashCost" class="cost"></span></label>
 <div class="muted" id="trashHint">≤150 → 1 000; &gt;150 → 800 ₽/м².</div>
 </div>
 <!-- Перенесённые из РемонтPRO v4 пункты 3, 4, 5 -->
@@ -168,7 +169,7 @@ details summary::-webkit-details-marker{display:none}
 </div>
 <div id="rateModal" class="modal" onclick="if(event.target===this)closeRateEditor()">
   <div class="modalBox">
-    <div class="modalHead"><h3 id="rateTitle">Редактировать цену</h3><button class="editBtn" onclick="closeRateEditor()">✕</button></div>
+    <div class="modalHead"><h3 id="rateTitle">Редактировать цену</h3><button type="button" class="editBtn" onclick="closeRateEditor()">✕</button></div>
     <div class="muted" id="rateHint" style="margin-top:6px">Цена используется в расчёте этой позиции.</div>
     <div id="rateFields" class="modalGrid"></div>
     <div class="modalActions"><button class="btn secondary" onclick="closeRateEditor()">Отмена</button><button class="btn blue" onclick="saveRateEditor()">Сохранить</button></div>
