@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
   const response = await fetch('https://api.telegram.org/bot' + TOKEN + '/setWebhook', {
     method:'POST',
     headers:{'content-type':'application/json'},
-    body:JSON.stringify({url:webhookUrl, allowed_updates:['message','callback_query']})
+    body:JSON.stringify({url:webhookUrl, allowed_updates:['message','callback_query'], drop_pending_updates:true})
   });
   const data = await response.json();
   return res.status(response.ok && data.ok ? 200 : 500).json({
