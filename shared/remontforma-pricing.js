@@ -5,7 +5,7 @@ const DEFAULT_RATES = {
   electrical: { partial: 2500, full: 3500 },
   plumbing: { partial: 1000, full: 2500 },
   bathroom: 50000,
-  tile: { under4: 10000, from4: 8000, from10: 4000, from20: 3000, from40: 2500 },
+  tile: { fixed: 10000, under4: 10000, from4: 8000, from10: 4000, from20: 3000, from40: 2500 },
   laminate: 1000,
   plasticPlinth: 400,
   polyurethanePlinth: 1300,
@@ -47,7 +47,7 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
   if (bathroom === 'manual') { const q=n(input.bathroomArea); add('Санузел — ручная площадь', q*rates.bathroom, q, 'м²', rates.bathroom); }
 
   let tileArea=0;
-  if (input.tile === 'fixed') { tileArea=main; add('Плитка', main*rates.tile.from40, main, 'м²', rates.tile.from40); }
+  if (input.tile === 'fixed') { tileArea=main; add('Плитка', main*rates.tile.fixed, main, 'м²', rates.tile.fixed); }
   if (input.tile === 'manual') { tileArea=Math.min(main,n(input.tileArea)); const p=rateTile(tileArea,rates.tile); add('Плитка — ручная площадь', tileArea*p, tileArea, 'м²', p); }
   if (input.laminate) { const q=Math.max(0,main-tileArea); add('Ламинат / кварцвинил',q*rates.laminate,q,'м²',rates.laminate); }
 
