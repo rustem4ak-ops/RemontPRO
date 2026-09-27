@@ -252,25 +252,21 @@ function resultText(result, s) {
     .filter(predicate)
     .reduce((sum, row) => sum + Number(row.cost || 0), 0);
 
-  // 1 этап — электрика + сантехника.
   const stage1 = sumBy(r =>
     r.name.startsWith('Электрика') ||
-    r.name.startsWith('Сантехника')
+    r.name.startsWith('Сантехника') ||
+    r.name === 'Классический санузел'
   );
 
-  // 2 этап — только плиточные работы.
   const stage2 = sumBy(r =>
     r.name.startsWith('Плитка')
   );
 
-  // 3 этап — все работы по напольным покрытиям:
-  // плитка + ламинат/кварцвинил.
   const stage3 = sumBy(r =>
     r.name.startsWith('Плитка') ||
     r.name.startsWith('Ламинат / кварцвинил')
   );
 
-  // 4 этап — стены + плинтуса.
   const stage4 = sumBy(r =>
     r.name.startsWith('Подготовка под обои') ||
     r.name.startsWith('Подготовка под покраску') ||
@@ -278,13 +274,11 @@ function resultText(result, s) {
     r.name.startsWith('Плинтус')
   );
 
-  // 5 этап — чистовая электрика + чистовая сантехника.
   const stage5 = sumBy(r =>
     r.name === 'Чистовая электрика' ||
     r.name === 'Чистовая сантехника'
   );
 
-  // 6 этап — клининг + вывоз мусора.
   const stage6 = sumBy(r =>
     r.name === 'Клининг' ||
     r.name === 'Вывоз мусора'
@@ -295,24 +289,25 @@ function resultText(result, s) {
     '',
     '🏠 Объект: <b>' + objectName(s.objectType) + '</b>',
     '📐 Общая площадь: <b>' + result.floor + ' м²</b>',
+    '📐 Основная площадь: <b>' + result.mainArea + ' м²</b>',
     '',
-    '1️⃣ <b>Этап 1 — Электрика и сантехника</b>',
-    '💰 ' + money(stage1),
+    '1️⃣ <b>Этап 1 — Электрика, сантехника</b>',
+    '💰 <b>' + money(stage1) + '</b>',
     '',
     '2️⃣ <b>Этап 2 — Плитка</b>',
-    '💰 ' + money(stage2),
+    '💰 <b>' + money(stage2) + '</b>',
     '',
     '3️⃣ <b>Этап 3 — Напольные покрытия</b>',
-    '💰 Плитка + ламинат/кварцвинил: <b>' + money(stage3) + '</b>',
+    '💰 <b>' + money(stage3) + '</b>',
     '',
     '4️⃣ <b>Этап 4 — Стены</b>',
-    '💰 Стены + плинтуса: <b>' + money(stage4) + '</b>',
+    '💰 <b>' + money(stage4) + '</b>',
     '',
     '5️⃣ <b>Этап 5 — Чистовые работы</b>',
-    '💰 Чистовая сантехника + электрика: <b>' + money(stage5) + '</b>',
+    '💰 <b>' + money(stage5) + '</b>',
     '',
     '6️⃣ <b>Этап 6 — Сопутствующие работы</b>',
-    '💰 Клининг + вывоз мусора: <b>' + money(stage6) + '</b>',
+    '💰 <b>' + money(stage6) + '</b>',
     '',
     '💵 <b>Общая стоимость работ: ' + money(result.total) + '</b>',
     '📐 Цена за м² по полу: <b>' + money(result.pricePerM2) + '</b>',
