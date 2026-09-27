@@ -164,12 +164,21 @@ async function askWall(chatId, s) {
 async function askFinishing(chatId, s) {
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '✨ Дополнительные работы:',
+    text: '✨ Чистовая электрика:',
     ...inline([
-      [{text:'Чистовая электрика',callback_data:'CE1|'+pack(s)}],
-      [{text:'Пропустить',callback_data:'CE0|'+pack(s)}],
-      [{text:'Чистовая сантехника',callback_data:'CP1|'+pack(s)}],
-      [{text:'Далее',callback_data:'CP0|'+pack(s)}]
+      [{text:'Да',callback_data:'CE1|'+pack(s)}],
+      [{text:'Нет',callback_data:'CE0|'+pack(s)}]
+    ])
+  });
+}
+
+async function askCleanPlumbing(chatId, s) {
+  return telegram('sendMessage', {
+    chat_id: chatId,
+    text: '🚿 Чистовая сантехника:',
+    ...inline([
+      [{text:'Да',callback_data:'CP1|'+pack(s)}],
+      [{text:'Нет',callback_data:'CP0|'+pack(s)}]
     ])
   });
 }
@@ -177,12 +186,21 @@ async function askFinishing(chatId, s) {
 async function askCleaning(chatId, s) {
   return telegram('sendMessage', {
     chat_id: chatId,
-    text: '🧹 Клининг и вывоз мусора:',
+    text: '🧹 Клининг:',
     ...inline([
-      [{text:'Клининг',callback_data:'CL1|'+pack(s)}],
-      [{text:'Без клининга',callback_data:'CL0|'+pack(s)}],
-      [{text:'Вывоз мусора',callback_data:'TR1|'+pack(s)}],
-      [{text:'Без вывоза',callback_data:'TR0|'+pack(s)}]
+      [{text:'Да',callback_data:'CL1|'+pack(s)}],
+      [{text:'Нет',callback_data:'CL0|'+pack(s)}]
+    ])
+  });
+}
+
+async function askTrash(chatId, s) {
+  return telegram('sendMessage', {
+    chat_id: chatId,
+    text: '🚛 Вывоз мусора:',
+    ...inline([
+      [{text:'Да',callback_data:'TR1|'+pack(s)}],
+      [{text:'Нет',callback_data:'TR0|'+pack(s)}]
     ])
   });
 }
@@ -263,9 +281,9 @@ async function answerCallback(query) {
     case 'L0': case 'L1': s.lm=action.slice(1); return askPlinth(chatId,s);
     case 'PL0': case 'PL1': case 'PL2': s.pl=action.slice(2); return askWall(chatId,s);
     case 'W0': case 'W1': case 'W2': case 'W3': s.w=action.slice(1); return askFinishing(chatId,s);
-    case 'CE0': case 'CE1': s.ce=action==='CE1'; return askCleaning(chatId,s);
+    case 'CE0': case 'CE1': s.ce=action==='CE1'; return askCleanPlumbing(chatId,s);
     case 'CP0': case 'CP1': s.cp=action==='CP1'; return askCleaning(chatId,s);
-    case 'CL0': case 'CL1': s.cl=action==='CL1'; return askCleaning(chatId,s);
+    case 'CL0': case 'CL1': s.cl=action==='CL1'; return askTrash(chatId,s);
     case 'TR0': case 'TR1': s.tr=action==='TR1'; return showResult(chatId,s);
     default: return;
   }
