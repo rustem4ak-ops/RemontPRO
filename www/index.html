@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111827">
-<title>РемонтPRO v14</title>
+<title>РемонтPRO v15</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f3f4f6;color:#111827;font:15px system-ui,-apple-system,Segoe UI,Arial}
@@ -35,8 +35,10 @@ details summary::-webkit-details-marker{display:none}
 .hint{padding:9px;border-radius:9px;background:#eff6ff;color:#1e40af;margin-top:8px}
 @media(max-width:700px){
  .grid{grid-template-columns:1fr}
- .check{grid-template-columns:24px 1fr 34px 110px 65px}
- .check .cost{grid-column:2/6;text-align:left}.check input[type=number]{grid-column:2/5}
+ .check{position:relative;padding-right:50px}
+ .check{grid-template-columns:24px minmax(0,1fr) 90px 1px minmax(0,1fr)}
+ .check .editBtn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;z-index:3}
+ .check .cost{grid-column:2/5;text-align:left}.check input[type=number]{grid-column:2/5}
  .workrow{grid-template-columns:24px 1fr 105px 110px}
  .workrow .unit{display:none}
  .priceRow{grid-template-columns:28px 1fr 100px}
@@ -50,7 +52,7 @@ details summary::-webkit-details-marker{display:none}
 <body>
 <div class="app">
 <div class="top no-print" style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
-  <div><h1>🔨 РемонтPRO v14</h1><div class="muted">Быстрый подсчёт стоимости ремонта под ключ</div></div>
+  <div><h1>🔨 РемонтPRO v15</h1><div class="muted">Быстрый подсчёт стоимости ремонта под ключ</div></div>
   <div class="actions">
     <button class="btn secondary" onclick="resetCalc()">Очистить</button>
     <button class="btn blue" onclick="window.print()">Печать / PDF</button>
