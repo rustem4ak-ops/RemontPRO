@@ -21,7 +21,7 @@ const rateTile = (a,r) => a < 4 ? r.under4 : a < 10 ? r.from4 : a < 20 ? r.from1
 const rateCleanElectrical = (a,r) => a < 40 ? r.under40 : a <= 80 ? r.from40to80 : a <= 150 ? r.from80to150 : r.over150;
 const rateTrash = (a,r) => a <= 150 ? r.upTo150 : r.over150;
 
-export function calculate(input = {}, rates = DEFAULT_RATES) {
+function calculate(input = {}, rates = DEFAULT_RATES) {
   const floor = n(input.floor);
   const bath = n(input.bath);
   const balcony = n(input.balcony);
@@ -78,4 +78,5 @@ export function calculate(input = {}, rates = DEFAULT_RATES) {
   return { floor,bath,balcony,mainArea:main,wallsArea:Math.round(wallsArea*100)/100,rows,subtotal,markup,markupSum,total,pricePerM2:floor?Math.round(total/floor*100)/100:0 };
 }
 
-export { DEFAULT_RATES };
+module.exports = { calculate, DEFAULT_RATES };
+
