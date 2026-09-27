@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Старые Vercel-style API URLs сохраняются без изменения фронтенда.
+RewriteRule ^api/calculate/?$ api/calculate.php [L,QSA]
+RewriteRule ^api/lead/?$ api/lead.php [L,QSA]
+RewriteRule ^api/telegram/?$ api/telegram.php [L,QSA]
+RewriteRule ^api/max/?$ api/max.php [L,QSA]
+
+# Не показываем служебные файлы.
+<FilesMatch "^(config\.php|\.env|.*\.sql)$">
+    Require all denied
+</FilesMatch>
