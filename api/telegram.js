@@ -1,5 +1,7 @@
 const { calculate } = require('../shared/remontforma-pricing.js');
 
+const VERSION = '2.4.0';
+
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const API_BASE = 'https://api.telegram.org/bot';
 
@@ -439,6 +441,16 @@ async function handleNumeric(chatId, text, s) {
 }
 
 module.exports = async function handler(req, res) {
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      ok: true,
+      service: 'РЕМОНТФОРМА Telegram Bot',
+      version: VERSION,
+      resultFormat: 'stages',
+      stages: 6,
+      production: true
+    });
+  }
   if (req.method === 'GET') {
     return res.status(200).json({
       ok: true,
