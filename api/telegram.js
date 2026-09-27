@@ -247,25 +247,78 @@ function money(n) {
 
 function resultText(result, s) {
   const rows = result.rows || [];
-  const lines = rows.length
-    ? rows.map(r => '• ' + r.name + ': ' + money(r.cost))
-    : ['• Работы не выбраны'];
+
+  const sumBy = (predicate) => rows
+    .filter(predicate)
+    .reduce((sum, row) => sum + Number(row.cost || 0), 0);
+
+  // 1 этап — электрика + сантехника.
+  const stage1 = sumBy(r =>
+    r.name.startsWith('Электрика') ||
+    r.name.startsWith('Сантехника')
+  );
+
+  // 2 этап — только плиточные работы.
+  const stage2 = sumBy(r =>
+    r.name.startsWith('Плитка')
+  );
+
+  // 3 этап — все работы по напольным покрытиям:
+  // плитка + ламинат/кварцвинил.
+  const stage3 = sumBy(r =>
+    r.name.startsWith('Плитка') ||
+    r.name.startsWith('Ламинат / кварцвинил')
+  );
+
+  // 4 этап — стены + плинтуса.
+  const stage4 = sumBy(r =>
+    r.name.startsWith('Подготовка под обои') ||
+    r.name.startsWith('Подготовка под покраску') ||
+    r.name.startsWith('Подготовка под декоративку') ||
+    r.name.startsWith('Плинтус')
+  );
+
+  // 5 этап — чистовая электрика + чистовая сантехника.
+  const stage5 = sumBy(r =>
+    r.name === 'Чистовая электрика' ||
+    r.name === 'Чистовая сантехника'
+  );
+
+  // 6 этап — клининг + вывоз мусора.
+  const stage6 = sumBy(r =>
+    r.name === 'Клининг' ||
+    r.name === 'Вывоз мусора'
+  );
 
   return [
     '🧮 <b>Предварительный расчёт РЕМОНТФОРМА</b>',
     '',
     '🏠 Объект: <b>' + objectName(s.objectType) + '</b>',
     '📐 Общая площадь: <b>' + result.floor + ' м²</b>',
-    '📐 Основная площадь: <b>' + result.mainArea + ' м²</b>',
     '',
-    ...lines,
+    '1️⃣ <b>Этап 1 — Электрика и сантехника</b>',
+    '💰 ' + money(stage1),
     '',
-    'Стоимость работ: <b>' + money(result.subtotal) + '</b>',
-    'ИТОГО: <b>' + money(result.total) + '</b>',
-    'Цена за м² по полу: <b>' + money(result.pricePerM2) + '</b>',
+    '2️⃣ <b>Этап 2 — Плитка</b>',
+    '💰 ' + money(stage2),
+    '',
+    '3️⃣ <b>Этап 3 — Напольные покрытия</b>',
+    '💰 Плитка + ламинат/кварцвинил: <b>' + money(stage3) + '</b>',
+    '',
+    '4️⃣ <b>Этап 4 — Стены</b>',
+    '💰 Стены + плинтуса: <b>' + money(stage4) + '</b>',
+    '',
+    '5️⃣ <b>Этап 5 — Чистовые работы</b>',
+    '💰 Чистовая сантехника + электрика: <b>' + money(stage5) + '</b>',
+    '',
+    '6️⃣ <b>Этап 6 — Сопутствующие работы</b>',
+    '💰 Клининг + вывоз мусора: <b>' + money(stage6) + '</b>',
+    '',
+    '💵 <b>Общая стоимость работ: ' + money(result.total) + '</b>',
+    '📐 Цена за м² по полу: <b>' + money(result.pricePerM2) + '</b>',
     '',
     '📞 Хотите получить точный расчёт и консультацию?'
-  ].join('\n');
+  ].join('\\n');
 }
 
 async function showResult(chatId, s) {
