@@ -10,10 +10,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 $raw=file_get_contents('php://input');
+if (strlen($raw) > 120000) {
+  http_response_code(413);
+  echo json_encode(['ok'=>false,'error'=>'Payload too large'], JSON_UNESCAPED_UNICODE);
+  exit;
+}
 $data=json_decode($raw,true);
 if (!is_array($data)) $data=$_POST;
+if (!empty($data['website'])) {
+  echo json_encode(['ok'=>true,'message'=>'Заявка принята'], JSON_UNESCAPED_UNICODE);
+  exit;
+}
 $phone=trim((string)($data['phone'] ?? ''));
-if ($phone==='') {
+if ($phone==='' || strlen($phone) > 40) {
   http_response_code(400);
   echo json_encode(['ok'=>false,'error'=>'phone is required'], JSON_UNESCAPED_UNICODE);
   exit;
@@ -41,5 +50,6 @@ if (is_file($file)) {
   if (is_array($old)) $list=$old;
 }
 $list[]=$lead;
+if (count($list) > 5000) $list=array_slice($list,-5000);
 file_put_contents($file,json_encode($list,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT),LOCK_EX);
 echo json_encode(['ok'=>true,'message'=>'Заявка принята'],JSON_UNESCAPED_UNICODE);
