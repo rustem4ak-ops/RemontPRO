@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+Disallow: /api/
+Sitemap: http://r91724qe.beget.tech/sitemap.xml
