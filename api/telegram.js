@@ -17,6 +17,7 @@ async function tg(method, body) {
 }
 
 const keyboard = rows => ({ reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: false } });
+const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\\n\\nПоэтому пришлите номер телефона, чтобы договориться для обсуждения всех подробностей.';
 const inline = rows => ({ reply_markup: { inline_keyboard: rows } });
 const force = { reply_markup: { force_reply: true, selective: true } };
 
@@ -33,7 +34,7 @@ async function start(id) {
   clear(id);
   return tg('sendMessage', {
     chat_id: id,
-    text: '🏠 РЕМОНТФОРМА\\n\\nРассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
+    text: 'Рассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
     ...keyboard([['🏠 Квартира'], ['🏡 Дом'], ['🏢 Коммерция']])
   });
 }
@@ -66,21 +67,29 @@ function input(s) {
 async function result(id, s) {
   const r = calculate(input(s));
   const rows = r.rows || [];
+  const sum = names => rows.filter(x => names.some(n => x.name === n || x.name.startsWith(n))).reduce((a,x) => a + Number(x.cost || 0), 0);
+  const stages = [
+    ['1️⃣', 'Черновая электрика + черновая сантехника', sum(['Электрика', 'Сантехника'])],
+    ['2️⃣', 'Плиточные работы', sum(['Классический санузел', 'Плитка'])],
+    ['3️⃣', 'Напольные работы', sum(['Ламинат / кварцвинил', 'Плинтус'])],
+    ['4️⃣', 'Стены', sum(['Подготовка под обои + обои', 'Подготовка под покраску + покраска', 'Подготовка под декоративку + декоративка'])],
+    ['5️⃣', 'Чистовая электрика / сантехника', sum(['Чистовая электрика', 'Чистовая сантехника'])],
+    ['6️⃣', 'Завершающие работы', sum(['Клининг', 'Вывоз мусора'])]
+  ];
   const lines = [
-    '🧮 <b>РЕМОНТФОРМА — предварительный расчёт</b>',
+    '<b>РЕМОНТФОРМА — предварительный расчёт</b>',
     '',
-    '🏠 Объект: <b>' + (s.objectType === 'h' ? 'Дом' : s.objectType === 'c' ? 'Коммерция' : 'Квартира') + '</b>',
+    '🏠 Объект: <b>' + (s.objectType === 'h' ? 'Дом' : 'Квартира') + '</b>',
     '📐 Площадь: <b>' + r.floor + ' м²</b>',
     '📐 Основная площадь: <b>' + r.mainArea + ' м²</b>',
     ''
   ];
-  for (const x of rows) lines.push('• ' + x.name + ': <b>' + money(x.cost) + '</b>');
-  lines.push('', '💵 <b>ИТОГО: ' + money(r.total) + '</b>', '📐 Цена за м²: <b>' + money(r.pricePerM2) + '</b>', '', '📞 Для консультации отправьте номер телефона.');
+  for (const [icon, name, value] of stages) {
+    lines.push(icon + ' <b>' + name + '</b>', '💰 <b>' + money(value) + '</b>', '');
+  }
+  lines.push('💵 <b>ИТОГО: ' + money(r.total) + '</b>', '📐 Цена за м²: <b>' + money(r.pricePerM2) + '</b>', '', '📞 Для консультации отправьте номер телефона.');
   save(id, { ...s, step: 'result', result: r });
-  return tg('sendMessage', {
-    chat_id: id, text: lines.join('\\n'), parse_mode: 'HTML',
-    ...keyboard([['📞 Отправить номер телефона'], ['🔄 Рассчитать заново']])
-  });
+  return tg('sendMessage', { chat_id: id, text: lines.join('\n'), parse_mode: 'HTML', ...keyboard([['📞 Оставить номер телефона'], ['🔄 Рассчитать заново']]) });
 }
 
 async function callback(q) {
@@ -130,18 +139,23 @@ module.exports = async function handler(req,res) {
     if (text==='/start' || text==='/calculator' || text==='/calc' || text==='🏠 Начать' || text==='🧮 Рассчитать стоимость' || text==='🔄 Рассчитать заново') {
       await start(id); return res.status(200).json({ok:true});
     }
-    if (text==='📞 Отправить номер телефона') {
+    if (text==='📞 Оставить номер телефона' || text==='📞 Отправить номер телефона') {
       await tg('sendMessage',{chat_id:id,text:'📞 Нажмите кнопку ниже, чтобы отправить номер телефона.',reply_markup:{keyboard:[[{text:'📞 Отправить номер телефона',request_contact:true}]],resize_keyboard:true,one_time_keyboard:true}});
       return res.status(200).json({ok:true});
     }
     if (m.contact && m.contact.phone_number) {
       clear(id);
-      await tg('sendMessage',{chat_id:id,text:'✅ Спасибо! Заявка принята. Мы свяжемся с вами.',...keyboard([['🧮 Рассчитать стоимость'],['🏠 Начать']])});
+      await tg('sendMessage',{chat_id:id,text:'✅ Спасибо! Номер получен. Мы свяжемся с вами для обсуждения проекта.',...keyboard([['🔄 Рассчитать заново']])});
       return res.status(200).json({ok:true});
     }
 
-    if (text==='🏠 Квартира' || text==='🏡 Дом' || text==='🏢 Коммерция') {
-      const objectType=text[1]==='о' ? 'h' : text[1]==='о' ? 'h' : (text.startsWith('🏡')?'h':text.startsWith('🏢')?'c':'a');
+    if (text==='🏢 Коммерция') {
+      clear(id);
+      await tg('sendMessage',{chat_id:id,text:commercialText,...keyboard([['📞 Оставить номер телефона'],['🔄 Рассчитать заново']])});
+      return res.status(200).json({ok:true});
+    }
+    if (text==='🏠 Квартира' || text==='🏡 Дом') {
+      const objectType=text.startsWith('🏡')?'h':'a';
       await ask(id,'floor','📐 Напишите общую площадь объекта в м², например: 80',{objectType});
       return res.status(200).json({ok:true});
     }
