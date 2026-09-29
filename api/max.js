@@ -1,7 +1,7 @@
 const { calculate } = require('../shared/remontforma-pricing.js');
 
 const TOKEN = process.env.MAX_BOT_TOKEN;
-const SECRET = process.env.MAX_WEBHOOK_SECRET;
+const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
 const API = 'https://platform-api2.max.ru';
 
 const sessions = globalThis.__RF_MAX_SESSIONS || (globalThis.__RF_MAX_SESSIONS = new Map());
