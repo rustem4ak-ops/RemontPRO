@@ -239,8 +239,15 @@ async function showResult(chatId, s) {
 
 async function handleCallback(update) {
   const c = update.message_callback || update.callback || {};
-  const payload = c.payload || c.callback_data || c.data || '';
-  const chatId = update.chat_id || c.chat_id || c.message?.recipient?.chat_id || c.message?.recipient?.user_id;
+  const payload = c.payload || c.callback_data || c.data || c.button?.payload || '';
+  const chatId =
+    update.chat_id ||
+    c.chat_id ||
+    c.message?.recipient?.chat_id ||
+    c.message?.recipient?.user_id ||
+    c.message?.recipient?.chatId ||
+    update.message?.recipient?.chat_id ||
+    update.message?.recipient?.user_id;
   if (!chatId) return;
   const s = get(chatId) || {};
   if (payload === 'RESTART') return start(chatId);
