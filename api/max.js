@@ -7,12 +7,16 @@ const API = 'https://platform-api2.max.ru';
 
 const ROOT_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_root_ca_pem.crt';
 const SUB_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_sub_ca_pem.crt';
+
 let cachedAgent = null;
 let cachedAt = 0;
 
 function download(url) {
   return new Promise((resolve, reject) => {
-    const request = https.get(url, { timeout: 10000, headers: { 'User-Agent': 'RemontPRO-MAX/1.0' } }, response => {
+    const request = https.get(url, {
+      timeout: 10000,
+      headers: { 'User-Agent': 'RemontPRO-MAX/1.0' }
+    }, response => {
       if (response.statusCode < 200 || response.statusCode >= 300) {
         response.resume();
         return reject(new Error('Certificate download failed: HTTP ' + response.statusCode));
@@ -29,17 +33,22 @@ function download(url) {
 async function getAgent() {
   if (cachedAgent && Date.now() - cachedAt < 6 * 60 * 60 * 1000) return cachedAgent;
   const [rootCA, subCA] = await Promise.all([download(ROOT_CA_URL), download(SUB_CA_URL)]);
-  cachedAgent = new https.Agent({ keepAlive: true, ca: [rootCA, subCA], minVersion: 'TLSv1.2' });
+  cachedAgent = new https.Agent({
+    keepAlive: true,
+    ca: [rootCA, subCA],
+    minVersion: 'TLSv1.2'
+  });
   cachedAt = Date.now();
   return cachedAgent;
 }
 
-function maxRequest(path, method, body) {
+function maxRequest(path, method = 'GET', body) {
   return new Promise(async (resolve, reject) => {
     try {
       const agent = await getAgent();
       const url = new URL(path, API);
       const payload = body === undefined ? null : JSON.stringify(body);
+
       const request = https.request(url, {
         method,
         agent,
@@ -56,6 +65,7 @@ function maxRequest(path, method, body) {
           const text = Buffer.concat(chunks).toString('utf8');
           let data = {};
           try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+
           if (response.statusCode < 200 || response.statusCode >= 300) {
             reject(new Error(data.message || data.error || ('MAX API error HTTP ' + response.statusCode)));
             return;
@@ -63,6 +73,7 @@ function maxRequest(path, method, body) {
           resolve(data);
         });
       });
+
       request.on('timeout', () => request.destroy(new Error('MAX API request timeout')));
       request.on('error', reject);
       if (payload) request.write(payload);
@@ -75,126 +86,91 @@ function maxRequest(path, method, body) {
 
 const sessions = globalThis.__RF_MAX_SESSIONS || (globalThis.__RF_MAX_SESSIONS = new Map());
 
-async function maxApi(path, method = 'POST', body) {
-  if (!TOKEN) throw new Error('MAX_BOT_TOKEN is not configured');
-  return maxRequest(path, method, body);
+function save(id, state) { sessions.set(String(id), state); }
+function get(id) { return sessions.get(String(id)); }
+function clear(id) { sessions.delete(String(id)); }
+
+function money(v) {
+  return new Intl.NumberFormat('ru-RU').format(Math.round(Number(v) || 0)) + ' ₽';
 }
 
-function buttons(rows) {
-  return [{ type: 'inline_keyboard', payload: { buttons: rows } }];
-}
-const cb = (text, payload) => ({ type: 'callback', text, payload });
-const link = (text, url) => ({ type: 'link', text, url });
-const contact = text => ({ type: 'request_contact', text });
-
-async function send(chatId, text, attachments = []) {
-  return maxApi('/messages?chat_id=' + encodeURIComponent(chatId), 'POST', {
-    text, attachments
-  });
-}
-function save(chatId, state) { sessions.set(String(chatId), state); }
-function get(chatId) { return sessions.get(String(chatId)); }
-function clear(chatId) { sessions.delete(String(chatId)); }
-
-function money(n) {
-  return new Intl.NumberFormat('ru-RU').format(Math.round(Number(n) || 0)) + ' ₽';
-}
-function objectName(v) {
-  return v === 'house' ? 'Дом' : v === 'commercial' ? 'Коммерция' : 'Квартира';
-}
 function num(v) {
   const n = Number(String(v || '').replace(',', '.').replace(/[^0-9.]/g, ''));
   return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
-async function start(chatId) {
-  clear(chatId);
-  save(chatId, { step: 'object' });
-  return send(chatId,
+function objectName(v) {
+  return v === 'h' ? 'Дом' : v === 'commercial' ? 'Коммерция' : 'Квартира';
+}
+
+function buttons(rows) {
+  return [{
+    type: 'inline_keyboard',
+    payload: { buttons: rows }
+  }];
+}
+
+function cb(text, payload) {
+  return { type: 'callback', text, payload };
+}
+
+function link(text, url) {
+  return { type: 'link', text, url };
+}
+
+function contact(text) {
+  return { type: 'request_contact', text };
+}
+
+async function send(chatId, text, rows = []) {
+  const attachments = rows.length ? buttons(rows) : [];
+  return maxRequest('/messages?chat_id=' + encodeURIComponent(chatId), 'POST', {
+    text,
+    attachments
+  });
+}
+
+async function answerCallback(callbackId) {
+  if (!callbackId) return;
+  try {
+    await maxRequest('/answers?callback_id=' + encodeURIComponent(callbackId), 'POST', {});
+  } catch (_) {}
+}
+
+async function start(id) {
+  clear(id);
+  save(id, { step: 'object' });
+  return send(id,
     '🏠 РЕМОНТФОРМА\n\nРассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
-    buttons([
-      [cb('🏠 Квартира', 'OBJ:apartment')],
-      [cb('🏡 Дом', 'OBJ:house')],
+    [
+      [cb('🏠 Квартира', 'OBJ:a')],
+      [cb('🏡 Дом', 'OBJ:h')],
       [cb('🏢 Коммерция', 'OBJ:commercial')]
-    ])
+    ]
   );
 }
 
-async function askArea(chatId, s) {
-  s.step = 'area'; save(chatId, s);
-  return send(chatId, '📐 Напишите общую площадь объекта в м².\nНапример: 80');
-}
-async function askBath(chatId, s) {
-  s.step = 'bath'; save(chatId, s);
-  return send(chatId, '🚿 Напишите площадь санузла в м².\nЕсли не нужен расчёт санузла — 0');
-}
-async function askElectrical(chatId, s) {
-  s.step = 'electrical'; save(chatId, s);
-  return send(chatId, '⚡ Электрика\n\nВыберите вариант:',
-    buttons([[cb('Нет','E:none')],[cb('Частичный монтаж — 2 500 ₽/м²','E:partial')],[cb('Полный монтаж — 3 500 ₽/м²','E:full')]]));
-}
-async function askPlumbing(chatId, s) {
-  s.step = 'plumbing'; save(chatId, s);
-  return send(chatId, '🚰 Сантехника\n\nВыберите вариант:',
-    buttons([[cb('Нет','P:none')],[cb('Частичный монтаж — 1 000 ₽/м²','P:partial')],[cb('Полный монтаж — 2 500 ₽/м²','P:full')]]));
-}
-async function askBathroom(chatId, s) {
-  s.step = 'bathroom'; save(chatId, s);
-  return send(chatId, '🚿 Санузел\n\nВыберите вариант:',
-    buttons([[cb('Нет','B:none')],[cb('Классический санузел — 50 000 ₽/м²','B:classic')]]));
-}
-async function askTile(chatId, s) {
-  s.step = 'tile'; save(chatId, s);
-  return send(chatId, '🧱 Пол — плитка\n\nВыберите вариант:',
-    buttons([[cb('Без плитки','T:none')],[cb('Плитка на всей основной площади — 10 000 ₽/м²','T:fixed')],[cb('Указать площадь плитки','T:manual')]]));
-}
-async function askTileArea(chatId, s) {
-  s.step = 'tileArea'; save(chatId, s);
-  return send(chatId, '🧱 Напишите площадь плитки в м².\nНапример: 12');
-}
-async function askFloor(chatId, s) {
-  s.step = 'floorFinish'; save(chatId, s);
-  return send(chatId, '🏠 Оставшиеся полы\n\nВыберите вариант:',
-    buttons([[cb('Не делать','F:none')],[cb('Кварцвинил — 1 000 ₽/м²','F:quartz')],[cb('Ламинат — 1 000 ₽/м²','F:laminate')]]));
-}
-async function askWalls(chatId, s) {
-  s.step = 'walls'; save(chatId, s);
-  return send(chatId, '🎨 Стены\nМожно выбрать несколько вариантов. После выбора нажмите «Продолжить».',
-    buttons([
-      [cb('Обои — 1 500 ₽/м²','W:wallpaper')],
-      [cb('Покраска — 4 000 ₽/м²','W:paint')],
-      [cb('Декоративная штукатурка — 2 500 ₽/м²','W:decorative')],
-      [cb('➡️ Продолжить','W:done')]
-    ])
-  );
-}
-async function askPlinth(chatId, s) {
-  s.step = 'plinth'; save(chatId, s);
-  return send(chatId, '📏 Плинтус\n\nВыберите вариант:',
-    buttons([[cb('Нет','PL:none')],[cb('Пластиковый — 400 ₽/м²','PL:plastic')],[cb('Полиуретановый — 1 300 ₽/м²','PL:polyurethane')]]));
-}
-async function askExtras(chatId, s) {
-  s.step = 'extras'; save(chatId, s);
-  return send(chatId, '🧹 Завершение\n\nВыберите нужные работы:',
-    buttons([
-      [cb((s.cleanElectrical ? '☑ ' : '☐ ') + 'Чистовая электрика','X:cleanElectrical')],
-      [cb((s.cleanPlumbing ? '☑ ' : '☐ ') + 'Чистовая сантехника','X:cleanPlumbing')],
-      [cb((s.cleaning ? '☑ ' : '☐ ') + 'Клининг — 400 ₽/м²','X:cleaning')],
-      [cb((s.trash ? '☑ ' : '☐ ') + 'Вывоз мусора','X:trash')],
-      [cb('➡️ Рассчитать','X:done')]
-    ])
-  );
+async function ask(id, step, text, state) {
+  save(id, { ...state, step });
+  return send(id, text);
 }
 
-function toInput(s) {
+async function choose(id, step, text, rows, state) {
+  save(id, { ...state, step });
+  return send(id, text, rows);
+}
+
+function input(s) {
   return {
-    floor: s.floor, bath: s.bath, balcony: 0,
+    floor: s.floor,
+    bath: s.bath || 0,
+    balcony: 0,
     electrical: s.electrical || 'none',
     plumbing: s.plumbing || 'none',
     bathroom: s.bathroom || 'none',
-    tile: s.tile || 'none',
+    tile: 'manual',
     tileArea: s.tileArea || 0,
-    laminate: ['quartz','laminate'].includes(s.floorFinish),
+    laminate: true,
     plinth: s.plinth || 'none',
     walls: s.walls || {},
     cleanElectrical: !!s.cleanElectrical,
@@ -203,161 +179,398 @@ function toInput(s) {
     trash: !!s.trash
   };
 }
-function stageSum(rows, fn) { return rows.filter(fn).reduce((a, x) => a + Number(x.cost || 0), 0); }
 
-async function showResult(chatId, s) {
-  const result = calculate(toInput(s));
-  s.step = 'lead'; s.result = result; save(chatId, s);
-  const rows = result.rows || [];
-  const e = stageSum(rows, x => /Электрика|Сантехника|санузел/.test(x.name));
-  const tile = stageSum(rows, x => x.name.startsWith('Плитка'));
-  const floors = stageSum(rows, x => x.name.startsWith('Ламинат / кварцвинил'));
-  const walls = stageSum(rows, x => /обои|покраску|декоративку|Плинтус/.test(x.name));
-  const clean = stageSum(rows, x => /Чистовая/.test(x.name));
-  const end = stageSum(rows, x => /Клининг|Вывоз/.test(x.name));
-  return send(chatId,
-    '🧮 РЕМОНТФОРМА — предварительный расчёт\n\n' +
-    '🏠 Объект: ' + objectName(s.objectType) + '\n' +
-    '📐 Площадь: ' + result.floor + ' м²\n' +
-    '📐 Основная площадь: ' + result.mainArea + ' м²\n\n' +
-    '1️⃣ Электрика, сантехника, санузел — ' + money(e) + '\n' +
-    '2️⃣ Плитка — ' + money(tile) + '\n' +
-    '3️⃣ Напольные покрытия — ' + money(floors) + '\n' +
-    '4️⃣ Стены и плинтусы — ' + money(walls) + '\n' +
-    '5️⃣ Чистовые работы — ' + money(clean) + '\n' +
-    '6️⃣ Завершение — ' + money(end) + '\n\n' +
-    '💰 ИТОГО: ' + money(result.total) + '\n' +
-    '📊 Цена за м² по полу: ' + money(result.pricePerM2) + '\n\n' +
-    'Это предварительный расчёт. Точная смета формируется после замера.',
-    buttons([
-      [contact('📞 Получить точную смету')],
-      [cb('🔄 Рассчитать заново','RESTART')],
-      [link('🌐 Открыть сайт РЕМОНТФОРМА','https://remont-pro-nine.vercel.app')]
-    ])
+function sumRows(rows, names) {
+  return rows
+    .filter(x => names.some(n => x.name === n || x.name.startsWith(n)))
+    .reduce((a, x) => a + Number(x.cost || 0), 0);
+}
+
+async function showResult(id, s) {
+  const r = calculate(input(s));
+  const rows = r.rows || [];
+
+  const stages = [
+    ['1️⃣', 'Черновая электрика + черновая сантехника', sumRows(rows, ['Электрика', 'Сантехника'])],
+    ['2️⃣', 'Плиточные работы', sumRows(rows, ['Классический санузел', 'Плитка'])],
+    ['3️⃣', 'Напольные работы', sumRows(rows, ['Ламинат / кварцвинил', 'Плинтус'])],
+    ['4️⃣', 'Стены', sumRows(rows, [
+      'Подготовка под обои + обои',
+      'Подготовка под покраску + покраска',
+      'Подготовка под декоративку + декоративка'
+    ])],
+    ['5️⃣', 'Чистовая электрика / сантехника', sumRows(rows, ['Чистовая электрика', 'Чистовая сантехника'])],
+    ['6️⃣', 'Завершающие работы', sumRows(rows, ['Клининг', 'Вывоз мусора'])]
+  ];
+
+  const lines = [
+    'РЕМОНТФОРМА — предварительный расчёт',
+    '',
+    '🏠 Объект: ' + objectName(s.objectType),
+    '📐 Площадь: ' + r.floor + ' м²',
+    '📐 Основная площадь: ' + r.mainArea + ' м²',
+    ''
+  ];
+
+  for (const [icon, name, value] of stages) {
+    lines.push(icon + ' ' + name);
+    lines.push('💰 ' + money(value));
+    lines.push('');
+  }
+
+  lines.push(
+    '💵 ИТОГО: ' + money(r.total),
+    '📐 Цена за м²: ' + money(r.pricePerM2),
+    '',
+    '📞 Для консультации отправьте номер телефона.'
+  );
+
+  save(id, { ...s, step: 'result', result: r });
+
+  return send(id, lines.join('\n'), [
+    [contact('📞 Оставить номер телефона')],
+    [cb('🔄 Рассчитать заново', 'RESTART')],
+    [link('🌐 Открыть сайт РЕМОНТФОРМА', 'https://remont-pro-nine.vercel.app')]
+  ]);
+}
+
+async function commercial(id) {
+  clear(id);
+  save(id, { step: 'commercialLead', objectType: 'commercial' });
+  return send(id,
+    '🏢 Ремонт в коммерции зависит от проекта и объёмов работ.\n\nПоэтому отправьте номер телефона, чтобы обсудить подробности.',
+    [
+      [contact('📞 Оставить номер телефона')],
+      [cb('🔄 Рассчитать заново', 'RESTART')]
+    ]
   );
 }
 
+async function nextPlumbing(id, s) {
+  return choose(id, 'plumbing', '🚰 Сантехника', [
+    [cb('Нет', 'P0')],
+    [cb('Частичный монтаж', 'P1')],
+    [cb('Полный монтаж', 'P2')]
+  ], s);
+}
+
+async function nextBathroom(id, s) {
+  return choose(id, 'bathroom', '🚿 Санузел', [
+    [cb('Нет', 'B0')],
+    [cb('Классический санузел', 'B1')]
+  ], s);
+}
+
+async function nextTileArea(id, s) {
+  return ask(id, 'tileArea', '🧱 Плитка\n\nНапишите площадь плитки в м², например: 12', s);
+}
+
+async function nextFloor(id, s) {
+  return choose(id, 'floorFinish', '🏠 Оставшиеся полы', [
+    [cb('Кварцвинил', 'LQ')],
+    [cb('Ламинат', 'LL')]
+  ], s);
+}
+
+async function nextPlinth(id, s) {
+  return choose(id, 'plinth', '📏 Плинтус', [
+    [cb('Нет', 'PL0')],
+    [cb('Пластиковый', 'PL1')],
+    [cb('Полиуретановый', 'PL2')]
+  ], s);
+}
+
+async function nextWalls(id, s) {
+  return choose(id, 'walls', '🧱 Стены', [
+    [cb('Без отделки', 'W0')],
+    [cb('Обои', 'W1')],
+    [cb('Покраска', 'W2')],
+    [cb('Декоративка', 'W3')]
+  ], s);
+}
+
+async function nextCleanElectrical(id, s) {
+  return choose(id, 'cleanElectrical', '💡 Чистовая электрика', [
+    [cb('Да', 'CE1')],
+    [cb('Нет', 'CE0')]
+  ], s);
+}
+
+async function nextCleanPlumbing(id, s) {
+  return choose(id, 'cleanPlumbing', '🚿 Чистовая сантехника', [
+    [cb('Да', 'CP1')],
+    [cb('Нет', 'CP0')]
+  ], s);
+}
+
+async function nextCleaning(id, s) {
+  return choose(id, 'cleaning', '🧹 Клининг', [
+    [cb('Да', 'CL1')],
+    [cb('Нет', 'CL0')]
+  ], s);
+}
+
+async function nextTrash(id, s) {
+  return choose(id, 'trash', '🚛 Вывоз мусора', [
+    [cb('Да', 'TR1')],
+    [cb('Нет', 'TR0')]
+  ], s);
+}
+
 async function handleCallback(update) {
-  const c = update.message_callback || update.callback || {};
-  const payload = c.payload || c.callback_data || c.data || c.button?.payload || '';
-  const chatId =
+  const c = update.callback || update.message_callback || {};
+  const payload = String(c.payload || c.callback_data || c.data || '');
+  const callbackId = c.callback_id || update.callback_id || '';
+
+  const id =
     update.chat_id ||
     c.chat_id ||
     c.message?.recipient?.chat_id ||
     c.message?.recipient?.user_id ||
-    c.message?.recipient?.chatId ||
     update.message?.recipient?.chat_id ||
     update.message?.recipient?.user_id;
-  if (!chatId) return;
-  const s = get(chatId) || {};
-  if (payload === 'RESTART') return start(chatId);
 
-  if (payload.startsWith('OBJ:')) {
-    s.objectType = payload.slice(4); return askArea(chatId, s);
-  }
-  if (payload.startsWith('E:')) { s.electrical = payload.slice(2); return askPlumbing(chatId, s); }
-  if (payload.startsWith('P:')) { s.plumbing = payload.slice(2); return askBathroom(chatId, s); }
-  if (payload.startsWith('B:')) { s.bathroom = payload.slice(2); return askTile(chatId, s); }
-  if (payload === 'T:none') { s.tile='none'; return askFloor(chatId,s); }
-  if (payload === 'T:fixed') { s.tile='fixed'; return askFloor(chatId,s); }
-  if (payload === 'T:manual') { s.tile='manual'; return askTileArea(chatId,s); }
-  if (payload.startsWith('F:')) { s.floorFinish=payload.slice(2); return askWalls(chatId,s); }
-  if (payload.startsWith('W:')) {
-    const w=payload.slice(2);
-    if (w === 'done') return askPlinth(chatId,s);
-    s.walls=s.walls||{};
-    s.walls[w] = s.walls[w] || { area: 0 };
-    save(chatId,s); return askWalls(chatId,s);
-  }
-  if (payload.startsWith('PL:')) { s.plinth=payload.slice(3); return askExtras(chatId,s); }
-  if (payload.startsWith('X:')) {
-    const x=payload.slice(2);
-    if (x === 'done') return showResult(chatId,s);
-    s[x] = !s[x]; return askExtras(chatId,s);
-  }
-  if (c.callback_id) {
-    await maxApi('/answers?callback_id=' + encodeURIComponent(c.callback_id), 'POST', { message: { text: 'Выбрано' } }).catch(()=>{});
+  if (!id) return;
+
+  await answerCallback(callbackId);
+
+  const s = get(id) || {};
+
+  switch (payload) {
+    case 'RESTART':
+      return start(id);
+
+    case 'OBJ:a':
+    case 'OBJ:h':
+      s.objectType = payload === 'OBJ:h' ? 'h' : 'a';
+      return ask(id, 'floor', '📐 Напишите общую площадь объекта в м², например: 80', s);
+
+    case 'OBJ:commercial':
+      return commercial(id);
+
+    case 'E0':
+    case 'E1':
+    case 'E2':
+      s.electrical = payload === 'E0' ? 'none' : payload === 'E1' ? 'partial' : 'full';
+      return nextPlumbing(id, s);
+
+    case 'P0':
+    case 'P1':
+    case 'P2':
+      s.plumbing = payload === 'P0' ? 'none' : payload === 'P1' ? 'partial' : 'full';
+      return nextBathroom(id, s);
+
+    case 'B0':
+      s.bathroom = 'none';
+      return nextTileArea(id, s);
+
+    case 'B1':
+      s.bathroom = 'classic';
+      return nextTileArea(id, s);
+
+    case 'LQ':
+    case 'LL':
+      s.floorFinish = payload === 'LQ' ? 'quartz' : 'laminate';
+      return nextPlinth(id, s);
+
+    case 'PL0':
+    case 'PL1':
+    case 'PL2':
+      s.plinth = payload === 'PL0' ? 'none' : payload === 'PL1' ? 'plastic' : 'polyurethane';
+      return nextWalls(id, s);
+
+    case 'W0':
+      s.walls = {};
+      return nextCleanElectrical(id, s);
+
+    case 'W1':
+      s.walls = { wallpaper: { area: 0 } };
+      return nextCleanElectrical(id, s);
+
+    case 'W2':
+      s.walls = { paint: { area: 0 } };
+      return nextCleanElectrical(id, s);
+
+    case 'W3':
+      s.walls = { decorative: { area: 0 } };
+      return nextCleanElectrical(id, s);
+
+    case 'CE0':
+    case 'CE1':
+      s.cleanElectrical = payload === 'CE1';
+      return nextCleanPlumbing(id, s);
+
+    case 'CP0':
+    case 'CP1':
+      s.cleanPlumbing = payload === 'CP1';
+      return nextCleaning(id, s);
+
+    case 'CL0':
+    case 'CL1':
+      s.cleaning = payload === 'CL1';
+      return nextTrash(id, s);
+
+    case 'TR0':
+      s.trash = false;
+      return showResult(id, s);
+
+    case 'TR1':
+      s.trash = true;
+      return showResult(id, s);
+
+    default:
+      return send(id, '⚠️ Кнопка не распознана. Нажмите «🔄 Рассчитать заново».');
   }
 }
 
 function contactFromMessage(message) {
-  const a = message?.body?.attachments || message?.attachments || [];
-  for (const x of a) {
-    if (x.type === 'contact') {
-      const p = x.payload || {};
-      const v = p.vcf_info || '';
-      const m = v.match(/TEL[^:]*:([^\r\n]+)/i);
-      return (p.max_info?.phone || (m && m[1]) || '').trim();
-    }
+  const attachments = message?.body?.attachments || message?.attachments || [];
+
+  for (const item of attachments) {
+    if (item.type !== 'contact') continue;
+
+    const p = item.payload || {};
+    const maxPhone = p.max_info?.phone || p.phone || '';
+
+    if (maxPhone) return String(maxPhone).trim();
+
+    const vcf = String(p.vcf_info || '');
+    const match = vcf.match(/TEL[^:]*:([^\r\n]+)/i);
+    if (match) return match[1].trim();
   }
+
   return '';
+}
+
+async function sendLead(id, message, s, phone) {
+  const lead = {
+    name: message?.sender?.name || 'Клиент',
+    phone,
+    source: 'max',
+    medium: 'max_bot',
+    calculator: {
+      total: s.result?.total || 0,
+      pricePerM2: s.result?.pricePerM2 || 0
+    },
+    object: {
+      type: objectName(s.objectType),
+      floor: s.floor || 0,
+      bath: s.bath || 0,
+      balcony: 0
+    }
+  };
+
+  try {
+    await fetch('https://remont-pro-nine.vercel.app/api/lead', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(lead)
+    });
+  } catch (_) {}
+
+  clear(id);
+
+  return send(id,
+    '✅ Спасибо! Номер получен.\n\n📞 ' + phone + '\n\nМы свяжемся с вами для обсуждения проекта.',
+    [[cb('🔄 Рассчитать заново', 'RESTART')]]
+  );
 }
 
 async function handleMessage(update) {
   const m = update.message || {};
-  const chatId = update.chat_id || m.recipient?.chat_id || m.recipient?.user_id;
-  if (!chatId) return;
+  const id = update.chat_id || m.recipient?.chat_id || m.recipient?.user_id;
+
+  if (!id) return;
+
   const text = String(m.body?.text || m.text || '').trim();
 
-  if (/^\/start$|^Начать$/i.test(text)) return start(chatId);
-  const s = get(chatId);
-  if (!s) return start(chatId);
+  if (/^\/start$/i.test(text) || /^Начать$/i.test(text) || /^🏠 Начать$/i.test(text)) {
+    return start(id);
+  }
 
-  if (s.step === 'lead') {
+  const s = get(id);
+
+  if (s?.step === 'result' || s?.step === 'commercialLead') {
     const phone = contactFromMessage(m);
-    if (phone) {
-      const lead = {
-        name: m.sender?.name || 'Клиент',
-        phone,
-        source: 'max',
-        medium: 'max_bot',
-        calculator: {
-          total: s.result?.total || 0,
-          pricePerM2: s.result?.pricePerM2 || 0
-        },
-        object: {
-          type: objectName(s.objectType),
-          floor: s.floor || 0,
-          bath: s.bath || 0,
-          balcony: 0
-        }
-      };
-      await fetch('https://remont-pro-nine.vercel.app/api/lead', {
-        method:'POST',
-        headers:{'content-type':'application/json'},
-        body:JSON.stringify(lead)
-      });
-      clear(chatId);
-      await send(chatId, '✅ Спасибо! Заявка принята.\n\n📞 ' + phone + '\n\nМы свяжемся с вами для обсуждения проекта.');
-      return;
-    }
+    if (phone) return sendLead(id, m, s, phone);
   }
 
-  if (s.step === 'area') {
-    const v=num(text); if(v===null) return send(chatId,'⚠️ Введите площадь числом, например 80');
-    s.floor=v; return askBath(chatId,s);
+  if (text === '/calculator' || text === '/calc' || text === '🧮 Рассчитать стоимость') {
+    return start(id);
   }
+
+  if (!s) return start(id);
+
+  if (s.step === 'floor') {
+    const v = num(text);
+    if (v === null) return send(id, '⚠️ Введите площадь числом, например 80');
+    s.floor = v;
+    return ask(id, 'bath', '🚿 Напишите площадь пола санузла в м². Если санузла нет — 0', s);
+  }
+
   if (s.step === 'bath') {
-    const v=num(text); if(v===null) return send(chatId,'⚠️ Введите площадь санузла числом, например 4');
-    s.bath=v; return askElectrical(chatId,s);
+    const v = num(text);
+    if (v === null) return send(id, '⚠️ Введите площадь санузла числом, например 5');
+
+    s.bath = v;
+
+    return choose(id, 'electrical', '⚡ Электрика', [
+      [cb('Нет', 'E0')],
+      [cb('Частичный монтаж', 'E1')],
+      [cb('Полный монтаж', 'E2')]
+    ], s);
   }
+
   if (s.step === 'tileArea') {
-    const v=num(text); if(v===null) return send(chatId,'⚠️ Введите площадь плитки числом, например 12');
-    const main=Math.max(0,(s.floor||0)-(s.bath||0)); s.tileArea=Math.min(v,main); return askFloor(chatId,s);
+    const v = num(text);
+    if (v === null) return send(id, '⚠️ Введите площадь плитки числом, например 12');
+
+    const main = Math.max(0, (s.floor || 0) - (s.bath || 0));
+    s.tileArea = Math.min(v, main);
+
+    return nextFloor(id, s);
   }
-  return send(chatId,'Нажмите кнопку «Рассчитать заново» или отправьте /start.');
+
+  return send(id, 'Нажмите «🔄 Рассчитать заново» или отправьте /start.');
 }
 
-module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА MAX Bot',configured:!!TOKEN});
-  if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
-  if (SECRET && req.headers['x-max-bot-api-secret'] !== SECRET) return res.status(401).json({ok:false,error:'Unauthorized'});
+module.exports = async function handler(req, res) {
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      ok: true,
+      service: 'РЕМОНТФОРМА MAX Bot',
+      version: '4.0.0',
+      configured: !!TOKEN
+    });
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  if (SECRET && req.headers['x-max-bot-api-secret'] !== SECRET) {
+    return res.status(401).json({ ok: false, error: 'Unauthorized' });
+  }
+
   try {
-    const update = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
-    if (update.update_type === 'message_callback') await handleCallback(update);
-    else if (update.update_type === 'message_created' || update.update_type === 'bot_started') await handleMessage(update);
-    return res.status(200).json({ok:true});
-  } catch(e) {
-    return res.status(200).json({ok:false,error:e.message});
+    const update = typeof req.body === 'string'
+      ? JSON.parse(req.body || '{}')
+      : (req.body || {});
+
+    if (update.update_type === 'message_callback') {
+      await handleCallback(update);
+    } else if (update.update_type === 'message_created') {
+      await handleMessage(update);
+    } else if (update.update_type === 'bot_started') {
+      const id = update.chat_id || update.user?.user_id;
+      if (id) await start(id);
+    }
+
+    return res.status(200).json({ ok: true });
+  } catch (e) {
+    return res.status(200).json({
+      ok: false,
+      error: e.message || 'MAX bot error'
+    });
   }
 };
