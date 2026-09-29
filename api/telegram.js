@@ -136,6 +136,11 @@ module.exports = async function handler(req,res) {
     if (!m || !m.chat || !m.chat.id) return res.status(200).json({ok:true});
     const id=m.chat.id, text=String(m.text||'').trim();
 
+    if (text==='/admin') {
+      await tg('sendMessage',{chat_id:id,text:'🔐 Ваш Telegram Chat ID:\n\n<code>'+String(id)+'</code>\n\nДобавьте это число в Vercel как TELEGRAM_ADMIN_CHAT_ID.',parse_mode:'HTML'});
+      return res.status(200).json({ok:true,chatId:id});
+    }
+
     if (text==='/start' || text==='/calculator' || text==='/calc' || text==='🏠 Начать' || text==='🧮 Рассчитать стоимость' || text==='🔄 Рассчитать заново') {
       await start(id); return res.status(200).json({ok:true});
     }
