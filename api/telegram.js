@@ -1,6 +1,6 @@
 const { calculate } = require('../shared/remontforma-pricing.js');
 
-const VERSION = '2.4.0';
+const VERSION = '2.5.0';
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const API_BASE = 'https://api.telegram.org/bot';
@@ -24,7 +24,7 @@ async function telegram(method, body) {
 }
 
 const kb = (rows) => ({
-  reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: true }
+  reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: false }
 });
 
 const inline = (rows) => ({
@@ -318,6 +318,75 @@ function resultText(result, s) {
   ].join('\\n');
 }
 
+async function bitrixCall(method, body) {
+  const webhook = process.env.BITRIX24_WEBHOOK_URL;
+  if (!webhook) return null;
+  const url = webhook.replace(/\\/+$/, '') + '/' + method + '.json';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return response.json().catch(() => ({}));
+}
+
+function phoneCandidates(phone) {
+  const raw = String(phone || '').trim();
+  const digits = raw.replace(/\\D/g, '');
+  const out = [raw];
+  if (digits) {
+    out.push('+' + digits);
+    if (digits.length === 11 && digits.startsWith('8')) out.push('+7' + digits.slice(1));
+    if (digits.length === 10) out.push('+7' + digits);
+  }
+  return [...new Set(out.filter(Boolean))];
+}
+
+async function ensureBitrixContact(phone, name, telegramChatId) {
+  if (!process.env.BITRIX24_WEBHOOK_URL || !phone) return null;
+
+  for (const candidate of phoneCandidates(phone)) {
+    const found = await bitrixCall('crm.contact.list', {
+      filter: { PHONE: candidate },
+      select: ['ID', 'NAME', 'LAST_NAME', 'PHONE'],
+      start: 0
+    });
+    if (Array.isArray(found?.result) && found.result[0]?.ID) {
+      return Number(found.result[0].ID);
+    }
+  }
+
+  const created = await bitrixCall('crm.contact.add', {
+    fields: {
+      NAME: String(name || 'Клиент'),
+      PHONE: [{ VALUE: phone, VALUE_TYPE: 'MOBILE' }],
+      SOURCE_ID: 'TELEGRAM',
+      SOURCE_DESCRIPTION: 'РЕМОНТФОРМА Telegram | chat:' + String(telegramChatId || '')
+    }
+  });
+  return created?.result ? Number(created.result) : null;
+}
+
+async function createBitrixDeal(phone, name, chatId, result) {
+  const contactId = await ensureBitrixContact(phone, name, chatId);
+  if (!contactId) return { ok: false, contactId: null, dealId: null };
+
+  const deal = await bitrixCall('crm.deal.add', {
+    fields: {
+      TITLE: 'РЕМОНТФОРМА — Telegram расчёт',
+      CONTACT_IDS: [contactId],
+      OPPORTUNITY: Number(result?.total || 0),
+      CURRENCY_ID: 'RUB',
+      SOURCE_ID: 'TELEGRAM',
+      SOURCE_DESCRIPTION: 'РЕМОНТФОРМА Telegram | chat:' + String(chatId),
+      COMMENTS: 'Предварительный расчёт: ' + money(result?.total) +
+        '; цена/м²: ' + money(result?.pricePerM2) +
+        '; Telegram chat: ' + String(chatId)
+    }
+  });
+  return { ok: Boolean(deal?.result), contactId, dealId: deal?.result ? Number(deal.result) : null };
+}
+
 async function showResult(chatId, s) {
   const result = calculate(toInput(s));
   saveSession(chatId, { ...s, step: 'phone', result });
@@ -485,15 +554,28 @@ module.exports = async function handler(req, res) {
     if (message.contact?.phone_number) {
       const s = getSession(chatId);
       const phone = message.contact.phone_number;
+      const name = [message.from?.first_name, message.from?.last_name].filter(Boolean).join(' ') || 'Клиент';
+      let bitrix = null;
+
+      if (s?.result) {
+        try {
+          bitrix = await createBitrixDeal(phone, name, chatId, s.result);
+        } catch (_) {
+          bitrix = { ok: false, contactId: null, dealId: null };
+        }
+      }
+
       clearSession(chatId);
 
       await telegram('sendMessage', {
         chat_id: chatId,
-        text: '✅ Спасибо! Заявка принята.\n\n📞 ' + phone + '\n\nМы сохранили предварительный расчёт. Следующим этапом подключим автоматическую передачу заявки в CRM.',
+        text: '✅ Спасибо! Заявка принята.\\n\\n📞 ' + phone +
+          (bitrix?.ok ? '\\n\\n👤 Клиент найден/сохранён в CRM. Новая заявка привязана к этой карточке.' : '') +
+          '\\n\\nТеперь можно в любой момент снова запустить расчёт.',
         ...kb([['🧮 Рассчитать стоимость'], ['🏠 Начать']])
       });
 
-      return res.status(200).json({ ok: true, lead: true, phone, hasCalculation: Boolean(s?.result) });
+      return res.status(200).json({ ok: true, lead: true, phone, hasCalculation: Boolean(s?.result), bitrix });
     }
 
     if (text === '📞 Отправить номер телефона') {
@@ -508,7 +590,7 @@ module.exports = async function handler(req, res) {
       }));
     }
 
-    if (text === '🔄 Рассчитать заново' || text === '/start' || text === '🏠 Начать' || text === '🧮 Рассчитать стоимость') {
+    if (text === '🔄 Рассчитать заново' || text === '/calculator' || text === '/calc' || text === '/start' || text === '🏠 Начать' || text === '🧮 Рассчитать стоимость') {
       return res.status(200).json(await start(chatId));
     }
 
