@@ -43,16 +43,61 @@ module.exports=async function handler(req,res){
       telegramSent=Boolean(t?.ok);
     }
     if(process.env.BITRIX24_WEBHOOK_URL){
+      const base=process.env.BITRIX24_WEBHOOK_URL.replace(/\\/+$/,'')+'/';
+
+      const call=async(method,payload)=>{
+        const r=await fetch(base+method+'.json',{
+          method:'POST',
+          headers:{'content-type':'application/json'},
+          body:JSON.stringify(payload)
+        });
+        return r.json().catch(()=>({}));
+      };
+
+      const raw=phone.trim();
+      const digits=raw.replace(/\\D/g,'');
+      const candidates=[raw,'+'+digits];
+      if(digits.length===11 && digits.startsWith('8')) candidates.push('+7'+digits.slice(1));
+      if(digits.length===10) candidates.push('+7'+digits);
+
+      let contactId=null;
+      for(const p of [...new Set(candidates.filter(Boolean))]){
+        const found=await call('crm.contact.list',{
+          filter:{PHONE:p},
+          select:['ID','NAME','LAST_NAME','PHONE'],
+          start:0
+        });
+        if(Array.isArray(found?.result) && found.result[0]?.ID){
+          contactId=Number(found.result[0].ID);
+          break;
+        }
+      }
+
+      if(!contactId){
+        const created=await call('crm.contact.add',{
+          fields:{
+            NAME:String(b.name||'Клиент'),
+            PHONE:[{VALUE:phone,VALUE_TYPE:'MOBILE'}],
+            SOURCE_ID:'WEB',
+            SOURCE_DESCRIPTION:'РЕМОНТФОРМА сайт'
+          }
+        });
+        contactId=created?.result ? Number(created.result) : null;
+      }
+
       const fields={
         TITLE:'РЕМОНТФОРМА — '+(o.type||'объект')+' '+(o.floor||'')+' м²',
-        NAME:String(b.name||''),
-        PHONE:[{VALUE:phone,VALUE_TYPE:'WORK'}],
+        CONTACT_IDS:contactId?[contactId]:[],
+        OPPORTUNITY:Number(q.total||0),
+        CURRENCY_ID:'RUB',
+        SOURCE_ID:'WEB',
         SOURCE_DESCRIPTION:'Сайт РЕМОНТФОРМА | '+String(b.source||'site')+' | '+String(b.medium||'')+' | '+String(b.campaign||'')+' | ref:'+String(b.referrer||''),
         COMMENTS:'Предварительный расчёт: '+money(q.total)+'; цена/м²: '+money(q.pricePerM2)+'; объект: '+String(o.type||'')+'; площадь: '+String(o.floor||'')+' м²; санузел: '+String(o.bath||0)+' м². '+String(b.comment||'')
       };
-      const br=await fetch(process.env.BITRIX24_WEBHOOK_URL+'crm.lead.add.json',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({fields})});
-      const bj=await br.json().catch(()=>({}));
-      bitrixSent=Boolean(bj?.result);bitrixId=bj?.result||null;
+
+      const bd=await call('crm.deal.add',{fields});
+      bitrixSent=Boolean(bd?.result);
+      bitrixId=bd?.result||null;
     }
     return res.status(200).json({ok:true,telegramSent,bitrixSent,bitrixId});
   }catch(e){return res.status(500).json({ok:false,error:e.message||'Lead error'})}
