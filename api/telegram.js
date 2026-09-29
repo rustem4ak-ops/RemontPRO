@@ -1,4 +1,4 @@
-const { calculate } = require('../shared/remontforma-pricing.js');
+let calculate;
 
 const VERSION = '2.5.0';
 
@@ -534,6 +534,8 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (!calculate) calculate = require('../shared/remontforma-pricing.js').calculate;
+
     const update = typeof req.body === 'string'
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
