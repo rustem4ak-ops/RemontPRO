@@ -17,7 +17,7 @@ async function tg(method, body) {
 }
 
 const keyboard = rows => ({ reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: false } });
-const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\\n\\nПоэтому пришлите номер телефона, чтобы договориться для обсуждения всех подробностей.';
+const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\n\nПоэтому пришлите номер телефона, чтобы договориться для обсуждения всех подробностей.';
 const inline = rows => ({ reply_markup: { inline_keyboard: rows } });
 const force = { reply_markup: { force_reply: true, selective: true } };
 
@@ -104,7 +104,7 @@ async function callback(q) {
     case 'P0': s.plumbing='none'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P1': s.plumbing='partial'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P2': s.plumbing='full'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'B0': s.bathroom='none'; return ask(id,'tileArea','🧱 Плитка\\n\\nНапишите площадь плитки в м², например: 12',s);
+    case 'B0': s.bathroom='none'; return ask(id,'tileArea','🧱 Плитка\n\nНапишите площадь плитки в м2 (коридор, комнаты)',s);
     case 'B1': s.bathroom='classic'; return ask(id,'tileArea','🧱 Плитка\\n\\nНапишите площадь плитки в м², например: 12',s);
     case 'LQ': case 'LL': return buttons(id,'plinth','📏 Плинтус',[[{text:'Нет',callback_data:'PL0'}],[{text:'Пластиковый',callback_data:'PL1'}],[{text:'Полиуретановый',callback_data:'PL2'}]],s);
     case 'PL0': s.plinth='none'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
@@ -176,7 +176,7 @@ module.exports = async function handler(req,res) {
     await tg('sendMessage',{chat_id:id,text:'Нажмите «🏠 Начать», чтобы запустить расчёт.'});
     return res.status(200).json({ok:true});
   } catch(e) {
-    try { if (req.body && req.body.message && req.body.message.chat) await tg('sendMessage',{chat_id:req.body.message.chat.id,text:'⚠️ '+(e.message||'Ошибка')+'\\n\\nНажмите «🏠 Начать».'}); } catch(_) {}
+    try { if (req.body && req.body.message && req.body.message.chat) await tg('sendMessage',{chat_id:req.body.message.chat.id,text:'⚠️ '+(e.message||'Ошибка')+'\n\nНажмите «🏠 Начать».'}); } catch(_) {}
     return res.status(200).json({ok:false,error:e.message||'Bot error'});
   }
 };
