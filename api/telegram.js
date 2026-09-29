@@ -17,7 +17,7 @@ async function tg(method, body) {
 }
 
 const keyboard = rows => ({ reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: false } });
-const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\n\nПоэтому пришлите номер телефона, чтобы договориться для обсуждения всех подробностей.';
+const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\n\nПоэтому пришлите номер телефона, чтобы обсудить все подробности.';
 const inline = rows => ({ reply_markup: { inline_keyboard: rows } });
 const force = { reply_markup: { force_reply: true, selective: true } };
 
