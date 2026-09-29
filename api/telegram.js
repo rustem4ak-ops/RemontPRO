@@ -144,9 +144,49 @@ module.exports = async function handler(req,res) {
       return res.status(200).json({ok:true});
     }
     if (m.contact && m.contact.phone_number) {
+      const s = get(id) || {};
+      const phone = String(m.contact.phone_number || '').trim();
+      const firstName = String(m.contact.first_name || '').trim();
+      const lastName = String(m.contact.last_name || '').trim();
+      const name = [firstName, lastName].filter(Boolean).join(' ') || 'Клиент';
+
+      let crmOk = false;
+      let crmResult = null;
+      try {
+        const leadPayload = {
+          name,
+          phone,
+          source: 'telegram',
+          medium: 'telegram_bot',
+          calculator: {
+            total: s.result?.total || 0,
+            pricePerM2: s.result?.pricePerM2 || 0
+          },
+          object: {
+            type: s.objectType === 'h' ? 'Дом' : 'Квартира',
+            floor: s.floor || 0,
+            bath: s.bath || 0,
+            balcony: 0
+          }
+        };
+
+        const leadResponse = await fetch('https://remont-pro-nine.vercel.app/api/lead', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(leadPayload)
+        });
+        crmResult = await leadResponse.json().catch(() => ({}));
+        crmOk = Boolean(leadResponse.ok && crmResult?.ok && crmResult?.bitrixSent);
+      } catch (_) {}
+
       clear(id);
-      await tg('sendMessage',{chat_id:id,text:'✅ Спасибо! Номер получен. Мы свяжемся с вами для обсуждения проекта.',...keyboard([['🔄 Рассчитать заново']])});
-      return res.status(200).json({ok:true});
+
+      const status = crmOk
+        ? '✅ Номер получен. Заявка и предварительный расчёт переданы в Bitrix24. Мы свяжемся с вами для обсуждения проекта.'
+        : '✅ Спасибо! Номер получен. Мы свяжемся с вами для обсуждения проекта.';
+
+      await tg('sendMessage',{chat_id:id,text:status,...keyboard([['🔄 Рассчитать заново']])});
+      return res.status(200).json({ok:true,crmOk,bitrixId:crmResult?.bitrixId||null});
     }
 
     if (text==='🏢 Коммерция') {
