@@ -237,8 +237,29 @@ async function handleMessage(update) {
   if (s.step === 'lead') {
     const phone = contactFromMessage(m);
     if (phone) {
+      const lead = {
+        name: m.sender?.name || 'Клиент',
+        phone,
+        source: 'max',
+        medium: 'max_bot',
+        calculator: {
+          total: s.result?.total || 0,
+          pricePerM2: s.result?.pricePerM2 || 0
+        },
+        object: {
+          type: objectName(s.objectType),
+          floor: s.floor || 0,
+          bath: s.bath || 0,
+          balcony: 0
+        }
+      };
+      await fetch('https://remont-pro-nine.vercel.app/api/lead', {
+        method:'POST',
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify(lead)
+      });
       clear(chatId);
-      await send(chatId, '✅ Спасибо! Заявка принята.\n\n📞 ' + phone + '\n\nМы сохранили предварительный расчёт. Следующим этапом подключим автоматическую передачу заявки в CRM.');
+      await send(chatId, '✅ Спасибо! Заявка принята.\n\n📞 ' + phone + '\n\nМы свяжемся с вами для обсуждения проекта.');
       return;
     }
   }
