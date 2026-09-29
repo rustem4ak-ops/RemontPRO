@@ -163,7 +163,7 @@ module.exports = async function handler(req,res) {
     const s=get(id);
     if (s && s.step==='floor') {
       const v=num(text); if(v===null) throw new Error('Введите площадь числом, например 80');
-      s.floor=v; await ask(id,'bath','🚿 Напишите площадь санузла в м². Если санузла нет — 0',s); return res.status(200).json({ok:true});
+      s.floor=v; await ask(id,'bath','🚿 Напишите площадь пола санузла в м2. Если санузла нет — 0',s); return res.status(200).json({ok:true});
     }
     if (s && s.step==='bath') {
       const v=num(text); if(v===null) throw new Error('Введите площадь санузла числом, например 5');
