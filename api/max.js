@@ -1,21 +1,83 @@
+const https = require('https');
 const { calculate } = require('../shared/remontforma-pricing.js');
 
 const TOKEN = process.env.MAX_BOT_TOKEN;
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
 const API = 'https://platform-api2.max.ru';
 
+const ROOT_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_root_ca_pem.crt';
+const SUB_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_sub_ca_pem.crt';
+let cachedAgent = null;
+let cachedAt = 0;
+
+function download(url) {
+  return new Promise((resolve, reject) => {
+    const request = https.get(url, { timeout: 10000, headers: { 'User-Agent': 'RemontPRO-MAX/1.0' } }, response => {
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        response.resume();
+        return reject(new Error('Certificate download failed: HTTP ' + response.statusCode));
+      }
+      const chunks = [];
+      response.on('data', chunk => chunks.push(chunk));
+      response.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    });
+    request.on('timeout', () => request.destroy(new Error('Certificate download timeout')));
+    request.on('error', reject);
+  });
+}
+
+async function getAgent() {
+  if (cachedAgent && Date.now() - cachedAt < 6 * 60 * 60 * 1000) return cachedAgent;
+  const [rootCA, subCA] = await Promise.all([download(ROOT_CA_URL), download(SUB_CA_URL)]);
+  cachedAgent = new https.Agent({ keepAlive: true, ca: [rootCA, subCA], minVersion: 'TLSv1.2' });
+  cachedAt = Date.now();
+  return cachedAgent;
+}
+
+function maxRequest(path, method, body) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const agent = await getAgent();
+      const url = new URL(path, API);
+      const payload = body === undefined ? null : JSON.stringify(body);
+      const request = https.request(url, {
+        method,
+        agent,
+        headers: {
+          Authorization: TOKEN,
+          'Content-Type': 'application/json',
+          ...(payload ? { 'Content-Length': Buffer.byteLength(payload) } : {})
+        },
+        timeout: 20000
+      }, response => {
+        const chunks = [];
+        response.on('data', chunk => chunks.push(chunk));
+        response.on('end', () => {
+          const text = Buffer.concat(chunks).toString('utf8');
+          let data = {};
+          try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+          if (response.statusCode < 200 || response.statusCode >= 300) {
+            reject(new Error(data.message || data.error || ('MAX API error HTTP ' + response.statusCode)));
+            return;
+          }
+          resolve(data);
+        });
+      });
+      request.on('timeout', () => request.destroy(new Error('MAX API request timeout')));
+      request.on('error', reject);
+      if (payload) request.write(payload);
+      request.end();
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
 const sessions = globalThis.__RF_MAX_SESSIONS || (globalThis.__RF_MAX_SESSIONS = new Map());
 
 async function maxApi(path, method = 'POST', body) {
   if (!TOKEN) throw new Error('MAX_BOT_TOKEN is not configured');
-  const r = await fetch(API + path, {
-    method,
-    headers: { Authorization: TOKEN, 'Content-Type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body)
-  });
-  const data = await r.json();
-  if (!r.ok) throw new Error(data.message || data.error || 'MAX API error');
-  return data;
+  return maxRequest(path, method, body);
 }
 
 function buttons(rows) {
