@@ -2,6 +2,7 @@ const TOKEN = process.env.MAX_BOT_TOKEN;
 const API = 'https://platform-api2.max.ru';
 const WEBHOOK = 'https://remont-pro-nine.vercel.app/api/max';
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
+// MAX API v2 may require the Russian Trusted Root CA on runtimes without it.
 
 module.exports = async function handler(req,res){
   if(req.method==='GET'){
