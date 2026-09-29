@@ -262,7 +262,7 @@ async function nextBathroom(id, s) {
 }
 
 async function nextTileArea(id, s) {
-  return ask(id, 'tileArea', '🧱 Плитка\n\nНапишите площадь плитки в м², например: 12', s);
+  return ask(id, 'tileArea', '🧱 Плитка полы (коридор, комнаты)\n\nНапишите площадь плитки в м², например: 12', s);
 }
 
 async function nextFloor(id, s) {
