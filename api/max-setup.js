@@ -15,7 +15,7 @@ module.exports = async function handler(req,res){
       });
       const data=await r.json().catch(()=>({}));
       return res.status(r.ok?200:502).json({ok:r.ok,webhook:WEBHOOK,subscription:data});
-    }catch(e){return res.status(500).json({ok:false,error:e.message||'Setup error'});}
+    }catch(e){return res.status(500).json({ok:false,error:e.message||'Setup error',name:e.name||null,code:e.code||null,cause:e.cause?.message||e.cause?.code||null});}
   }
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try{
