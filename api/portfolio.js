@@ -74,7 +74,8 @@ async function collect(path, folderName, out, depth = 0) {
 
     if (item.type !== 'file' || !/^image\//i.test(item.mime_type || '')) return;
 
-    let url = item.file || null;
+    let url = item.preview || null;
+    if (!url) url = item.file || null;
     if (!url) url = await getDownloadUrl(itemPath);
 
     if (url) {
@@ -111,7 +112,7 @@ module.exports = async (req, res) => {
         return;
       }
       if (item.type === 'file' && /^image\//i.test(item.mime_type || '')) {
-        let url = item.file || await getDownloadUrl(itemPath);
+        let url = item.preview || item.file || await getDownloadUrl(itemPath);
         if (url) {
           const featured = FEATURED[item.name];
           images.push({
