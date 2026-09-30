@@ -170,11 +170,11 @@ function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
 async function loadPortfolio(attempt=0){
   const box=document.getElementById('portfolioGallery'),folders=document.getElementById('portfolioFolders'),featured=document.getElementById('portfolioFeatured');
   if(!box)return;
-  const maxAttempts=3;
+  const maxAttempts=2;
   try{
     box.innerHTML='<div class="portfolioLoading">Загружаем фотографии…</div>';
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),15000);
+    const timer=setTimeout(()=>controller.abort(),10000);
     const a=await fetch('/api/portfolio?ts='+Date.now(),{cache:'no-store',signal:controller.signal});
     clearTimeout(timer);
     const j=await a.json();
@@ -212,7 +212,7 @@ function filterPortfolio(folder,btn){portfolioFolder=folder;document.querySelect
 function renderPortfolio(folder){
   const box=document.getElementById('portfolioGallery');
   portfolioFiltered=folder==='Все'?[...portfolioImages].sort(portfolioSort):portfolioImages.filter(x=>x.folder===folder).sort(portfolioSort);
-  box.innerHTML=portfolioFiltered.map((x,i)=>'<div class="portfolioPhoto" onclick="openPortfolio('+i+')"><img loading="lazy" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"></div>').join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
+  box.innerHTML=portfolioFiltered.map((x,i)=>'<div class="portfolioPhoto" onclick="openPortfolio('+i+')"><img loading="lazy" src="'+(x.preview||x.url||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"></div>').join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
 }
 function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=[...portfolioImages].sort(portfolioSort);portfolioIndex=portfolioFiltered.indexOf(x);showPortfolioImage(x)}
