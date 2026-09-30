@@ -167,4 +167,5 @@ async function notify(){
 }
 await notify();
 await fs.writeFile(DATA,JSON.stringify(OUT,null,2)+'\\n');
+await fs.writeFile(new URL('../site/autosearch-data.json', import.meta.url),JSON.stringify(OUT,null,2)+'\\n');
 console.log(JSON.stringify(OUT.stats));
