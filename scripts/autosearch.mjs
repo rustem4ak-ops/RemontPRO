@@ -29,7 +29,7 @@ function clean(s=''){
     .replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
 }
 function decode(s){return clean(s);}
-function esc(s){return s.replace(/\/g,'/').trim();}
+function esc(s){return String(s||'').replaceAll('\\','/').trim();}
 function area(text){
   const m=text.match(/(?:площадь|площадью|площадь\s*квартиры|\bS\b)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*(?:м2|м²|кв\.?\s*м)/i)
     || text.match(/\b(\d+(?:[.,]\d+)?)\s*(?:м2|м²|кв\.?\s*м)\b/i);
