@@ -1,4 +1,5 @@
 // РЕМОНТФОРМА — приём лидов.
+// Production endpoint: /api/lead -> Telegram administrator.
 // TELEGRAM_BOT_TOKEN + TELEGRAM_ADMIN_CHAT_ID — уведомление администратора.
 // BITRIX24_WEBHOOK_URL — необязательная интеграция Bitrix24.
 
