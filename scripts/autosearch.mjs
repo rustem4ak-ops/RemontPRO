@@ -7,7 +7,9 @@ const SOURCES = [
   {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116',type:'telegram'},
   {id:'telegram-stroy-kazann',name:'Telegram · Стройка/Ремонт/Отделка Казань',url:'https://t.me/s/Stroy_Kazann',type:'telegram'},
   {id:'telegram-stroykaremontkazan',name:'Telegram · СтРОЙКА/РЕМОНТ Казань',url:'https://t.me/s/stroykaremontkazan',type:'telegram'},
-  {id:'rostender-kazan',name:'РосТендер · ремонт в Казани',url:'https://rostender.info/category/zakupki-na-remont-v-kazani',type:'web'}
+  {id:'telegram-kazanstroit',name:'Telegram · Стройка Ремонт Казань',url:'https://t.me/s/kazanstroit',type:'telegram'},
+  {id:'telegram-stroykakzn',name:'Telegram · Ремонт стройка Казань',url:'https://t.me/s/stroykakzn',type:'telegram'},
+  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut',type:'telegram'}
 ];
 
 const POS = [
@@ -42,7 +44,6 @@ function budget(text){
 }
 function classify(text){
   const t=text.toLowerCase();
-  if(/тендер|закупк|конкурс|44-фз|223-фз|рос?тендер|запрос предложен/.test(t)) return 'Тендер';
   if(/коммерц|офис|магазин|салон|кафе|административ|помещени/.test(t)) return 'Коммерция';
   if(/коттедж|частн(?:ый|ом) дом|дом/.test(t)) return 'Дом';
   return 'Квартира';
@@ -59,7 +60,6 @@ function score(text,a){
   if(/коммерц|офис|магазин|салон|кафе/.test(t)) s+=15;
   if(a && a>=40) s+=15;
   if(/бюджет|млн|₽|руб/.test(t)) s+=5;
-  if(/тендер|закупк|конкурс|44-фз|223-фз/.test(t)) s=Math.max(0,s-15);
   return Math.min(100,s);
 }
 async function get(url){
@@ -127,8 +127,9 @@ for(const x of found){
   }
 }
 const leads=[...old.values()]
+  .filter(x=>x.source!=='РосТендер · ремонт в Казани' && x.type!=='Тендер')
   .filter(x=>relevant((x.text||'')+' '+(x.title||'')))
-  .sort((a,b)=>{const at=a.type==='Тендер',bt=b.type==='Тендер';if(at!==bt)return at?1:-1;return Number(b.score||0)-Number(a.score||0);})
+  .sort((a,b)=>Number(b.score||0)-Number(a.score||0))
   .slice(0,500);
 
 OUT.updatedAt=new Date().toISOString();
@@ -136,7 +137,7 @@ OUT.stats={
   found:leads.length,
   new:added,
   duplicates:Math.max(0,found.length-added),
-  high:leads.filter(x=>x.score>=70&&x.type!=='Тендер').length
+  high:leads.filter(x=>x.score>=70).length
 };
 OUT.leads=leads;
 
