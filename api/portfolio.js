@@ -1,59 +1,53 @@
-const https = require('https');
-
 const PUBLIC_KEY = 'https://disk.yandex.ru/d/X4VLvyoCDpNVYA';
 const API = 'https://cloud-api.yandex.net/v1/disk/public/resources';
 
-function getJson(url, attempt = 0) {
-  return new Promise((resolve, reject) => {
-    const req = https.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 RemontFormaPortfolio/3.0',
-        'Accept': 'application/json'
-      },
-      timeout: 15000
-    }, res => {
-      let data = '';
-      res.setEncoding('utf8');
-      res.on('data', c => data += c);
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data || '{}');
-          if (res.statusCode !== 200) {
-            const err = new Error('Yandex Disk API: HTTP ' + res.statusCode);
-            err.status = res.statusCode;
-            throw err;
-          }
-          resolve(json);
-        } catch (e) {
-          if (attempt < 2) {
-            setTimeout(() => getJson(url, attempt + 1).then(resolve).catch(reject), 400 * (attempt + 1));
-          } else reject(e);
-        }
-      });
-    });
-    req.on('timeout', () => req.destroy(new Error('Yandex Disk API timeout')));
-    req.on('error', e => {
-      if (attempt < 2) {
-        setTimeout(() => getJson(url, attempt + 1).then(resolve).catch(reject), 400 * (attempt + 1));
-      } else reject(e);
-    });
-  });
-}
-
 async function getFolder(path) {
   const url = API + '?public_key=' + encodeURIComponent(PUBLIC_KEY) +
-    '&path=' + encodeURIComponent(path) + '&limit=1000&preview_size=XXXL';
-  return getJson(url);
+    '&path=' + encodeURIComponent(path) +
+    '&limit=1000&preview_size=XXXL';
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 9000);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'RemontFormaPortfolio/4.0',
+        'Accept': 'application/json'
+      },
+      signal: controller.signal
+    });
+
+    const text = await response.text();
+    let data = {};
+    try { data = JSON.parse(text || '{}'); } catch (_) {}
+
+    if (!response.ok) {
+      throw new Error('Yandex Disk API: HTTP ' + response.status);
+    }
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
-async function collect(path, folderName, out) {
+async function collect(path, folderName, out, depth = 0) {
+  if (depth > 5) return;
+
   const data = await getFolder(path);
   const items = data && data._embedded && data._embedded.items || [];
-  await Promise.all(items.map(async item => {
+
+  await Promise.allSettled(items.map(async item => {
     const itemPath = item.path || ((path ? path + '/' : '') + item.name);
+
     if (item.type === 'dir') {
-      await collect(itemPath, item.name || folderName, out);
-    } else if (item.type === 'file' && /^image\//i.test(item.mime_type || '')) {
+      try {
+        await collect(itemPath, item.name || folderName, out, depth + 1);
+      } catch (_) {}
+      return;
+    }
+
+    if (item.type === 'file' && /^image\//i.test(item.mime_type || '')) {
       out.push({
         name: item.name,
         path: itemPath,
@@ -68,28 +62,60 @@ async function collect(path, folderName, out) {
 
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
+
   try {
     const root = await getFolder('');
     const images = [];
     const items = root && root._embedded && root._embedded.items || [];
-    for (const item of items) {
+
+    const tasks = items.map(async item => {
       const path = item.path || item.name;
+
       if (item.type === 'dir') {
-        await collect(path, item.name, images);
-      } else if (item.type === 'file' && /^image\//i.test(item.mime_type || '')) {
+        try {
+          await collect(path, item.name, images);
+        } catch (_) {}
+        return;
+      }
+
+      if (item.type === 'file' && /^image\//i.test(item.mime_type || '')) {
         images.push({
-          name:item.name,
+          name: item.name,
           path,
-          folder:'Реализованные ремонты',
-          preview:item.preview || null,
-          url:item.file || item.public_url || null,
-          size:Number(item.size || 0)
+          folder: 'Реализованные ремонты',
+          preview: item.preview || null,
+          url: item.file || item.public_url || null,
+          size: Number(item.size || 0)
         });
       }
+    });
+
+    await Promise.allSettled(tasks);
+
+    const unique = [];
+    const seen = new Set();
+    for (const image of images) {
+      const key = image.path || image.url || image.name;
+      if (!seen.has(key) && (image.preview || image.url)) {
+        seen.add(key);
+        unique.push(image);
+      }
     }
-    res.status(200).json({ok:true,count:images.length,images});
+
+    if (!unique.length) {
+      throw new Error('Яндекс Диск не вернул фотографии');
+    }
+
+    res.status(200).json({
+      ok: true,
+      count: unique.length,
+      images: unique
+    });
   } catch (e) {
-    res.status(502).json({ok:false,error:e.message || 'Portfolio API error'});
+    res.status(502).json({
+      ok: false,
+      error: e && e.message ? e.message : 'Portfolio API error'
+    });
   }
 };
