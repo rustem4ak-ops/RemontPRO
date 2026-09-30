@@ -1,0 +1,135 @@
+import fs from 'node:fs/promises';
+
+const DATA = new URL('../data/autosearch.json', import.meta.url);
+const OUT = JSON.parse(await fs.readFile(DATA, 'utf8'));
+
+const SOURCES = [
+  {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116',type:'telegram'},
+  {id:'telegram-stroy-kazann',name:'Telegram · Стройка/Ремонт/Отделка Казань',url:'https://t.me/s/Stroy_Kazann',type:'telegram'},
+  {id:'telegram-stroykaremontkazan',name:'Telegram · СтРОЙКА/РЕМОНТ Казань',url:'https://t.me/s/stroykaremontkazan',type:'telegram'},
+  {id:'rostender-kazan',name:'РосТендер · ремонт в Казани',url:'https://rostender.info/category/zakupki-na-remont-v-kazani',type:'web'}
+];
+
+const POS = [
+  'ремонт под ключ','ремонт квартиры','ремонт дома','ремонт коттеджа','комплексный ремонт',
+  'отделка квартиры','отделка дома','ремонт новостройки','ремонт вторички',
+  'ремонт офиса','ремонт магазина','ремонт коммерческого помещения','ремонт помещений',
+  'капитальный ремонт','текущий ремонт','строительно-отделочные'
+];
+const NEG = [
+  'ремонт автомобиля','оргтехники','телефона','компьютера','стиральной машины',
+  'холодильника','кондиционера','мелкий ремонт','мастер на час','вакансия','требуется мастер'
+];
+
+function clean(s=''){
+  return s.replace(/<script[\\s\\S]*?<\\/script>/gi,' ')
+    .replace(/<style[\\s\\S]*?<\\/style>/gi,' ')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;/g,' ').replace(/&quot;/g,'"').replace(/&#39;/g,"'")
+    .replace(/&amp;/g,'&').replace(/\\s+/g,' ').trim();
+}
+function decode(s){return clean(s);}
+function esc(s){return s.replace(/\\/g,'/').trim();}
+function area(text){
+  const m=text.match(/(?:площадь|площадью|площадь\\s*квартиры|\\bS\\b)\\s*[:=]?\\s*(\\d+(?:[.,]\\d+)?)\\s*(?:м2|м²|кв\\.?\\s*м)/i)
+    || text.match(/\\b(\\d+(?:[.,]\\d+)?)\\s*(?:м2|м²|кв\\.?\\s*м)\\b/i);
+  return m?Number(m[1].replace(',','.')):null;
+}
+function budget(text){
+  const m=text.match(/(?:бюджет|стоимость|цена|сумма|на сумму)[^\\d]{0,20}(\\d[\\d\\s]{3,})(?:\\s*(?:руб|₽|р\\.?))?/i)
+    || text.match(/(\\d[\\d\\s]{4,})\\s*(?:₽|руб\\.?)/i);
+  return m?Number(m[1].replace(/\\s/g,'')):null;
+}
+function classify(text){
+  const t=text.toLowerCase();
+  if(/коммерц|офис|магазин|салон|кафе|административ|помещени/.test(t)) return 'Коммерция';
+  if(/коттедж|частн(?:ый|ом) дом|дом/.test(t)) return 'Дом';
+  return 'Квартира';
+}
+function relevant(text){
+  const t=text.toLowerCase();
+  return POS.some(x=>t.includes(x)) && !NEG.some(x=>t.includes(x));
+}
+function score(text,a){
+  const t=text.toLowerCase();
+  let s=0;
+  if(/казан|казань/.test(t)) s+=30;
+  if(/под ключ|комплексн/.test(t)) s+=35;
+  if(/коммерц|офис|магазин|салон|кафе/.test(t)) s+=15;
+  if(a && a>=40) s+=15;
+  if(/бюджет|млн|₽|руб/.test(t)) s+=5;
+  return Math.min(100,s);
+}
+async function get(url){
+  const r=await fetch(url,{headers:{'user-agent':'RemontPRO-AutoSearch/1.0'},signal:AbortSignal.timeout(20000)});
+  if(!r.ok) throw new Error('HTTP '+r.status+' '+url);
+  return await r.text();
+}
+function telegramItems(html,source){
+  const out=[];
+  const re=/<div[^>]*class="[^"]*tgme_widget_message_wrap[^"]*"[^>]*>([\\s\\S]*?)<\\/div>\\s*<\\/div>\\s*<\\/div>/gi;
+  let m;
+  while((m=re.exec(html))){
+    const block=m[1];
+    const tm=block.match(/<a[^>]+class="[^"]*tgme_widget_message_date[^"]*"[^>]+href="([^"]+)"/i);
+    const tx=block.match(/<div[^>]+class="[^"]*tgme_widget_message_text[^"]*"[^>]*>([\\s\\S]*?)<\\/div>/i);
+    if(!tx) continue;
+    const text=decode(tx[1]);
+    if(text.length<20 || !relevant(text)) continue;
+    const link=tm?.[1] || source.url;
+    const a=area(text);
+    out.push({id:source.id+'-'+Buffer.from(link).toString('base64url').slice(-24),source:source.name,url:link,title:text.slice(0,120),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null});
+  }
+  return out;
+}
+function webItems(html,source){
+  const out=[];
+  const seen=new Set();
+  const re=/<a[^>]+href="([^"]+)"[^>]*>([\\s\\S]*?)<\\/a>/gi;
+  let m;
+  while((m=re.exec(html))){
+    const text=decode(m[2]);
+    if(text.length<25 || !relevant(text)) continue;
+    let url=m[1];
+    if(url.startsWith('/')) url='https://rostender.info'+url;
+    if(!/^https?:/i.test(url)) continue;
+    const key=url+'|'+text.slice(0,100);
+    if(seen.has(key)) continue;
+    seen.add(key);
+    const a=area(text);
+    out.push({id:source.id+'-'+Buffer.from(key).toString('base64url').slice(-24),source:source.name,url,title:text.slice(0,140),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null});
+  }
+  return out.slice(0,40);
+}
+
+let found=[];
+for(const s of SOURCES){
+  try{
+    const html=await get(s.url);
+    found.push(...(s.type==='telegram'?telegramItems(html,s):webItems(html,s)));
+  }catch(e){
+    console.log('[source error]',s.id,e.message);
+  }
+}
+
+const old=new Map((OUT.leads||[]).map(x=>[x.id,x]));
+let added=0;
+for(const x of found){
+  if(!old.has(x.id)){ added++; old.set(x.id,{...x,status:'new',firstSeenAt:new Date().toISOString()}); }
+  else old.set(x.id,{...old.get(x.id),...x});
+}
+const leads=[...old.values()]
+  .filter(x=>relevant((x.text||'')+' '+(x.title||'')))
+  .sort((a,b)=>Number(b.firstSeenAt||0)-Number(a.firstSeenAt||0))
+  .slice(0,500);
+
+OUT.updatedAt=new Date().toISOString();
+OUT.stats={
+  found:leads.length,
+  new:added,
+  duplicates:Math.max(0,found.length-added),
+  high:leads.filter(x=>x.score>=70).length
+};
+OUT.leads=leads;
+await fs.writeFile(DATA,JSON.stringify(OUT,null,2)+'\\n');
+console.log(JSON.stringify(OUT.stats));
