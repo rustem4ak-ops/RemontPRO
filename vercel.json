@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/", "destination": "/site/index.html" },
     { "source": "/index.html", "destination": "/site/index.html" },
-    { "source": "/autosearch", "destination": "/site/autosearch.html" }
+    { "source": "/autosearch", "destination": "/site/autosearch.html" },
+    { "source": "/autosearch-data.json", "destination": "/site/autosearch-data.json" }
   ]
 }
