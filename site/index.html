@@ -258,6 +258,18 @@ body{
   .trustItem{margin:6px 0}
 }
 </style>
+<style>
+.contactModal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,10,12,.72);backdrop-filter:blur(10px)}
+.contactModal.open{display:flex}
+.contactModalCard{position:relative;width:min(460px,100%);padding:30px;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.contactModalCard h3{margin:8px 0;font-size:30px}
+.contactModalClose{position:absolute;right:14px;top:10px;border:0;background:transparent;font-size:32px;line-height:1;cursor:pointer;color:#17191c}
+.contactModal .field{margin-top:14px}
+.contactModal .field input,.contactModal .field textarea{width:100%;box-sizing:border-box;border:1px solid #d9dcdf;border-radius:12px;padding:12px 14px;font:inherit}
+.contactSubmit{width:100%;margin-top:18px}
+.contactStatus{min-height:22px;margin-top:12px;font-size:14px}
+@media(max-width:640px){.contactModalCard{padding:24px 18px}.contactModalCard h3{font-size:25px}}
+</style>
 </head>
 <body>
 <header class="hero"><div class="wrap"><nav class="nav"><div class="logo">РЕМОНТФОРМА</div><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div><div class="mobileContactIcons"><a class="mobileContactIcon" href="https://t.me/RemontFormaBot" aria-label="Telegram">✈</a><a class="mobileContactIcon" href="#contacts" aria-label="Контакты">☎</a></div></nav>
@@ -495,9 +507,57 @@ function closePortfolio(){document.getElementById('portfolioLightbox').classList
 function portfolioMove(d){if(!portfolioFiltered.length)return;portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;showPortfolioImage(portfolioFiltered[portfolioIndex])}
 document.addEventListener('keydown',e=>{if(!document.getElementById('portfolioLightbox').classList.contains('open'))return;if(e.key==='Escape')closePortfolio();if(e.key==='ArrowLeft')portfolioMove(-1);if(e.key==='ArrowRight')portfolioMove(1)});
 
+function openContactModal(){
+  const m=document.getElementById('contactModal');
+  if(!m)return;
+  m.classList.add('open');m.setAttribute('aria-hidden','false');
+  setTimeout(()=>document.getElementById('quickContactPhone')?.focus(),80);
+}
+function closeContactModal(){
+  const m=document.getElementById('contactModal');
+  if(!m)return;
+  m.classList.remove('open');m.setAttribute('aria-hidden','true');
+}
+async function submitQuickContact(){
+  const name=val('quickContactName').trim();
+  const phone=val('quickContactPhone').trim();
+  const comment=val('quickContactComment').trim();
+  const status=document.getElementById('quickContactStatus');
+  const btn=document.getElementById('quickContactSubmit');
+  if(!phone){status.textContent='Введите номер телефона';return}
+  btn.disabled=true;status.textContent='Отправляем…';
+  try{
+    const r=await fetch('/api/vk-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      name,phone,comment,source:'site-contact',referrer:document.referrer||'',url:location.href
+    })});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.ok)throw new Error(j.error||'Не удалось отправить');
+    status.textContent='✓ Контакт отправлен. Мы свяжемся с вами.';
+    document.getElementById('quickContactName').value='';
+    document.getElementById('quickContactPhone').value='';
+    document.getElementById('quickContactComment').value='';
+  }catch(e){
+    status.textContent='Не удалось отправить. Попробуйте ещё раз или напишите нам в Telegram.';
+  }finally{btn.disabled=false}
+}
+document.getElementById('contactModal')?.addEventListener('click',e=>{if(e.target.id==='contactModal')closeContactModal()});
+
 function printEstimate(){const q=S.result;document.getElementById('pdfArea').innerHTML='<h1>РЕМОНТФОРМА</h1><h2>Предварительный расчёт ремонта</h2><p>Объект: '+S.type+'</p><p>Площадь: '+q.floor+' м² · Санузел: '+q.bath+' м² · Балкон: '+q.balcony+' м²</p>'+q.rows.map(x=>'<p>'+x.name+' — '+x.quantity+' '+x.unit+' × '+money(x.price)+' = <b>'+money(x.cost)+'</b></p>').join('')+'<hr><h2>Итого: '+money(q.total)+'</h2><p>Цена за м² по полу: '+money(q.pricePerM2)+'</p><p>Предварительный расчёт. Точная смета после замера.</p>';window.print()}
 try{render()}catch(e){console.error('Calculator render error',e)}
 try{loadPortfolio()}catch(e){console.error('Portfolio start error',e)}
 </script>
-<div class="floatingCta"><button class="btn primary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/RemontFormaBot">Telegram</a></div>
+<div id="contactModal" class="contactModal" aria-hidden="true">
+  <div class="contactModalCard">
+    <button class="contactModalClose" onclick="closeContactModal()" aria-label="Закрыть">×</button>
+    <div class="eyebrow">РЕМОНТФОРМА</div>
+    <h3>Оставить контакт</h3>
+    <p class="muted">Оставьте номер — мы свяжемся с вами и обсудим ремонт.</p>
+    <div class="field"><label>Имя</label><input id="quickContactName" placeholder="Ваше имя"></div>
+    <div class="field"><label>Телефон *</label><input id="quickContactPhone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00"></div>
+    <div class="field"><label>Комментарий</label><textarea id="quickContactComment" rows="3" placeholder="Например: квартира 65 м²"></textarea></div>
+    <button id="quickContactSubmit" class="btn primary contactSubmit" onclick="submitQuickContact()">Отправить контакт</button>
+    <div id="quickContactStatus" class="contactStatus"></div>
+  </div>
+</div>
+<div class="floatingCta"><button class="btn primary" onclick="openContactModal()">📞 Оставить контакт</button><button class="btn secondary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/RemontFormaBot">Telegram</a></div>
 </body></html>
