@@ -136,13 +136,10 @@ body{
   isolation:isolate;
 }
 #services .service:nth-child(1){
-  background-image:url('/api/portfolio-image?path=%2F20231223_114527.jpg');
 }
 #services .service:nth-child(2){
-  background-image:url('/api/portfolio-image?path=%2F20231223_114512.jpg');
 }
 #services .service:nth-child(3){
-  background-image:url('/api/portfolio-image?path=%2F20231223_114444.jpg');
 }
 #services .service:before{
   content:'';
@@ -260,7 +257,7 @@ body{
 <div id="calcModal" class="modal"><div class="modalBg" onclick="closeCalc()"></div><div class="modalBox"><button class="close" onclick="closeCalc()">×</button><div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div><div id="progressText" class="progressText"></div><div class="progress"><div id="bar" class="bar"></div></div><div id="wizard"></div><div class="calcActions"><button id="backBtn" class="btn back hidden" onclick="prevStep()">← Назад</button><button id="nextBtn" class="btn primary" onclick="nextStep()">Далее →</button></div></div></div>
 <div id="pdfArea" class="printOnly"></div>
 
-<section class="section" id="services"><div class="wrap"><div class="center"><div class="eyebrow">Услуги</div><h2>Полный ремонт под ключ</h2><p class="muted">От первого замера до сдачи готового объекта.</p></div><div class="grid3"><div class="service"><div class="num">01</div><h3>Квартиры</h3><p class="muted">Черновая и чистовая отделка, электрика, сантехника и все этапы ремонта.</p></div><div class="service"><div class="num">02</div><h3>Дома</h3><p class="muted">Комплексная организация ремонта частных домов с контролем этапов.</p></div><div class="service"><div class="num">03</div><h3>Коммерция</h3><p class="muted">Ремонт помещений под офисы, магазины и другие коммерческие задачи.</p></div></div></div></section>
+<section class="section" id="services"><div class="wrap"><div class="center"><div class="eyebrow">Услуги</div><h2>Полный ремонт под ключ</h2><p class="muted">От первого замера до сдачи готового объекта.</p></div><div class="grid3"><div class="service" data-service="apartment"><div class="num">01</div><h3>Квартиры</h3><p class="muted">Черновая и чистовая отделка, электрика, сантехника и все этапы ремонта.</p></div><div class="service" data-service="house"><div class="num">02</div><h3>Дома</h3><p class="muted">Комплексная организация ремонта частных домов с контролем этапов.</p></div><div class="service" data-service="commercial"><div class="num">03</div><h3>Коммерция</h3><p class="muted">Ремонт помещений под офисы, магазины и другие коммерческие задачи.</p></div></div></div></section>
 
 <section class="section" id="portfolio" style="background:#eceef0"><div class="wrap">
   <div class="portfolioHero">
@@ -398,6 +395,23 @@ async function loadPortfolio(){
     portfolioImages=j.images.filter(x=>x&&(x.preview||x.url)).map(x=>({...x,preview:'/api/portfolio-image?path='+encodeURIComponent(x.path),url:'/api/portfolio-image?path='+encodeURIComponent(x.path)}));
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     portfolioImages.sort(portfolioSort);
+
+    // Подставляем реальные фотографии из портфолио в карточки «Квартиры / Дома / Коммерция».
+    // Берём уже найденные Yandex-пути, поэтому не зависим от того, в какой папке лежит фото.
+    const serviceCards=[
+      ['apartment','Гостиная','Квартиры'],
+      ['house','Кухня','Дома'],
+      ['commercial','Спальня','Коммерция']
+    ];
+    serviceCards.forEach(([key,label,fallback],i)=>{
+      const card=document.querySelector('#services .service[data-service="'+key+'"]');
+      if(!card)return;
+      const item=portfolioImages.find(x=>(x.label||'').toLowerCase()===label.toLowerCase()) || portfolioImages[i];
+      if(item && item.path){
+        const src='/api/portfolio-image?path='+encodeURIComponent(item.path);
+        card.style.backgroundImage="url('"+src.replace(/'/g,"\\'")+"')";
+      }
+    });
 
     const featuredItems=FEATURED_NAMES
       .map(name=>portfolioImages.find(x=>x.name===name))
