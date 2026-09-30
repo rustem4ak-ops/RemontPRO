@@ -85,18 +85,23 @@ async function get(url){
 }
 function telegramItems(html,source){
   const out=[];
-  const re=/<div[^>]*class="[^"]*tgme_widget_message_wrap[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/gi;
+  const re=/<div[^>]+class=["'][^"']*tgme_widget_message[^"']*["'][^>]*>([\\s\\S]*?)(?=<div[^>]+class=["'][^"']*tgme_widget_message_wrap|$)/gi;
   let m;
   while((m=re.exec(html))){
     const block=m[1];
-    const tm=block.match(/<a[^>]+class="[^"]*tgme_widget_message_date[^"]*"[^>]+href="([^"]+)"/i);
-    const tx=block.match(/<div[^>]+class="[^"]*tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+    const tx=block.match(/<div[^>]+class=["'][^"']*tgme_widget_message_text[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/i);
     if(!tx) continue;
     const text=decode(tx[1]);
     if(text.length<20 || !relevant(text)) continue;
+    const tm=block.match(/<a[^>]+class=["'][^"']*tgme_widget_message_date[^"']*["'][^>]+href=["']([^"']+)["']/i)
+      || block.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["'][^>]*class=["'][^"']*tgme_widget_message_date/i);
     const link=tm?.[1] || source.url;
     const a=area(text);
-    out.push({id:source.id+'-'+Buffer.from(link).toString('base64url').slice(-24),source:source.name,url:link,title:text.slice(0,120),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null});
+    out.push({
+      id:source.id+'-'+Buffer.from(link+'|'+text.slice(0,80)).toString('base64url').slice(-24),
+      source:source.name,url:link,title:text.slice(0,120),text,area:a,budget:budget(text),
+      type:classify(text),score:score(text,a),publishedAt:null
+    });
   }
   return out;
 }
