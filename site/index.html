@@ -184,7 +184,7 @@ async function loadPortfolio(){
     const a=await fetch('/api/portfolio?ts='+Date.now(),{cache:'no-store'});
     const j=await a.json();
     if(!a.ok||!j.ok||!Array.isArray(j.images)||!j.images.length)throw new Error(j.error||'Портфолио пока недоступно');
-    portfolioImages=j.images.filter(x=>x&&(x.preview||x.url));
+    portfolioImages=j.images.filter(x=>x&&(x.preview||x.url)).map(x=>({...x,preview:'/api/portfolio-image?path='+encodeURIComponent(x.path),url:'/api/portfolio-image?path='+encodeURIComponent(x.path)}));
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     portfolioImages.sort(portfolioSort);
 
