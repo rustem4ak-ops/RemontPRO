@@ -56,7 +56,147 @@
 .portfolioCta{margin-top:34px}
 .portfolioCta strong{color:#b9ff4a}
 @media(max-width:800px){.portfolioFeatured{grid-template-columns:1fr 1fr;grid-template-rows:210px 160px;gap:9px}.portfolioFeatured .featuredPhoto:first-child{grid-row:1/3}.featuredInfo{left:14px;right:14px;bottom:13px}.featuredInfo b{font-size:16px}}
-.portfolioPhoto .photoTag{position:absolute;left:10px;bottom:10px;z-index:2;background:#17191ddd;color:#fff;padding:6px 9px;border-radius:9px;font-size:10px;font-weight:900;letter-spacing:.3px}.portfolioPhoto:hover .photoTag{background:#17191df5}</style>
+.portfolioPhoto .photoTag{position:absolute;left:10px;bottom:10px;z-index:2;background:#17191ddd;color:#fff;padding:6px 9px;border-radius:9px;font-size:10px;font-weight:900;letter-spacing:.3px}.portfolioPhoto:hover .photoTag{background:#17191df5}
+/* Premium visual background */
+:root{
+  --rf-bg:#f3f4f2;
+  --rf-ink:#17191c;
+  --rf-lime:#b9ff4a;
+  --rf-line:#e3e5e2;
+}
+body{
+  background:
+    radial-gradient(900px 500px at 8% 12%,rgba(185,255,74,.10),transparent 62%),
+    radial-gradient(850px 520px at 92% 38%,rgba(37,42,48,.09),transparent 62%),
+    linear-gradient(180deg,#f7f8f6 0%,#eef0ee 46%,#f7f8f6 100%);
+}
+.section{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+.section:before{
+  content:'';
+  position:absolute;
+  width:420px;height:420px;
+  right:-210px;top:80px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(185,255,74,.12),rgba(185,255,74,0) 68%);
+  z-index:-1;
+  pointer-events:none;
+}
+.section:after{
+  content:'';
+  position:absolute;
+  width:520px;height:520px;
+  left:-300px;bottom:-260px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(20,24,28,.07),rgba(20,24,28,0) 68%);
+  z-index:-1;
+  pointer-events:none;
+}
+.trust{
+  position:relative;
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(14px);
+}
+.trustGrid{
+  background:transparent;
+  gap:12px;
+}
+.trustItem{
+  margin:12px 0;
+  border:1px solid rgba(220,224,220,.9);
+  border-radius:18px;
+  box-shadow:0 12px 35px rgba(20,24,28,.055);
+}
+#services{
+  background:
+    radial-gradient(700px 360px at 0% 20%,rgba(185,255,74,.10),transparent 65%),
+    linear-gradient(180deg,#f7f8f6,#eef1ee);
+}
+#services .service,
+#services .step{
+  border:1px solid rgba(218,222,218,.9);
+  background:rgba(255,255,255,.76);
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 45px rgba(20,24,28,.07);
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+}
+#services .service:hover,
+#services .step:hover{
+  transform:translateY(-6px);
+  box-shadow:0 25px 60px rgba(20,24,28,.12);
+  border-color:#cbd1ca;
+}
+#portfolio{
+  background:
+    radial-gradient(900px 450px at 85% 8%,rgba(185,255,74,.13),transparent 62%),
+    radial-gradient(700px 420px at 10% 90%,rgba(20,24,28,.08),transparent 65%),
+    linear-gradient(135deg,#eef0ee 0%,#f8f9f7 48%,#e9ece9 100%) !important;
+}
+#portfolio .wrap{position:relative;z-index:2}
+#portfolio .portfolioProof span,
+#portfolio .portfolioFolder{
+  box-shadow:0 8px 24px rgba(20,24,28,.055);
+}
+#portfolio .portfolioFeatured{
+  filter:drop-shadow(0 18px 35px rgba(20,24,28,.08));
+}
+#portfolio .portfolioPhoto{
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+#portfolio .portfolioPhoto:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 42px rgba(20,24,28,.13);
+}
+.reviewsSection{
+  background:
+    radial-gradient(700px 400px at 15% 15%,rgba(185,255,74,.09),transparent 65%),
+    radial-gradient(700px 400px at 90% 85%,rgba(20,24,28,.08),transparent 65%),
+    linear-gradient(180deg,#f7f8f6,#ecefec 100%);
+}
+.reviewsSection .review{
+  background:rgba(255,255,255,.80);
+  border:1px solid rgba(220,224,220,.9);
+  box-shadow:0 16px 42px rgba(20,24,28,.065);
+  backdrop-filter:blur(12px);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.reviewsSection .review:hover{
+  transform:translateY(-5px);
+  box-shadow:0 24px 55px rgba(20,24,28,.11);
+}
+.reviewsSection .review b{display:block;margin-bottom:10px}
+.reviewsSection .review p{color:#3e4348}
+.cta{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(500px 300px at 90% 0%,rgba(255,255,255,.30),transparent 65%),
+    linear-gradient(110deg,#b9ff4a,#d2ff86);
+}
+.cta:after{
+  content:'';
+  position:absolute;
+  width:380px;height:380px;
+  right:-150px;bottom:-230px;
+  border:1px solid rgba(20,24,28,.12);
+  border-radius:50%;
+  box-shadow:0 0 0 55px rgba(20,24,28,.035),0 0 0 110px rgba(20,24,28,.025);
+  pointer-events:none;
+}
+.footer{
+  background:
+    radial-gradient(600px 280px at 80% 0%,rgba(185,255,74,.09),transparent 65%),
+    linear-gradient(145deg,#17191c,#0d0f11);
+}
+@media(max-width:800px){
+  .section:before{width:280px;height:280px;right:-150px}
+  .section:after{width:320px;height:320px;left:-180px}
+  .trustItem{margin:6px 0}
+}
+</style>
 </head>
 <body>
 <header class="hero"><div class="wrap"><nav class="nav"><div class="logo">РЕМОНТФОРМА</div><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div></nav>
@@ -90,7 +230,7 @@
 </div></section>
 <div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt="Реализованный ремонт"><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
 
-<section class="section"><div class="wrap">
+<section class="section reviewsSection"><div class="wrap">
   <div class="center">
     <div class="eyebrow">Отзывы</div>
     <h2>Что особенно ценят в работе</h2>
