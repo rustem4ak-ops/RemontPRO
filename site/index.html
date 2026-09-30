@@ -167,13 +167,20 @@ function portfolioLabel(x){
   return 'Реализованный объект';
 }
 function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
-async function loadPortfolio(){
+async function loadPortfolio(attempt=0){
   const box=document.getElementById('portfolioGallery'),folders=document.getElementById('portfolioFolders'),featured=document.getElementById('portfolioFeatured');
   if(!box)return;
+  const maxAttempts=3;
   try{
-    const a=await fetch('/api/portfolio'),j=await a.json();
-    if(!j.ok||!j.images?.length)throw new Error();
-    portfolioImages=j.images;
+    box.innerHTML='<div class="portfolioLoading">Загружаем фотографии…</div>';
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),15000);
+    const a=await fetch('/api/portfolio?ts='+Date.now(),{cache:'no-store',signal:controller.signal});
+    clearTimeout(timer);
+    const j=await a.json();
+    if(!a.ok||!j.ok||!Array.isArray(j.images)||!j.images.length) throw new Error(j.error||'Пустой ответ портфолио');
+    portfolioImages=j.images.filter(x=>x&&(x.preview||x.url));
+    if(!portfolioImages.length) throw new Error('У фотографий нет ссылок');
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     const ranked=[...portfolioImages].sort(portfolioSort);
     const selected=[],usedLabels=new Set();
@@ -185,14 +192,20 @@ async function loadPortfolio(){
     const featuredItems=selected.length>=3?selected:ranked.slice(0,5);
     featured.innerHTML=featuredItems.map((x,i)=>{
       const idx=portfolioImages.indexOf(x);
-      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')"><img loading="eager" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"><div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span><b>Реализованный ремонт</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
+      const src=x.preview||x.url||'';
+      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')"><img loading="eager" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"><div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span><b>Реализованный ремонт</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
     }).join('');
     const names=['Все',...new Set(portfolioImages.map(x=>x.folder).filter(Boolean))];
     folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x.replace(/^.*\\//,''))+'</button>').join('');
     renderPortfolio('Все');
   }catch(e){
+    if(attempt<maxAttempts-1){
+      setTimeout(()=>loadPortfolio(attempt+1),800*(attempt+1));
+      return;
+    }
+    const msg=escapeHtml(e&&e.message?e.message:'Не удалось загрузить портфолио');
     featured.innerHTML='<div class="portfolioEmpty">Не удалось загрузить избранные работы.</div>';
-    box.innerHTML='<div class="portfolioEmpty">Фотографии пока недоступны. Откройте папку <a href="https://disk.yandex.ru/d/X4VLvyoCDpNVYA" target="_blank" rel="noopener"><b>Реализованные ремонты</b></a> на Яндекс Диске.</div>';
+    box.innerHTML='<div class="portfolioEmpty"><b>Фотографии временно не загрузились.</b><br><span class="muted">'+msg+'</span><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить загрузку</button></div>';
   }
 }
 function filterPortfolio(folder,btn){portfolioFolder=folder;document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderPortfolio(folder)}
