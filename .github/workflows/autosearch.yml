@@ -1,6 +1,11 @@
 name: RemontPRO AutoSearch 24/7
 
 on:
+  push:
+    paths:
+      - 'scripts/autosearch.mjs'
+      - 'data/autosearch.json'
+      - '.github/workflows/autosearch.yml'
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
