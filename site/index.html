@@ -527,7 +527,7 @@ async function submitQuickContact(){
   if(!phone){status.textContent='Введите номер телефона';return}
   btn.disabled=true;status.textContent='Отправляем…';
   try{
-    const r=await fetch('/api/vk-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,comment,source:'site-contact',referrer:document.referrer||'',url:location.href
     })});
     const j=await r.json().catch(()=>({}));
