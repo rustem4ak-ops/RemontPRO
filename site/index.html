@@ -144,80 +144,91 @@ function openLead(){saveFields();if(!S.result){alert('Сначала дожди�
 async function submitLead(){const phone=val('leadPhone').trim();if(!phone){alert('Введите телефон');return}const payload={name:val('leadName').trim(),phone,comment:val('leadComment').trim(),source:S.source||'site',medium:S.medium||'',campaign:S.campaign||'',referrer:document.referrer||'',object:{type:S.type,floor:S.floor,bath:S.bath,balcony:S.balcony,rooms:S.rooms,state:S.state,finish:S.finish,windows:S.windows},calculator:S.result,selection:{electrical:S.electrical,plumbing:S.plumbing,bathroom:S.bathroom,tile:S.tile,tileArea:S.tileArea,floorFinish:S.floorFinish,plinth:S.plinth,walls:S.walls,cleanElectrical:S.cleanElectrical,cleanPlumbing:S.cleanPlumbing,cleaning:S.cleaning,trash:S.trash},files:{photos:S.photos,plan:S.plan}};document.getElementById('nextBtn').disabled=true;try{const a=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),j=await a.json();if(!j.ok)throw new Error(j.error||'Ошибка');document.getElementById('wizard').innerHTML='<div class="success"><h3>✅ Заявка отправлена</h3><p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p><div class="buttons"><a class="btn primary" href="https://t.me/RemontFormaBot">Открыть Telegram</a><button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button></div></div>';document.getElementById('backBtn').classList.add('hidden');document.getElementById('nextBtn').style.display='none'}catch(e){alert('Не удалось отправить заявку. Попробуйте связаться с нами в Telegram.')}finally{document.getElementById('nextBtn').disabled=false}}
 let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все';
 
+const FEATURED_NAMES=[
+  '20231223_114527.jpg',
+  '20231223_114512.jpg',
+  '20231223_114444.jpg',
+  'photo_2026-03-26_16-19-37.jpg',
+  'photo_2026-03-26_16-46-25.jpg'
+];
+
 function portfolioScore(x){
-  const s=((x.name||'')+' '+(x.folder||'')).toLowerCase();
-  let score=0;
-  // Продажные кадры: готовые комнаты и интерьерные сцены выше технических фото.
-  if(/готов|после|интерьер|дизайн|ремонт/.test(s)) score+=18;
-  if(/кух|гостин|спаль|сануз|ванн|прихож|коридор/.test(s)) score+=24;
-  if(/детал|стен|пол|потол|свет|мебел/.test(s)) score+=7;
-  if(/до|чернов|демонтаж|процесс|стройк|гряз/.test(s)) score-=28;
-  if(/скрин|скриншот|whatsapp|telegram/.test(s)) score-=40;
-  if(/img_|dsc|photo/.test(s)) score+=1;
-  return score;
+  const n=(x.name||'').toLowerCase();
+  if(FEATURED_NAMES.includes(x.name)) return 1000-(FEATURED_NAMES.indexOf(x.name)*10);
+  if(x.featured) return 900-(Number(x.order)||0);
+  if(/сануз|ванн|кух|гостин|спаль|прихож/.test((x.folder||'').toLowerCase())) return 100;
+  return 10;
 }
 function portfolioLabel(x){
+  if(x.label)return x.label;
   const s=((x.name||'')+' '+(x.folder||'')).toLowerCase();
-  if(/кух/.test(s)) return 'Кухня';
-  if(/гостин/.test(s)) return 'Гостиная';
-  if(/спаль/.test(s)) return 'Спальня';
-  if(/сануз|ванн/.test(s)) return 'Санузел';
-  if(/прихож|коридор/.test(s)) return 'Прихожая';
-  if(/детал/.test(s)) return 'Детали';
+  if(/кух/.test(s))return 'Кухня';
+  if(/гостин/.test(s))return 'Гостиная';
+  if(/спаль/.test(s))return 'Спальня';
+  if(/сануз|ванн/.test(s))return 'Санузел';
+  if(/прихож|коридор/.test(s))return 'Прихожая';
   return 'Реализованный объект';
 }
+function portfolioTitle(x){
+  return x.title || ('РЕМОНТФОРМА · '+portfolioLabel(x));
+}
 function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
-async function loadPortfolio(attempt=0){
-  const box=document.getElementById('portfolioGallery'),folders=document.getElementById('portfolioFolders'),featured=document.getElementById('portfolioFeatured');
+
+async function loadPortfolio(){
+  const box=document.getElementById('portfolioGallery');
+  const folders=document.getElementById('portfolioFolders');
+  const featured=document.getElementById('portfolioFeatured');
   if(!box)return;
-  const maxAttempts=2;
+  box.innerHTML='<div class="portfolioLoading">Загружаем реальные работы…</div>';
   try{
-    box.innerHTML='<div class="portfolioLoading">Загружаем фотографии…</div>';
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),10000);
-    const a=await fetch('/api/portfolio?ts='+Date.now(),{cache:'no-store',signal:controller.signal});
-    clearTimeout(timer);
+    const a=await fetch('/api/portfolio?ts='+Date.now(),{cache:'no-store'});
     const j=await a.json();
-    if(!a.ok||!j.ok||!Array.isArray(j.images)||!j.images.length) throw new Error(j.error||'Пустой ответ портфолио');
+    if(!a.ok||!j.ok||!Array.isArray(j.images)||!j.images.length)throw new Error(j.error||'Портфолио пока недоступно');
     portfolioImages=j.images.filter(x=>x&&(x.preview||x.url));
-    if(!portfolioImages.length) throw new Error('У фотографий нет ссылок');
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
-    const ranked=[...portfolioImages].sort(portfolioSort);
-    const selected=[],usedLabels=new Set();
-    for(const x of ranked){
-      const label=portfolioLabel(x);
-      if(!usedLabels.has(label)){usedLabels.add(label);selected.push(x)}
-      if(selected.length>=5)break;
-    }
-    const featuredItems=selected.length>=3?selected:ranked.slice(0,5);
-    featured.innerHTML=featuredItems.map((x,i)=>{
+    portfolioImages.sort(portfolioSort);
+
+    const featuredItems=FEATURED_NAMES
+      .map(name=>portfolioImages.find(x=>x.name===name))
+      .filter(Boolean);
+
+    featured.innerHTML=(featuredItems.length?featuredItems:portfolioImages.slice(0,5)).map((x,i)=>{
       const idx=portfolioImages.indexOf(x);
-      const src=x.preview||x.url||'';
-      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')"><img loading="eager" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"><div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span><b>Реализованный ремонт</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
+      const src=x.preview||x.url;
+      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')">'+
+        '<img loading="eager" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'">'+
+        '<div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span>'+
+        '<b>'+escapeHtml(portfolioTitle(x))+'</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
     }).join('');
+
     const names=['Все',...new Set(portfolioImages.map(x=>x.folder).filter(Boolean))];
-    folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x.replace(/^.*\\//,''))+'</button>').join('');
+    folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x==='Все'?'Все работы':x.replace(/^.*\//,''))+'</button>').join('');
     renderPortfolio('Все');
   }catch(e){
-    if(attempt<maxAttempts-1){
-      setTimeout(()=>loadPortfolio(attempt+1),800*(attempt+1));
-      return;
-    }
-    const msg=escapeHtml(e&&e.message?e.message:'Не удалось загрузить портфолио');
-    featured.innerHTML='<div class="portfolioEmpty">Не удалось загрузить избранные работы.</div>';
-    box.innerHTML='<div class="portfolioEmpty"><b>Фотографии временно не загрузились.</b><br><span class="muted">'+msg+'</span><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить загрузку</button></div>';
+    featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span></div>';
+    box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
   }
 }
-function filterPortfolio(folder,btn){portfolioFolder=folder;document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderPortfolio(folder)}
+function filterPortfolio(folder,btn){
+  portfolioFolder=folder;
+  document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  renderPortfolio(folder);
+}
 function renderPortfolio(folder){
   const box=document.getElementById('portfolioGallery');
-  portfolioFiltered=folder==='Все'?[...portfolioImages].sort(portfolioSort):portfolioImages.filter(x=>x.folder===folder).sort(portfolioSort);
-  box.innerHTML=portfolioFiltered.map((x,i)=>'<div class="portfolioPhoto" onclick="openPortfolio('+i+')"><img loading="lazy" src="'+(x.preview||x.url||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"></div>').join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
+  portfolioFiltered=(folder==='Все'?[...portfolioImages]:portfolioImages.filter(x=>x.folder===folder)).sort(portfolioSort);
+  box.innerHTML=portfolioFiltered.map((x,i)=>{
+    const src=x.preview||x.url||'';
+    return '<div class="portfolioPhoto" onclick="openPortfolio('+i+')">'+
+      '<img loading="lazy" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'">'+
+      '<div class="photoTag">'+escapeHtml(portfolioLabel(x))+'</div></div>';
+  }).join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
 }
 function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=[...portfolioImages].sort(portfolioSort);portfolioIndex=portfolioFiltered.indexOf(x);showPortfolioImage(x)}
 function openPortfolio(i){portfolioIndex=i;const x=portfolioFiltered[i];if(!x)return;showPortfolioImage(x)}
-function showPortfolioImage(x){document.getElementById('portfolioLarge').src=x.preview||'';document.getElementById('portfolioCaption').textContent=portfolioLabel(x)+' · РЕМОНТФОРМА · Казань';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
+function showPortfolioImage(x){document.getElementById('portfolioLarge').src=x.preview||x.url||'';document.getElementById('portfolioCaption').textContent=portfolioTitle(x)+' · '+portfolioLabel(x)+' · РЕМОНТФОРМА · Казань';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
 function closePortfolio(){document.getElementById('portfolioLightbox').classList.remove('open');document.body.style.overflow=''}
 function portfolioMove(d){if(!portfolioFiltered.length)return;portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;showPortfolioImage(portfolioFiltered[portfolioIndex])}
 document.addEventListener('keydown',e=>{if(!document.getElementById('portfolioLightbox').classList.contains('open'))return;if(e.key==='Escape')closePortfolio();if(e.key==='ArrowLeft')portfolioMove(-1);if(e.key==='ArrowRight')portfolioMove(1)});
