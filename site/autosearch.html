@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RemontPRO — Автопоиск клиентов 24/7</title>
+<style>
+body{margin:0;background:#0f1114;color:#f5f7fa;font-family:Inter,Arial,sans-serif}.wrap{max-width:1200px;margin:auto;padding:28px 18px}
+h1{margin:0 0 6px;font-size:32px}.muted{color:#9ba3ad}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+.card{background:#181b20;border:1px solid #2a2f36;border-radius:16px;padding:16px}.num{font-size:28px;font-weight:800;margin-top:5px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.toolbar input,.toolbar select{background:#181b20;color:#fff;border:1px solid #343a43;border-radius:10px;padding:11px}
+.lead{background:#181b20;border:1px solid #2a2f36;border-radius:16px;padding:18px;margin:12px 0}.lead.high{border-color:#3e9b62}.row{display:flex;gap:12px;align-items:center;justify-content:space-between}.tag{display:inline-block;padding:5px 8px;border-radius:8px;background:#252a31;color:#dce2e8;margin:3px 4px 3px 0;font-size:12px}.highTag{background:#173a26;color:#72e39a}.btn{display:inline-block;text-decoration:none;color:#fff;background:#2867d8;border-radius:9px;padding:9px 12px}.source{color:#9ca5af;font-size:13px}.empty{padding:40px;text-align:center;color:#9ba3ad}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:500px){.grid{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<div class="muted">REMONTPRO · АВТОПОИСК 24/7</div><h1>🔎 Новые заявки на ремонт</h1><div class="muted">Казань · квартиры · дома · коммерция · тендеры</div>
+<div class="grid"><div class="card">Найдено<div class="num" id="found">—</div></div><div class="card">Новых<div class="num" id="new">—</div></div><div class="card">Высокое соответствие<div class="num" id="high">—</div></div><div class="card">Обновлено<div class="num" id="updated">—</div></div></div>
+<div class="toolbar"><input id="q" placeholder="Поиск: квартира, 80 м², бюджет..."><select id="type"><option value="">Все объекты</option><option>Квартира</option><option>Дом</option><option>Коммерция</option></select><select id="min"><option value="0">Любая площадь</option><option value="40">от 40 м²</option><option value="60">от 60 м²</option><option value="100">от 100 м²</option></select></div>
+<div id="list"><div class="empty">Загрузка…</div></div></div>
+<script>
+let data={leads:[]};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function render(){
+ const q=$('q').value.toLowerCase(),type=$('type').value,min=+$('min').value;
+ const rows=(data.leads||[]).filter(x=>(!type||x.type===type)&&(!min||Number(x.area||0)>=min)&&(!q||((x.title||'')+' '+(x.text||'')+' '+(x.source||'')).toLowerCase().includes(q)));
+ $('list').innerHTML=rows.length?rows.map(x=>'<div class="lead '+(x.score>=70?'high':'')+'"><div class="row"><div><span class="tag '+(x.score>=70?'highTag':'')+'">'+(x.score>=70?'🟢 Подходит':'🟡 Проверить')+'</span><span class="tag">'+esc(x.type)+'</span><span class="tag">'+(x.area?esc(x.area)+' м²':'площадь не указана')+'</span></div><div class="source">'+esc(x.source)+'</div></div><h3>'+esc(x.title)+'</h3><div class="muted">'+esc(x.text)+'</div><p>'+ (x.budget?'<span class="tag">💰 '+Number(x.budget).toLocaleString('ru-RU')+' ₽</span>':'') +'<span class="tag">🎯 соответствие '+x.score+'%</span></p><a class="btn" href="'+esc(x.url)+'" target="_blank" rel="noopener">Открыть источник ↗</a></div>').join(''):'<div class="empty">Подходящих заявок пока нет.</div>';
+}
+async function load(){try{const r=await fetch('/data/autosearch.json?ts='+Date.now(),{cache:'no-store'});data=await r.json();$('found').textContent=data.stats?.found??0;$('new').textContent=data.stats?.new??0;$('high').textContent=data.stats?.high??0;$('updated').textContent=data.updatedAt?new Date(data.updatedAt).toLocaleString('ru-RU'):'—';render()}catch(e){$('list').innerHTML='<div class="empty">Не удалось загрузить данные.</div>'}}
+['q','type','min'].forEach(id=>$(id).addEventListener('input',render));load();setInterval(load,60000);
+</script></body></html>
