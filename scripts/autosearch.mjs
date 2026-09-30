@@ -42,6 +42,7 @@ function budget(text){
 }
 function classify(text){
   const t=text.toLowerCase();
+  if(/тендер|закупк|конкурс|44-фз|223-фз|рос?тендер|запрос предложен/.test(t)) return 'Тендер';
   if(/коммерц|офис|магазин|салон|кафе|административ|помещени/.test(t)) return 'Коммерция';
   if(/коттедж|частн(?:ый|ом) дом|дом/.test(t)) return 'Дом';
   return 'Квартира';
@@ -58,6 +59,7 @@ function score(text,a){
   if(/коммерц|офис|магазин|салон|кафе/.test(t)) s+=15;
   if(a && a>=40) s+=15;
   if(/бюджет|млн|₽|руб/.test(t)) s+=5;
+  if(/тендер|закупк|конкурс|44-фз|223-фз/.test(t)) s=Math.max(0,s-15);
   return Math.min(100,s);
 }
 async function get(url){
@@ -126,7 +128,7 @@ for(const x of found){
 }
 const leads=[...old.values()]
   .filter(x=>relevant((x.text||'')+' '+(x.title||'')))
-  .sort((a,b)=>Number(b.firstSeenAt||0)-Number(a.firstSeenAt||0))
+  .sort((a,b)=>{const at=a.type==='Тендер',bt=b.type==='Тендер';if(at!==bt)return at?1:-1;return Number(b.score||0)-Number(a.score||0);})
   .slice(0,500);
 
 OUT.updatedAt=new Date().toISOString();
@@ -134,7 +136,7 @@ OUT.stats={
   found:leads.length,
   new:added,
   duplicates:Math.max(0,found.length-added),
-  high:leads.filter(x=>x.score>=70).length
+  high:leads.filter(x=>x.score>=70&&x.type!=='Тендер').length
 };
 OUT.leads=leads;
 
