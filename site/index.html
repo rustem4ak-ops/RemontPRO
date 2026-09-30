@@ -14,9 +14,28 @@
 @media print{body>*:not(#pdfArea){display:none!important}.printOnly{display:block!important}#pdfArea{padding:30px;font-family:Arial}.noPrint{display:none!important}}
 @media(max-width:800px){.navlinks{display:none}.trustGrid{grid-template-columns:repeat(2,1fr)}.heroGrid,.grid3,.steps,.portfolio,.reviews{grid-template-columns:1fr}.hero{padding-bottom:45px}.heroGrid{padding-top:50px}h1{letter-spacing:-2px}.section{padding:55px 0}.floatingCta{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:900;background:#15171a;color:#fff;border-radius:16px;padding:10px;box-shadow:0 15px 40px #0005;gap:8px}.floatingCta .btn{flex:1;text-align:center;padding:12px 8px}.floatingCta .primary{background:#b9ff4a;color:#10120d}}
 
-/* Yandex Disk portfolio */
-.portfolioGallery{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}.portfolioPhoto{position:relative;aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:#dfe2e6;cursor:pointer;border:1px solid #e1e4e7;box-shadow:0 10px 30px #0000000d}.portfolioPhoto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}.portfolioPhoto:hover img{transform:scale(1.045)}.portfolioPhoto:after{content:'Открыть';position:absolute;right:12px;bottom:12px;background:#17191dcc;color:#fff;padding:8px 11px;border-radius:10px;font-size:12px;font-weight:800;opacity:0;transition:.2s}.portfolioPhoto:hover:after{opacity:1}.portfolioEmpty{padding:35px;background:#fff;border:1px dashed #cfd4da;border-radius:18px;color:#6b7077;text-align:center}.portfolioFolders{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}.portfolioFolder{border:1px solid #dfe2e6;background:#fff;border-radius:999px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer}.portfolioFolder.active{background:#17191c;color:#fff;border-color:#17191c}.portfolioLightbox{position:fixed;inset:0;background:#000e;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}.portfolioLightbox.open{display:flex}.portfolioLightbox img{max-width:94vw;max-height:90vh;object-fit:contain;border-radius:10px}.portfolioLightbox .lbClose{position:absolute;top:18px;right:22px;border:0;background:#fff2;color:#fff;width:44px;height:44px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev,.portfolioLightbox .lbNext{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fff2;color:#fff;width:50px;height:50px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev{left:20px}.portfolioLightbox .lbNext{right:20px}.portfolioCaption{position:absolute;left:20px;bottom:18px;right:20px;text-align:center;color:#fff;font-weight:750;text-shadow:0 1px 4px #000}.portfolioLoading{text-align:center;padding:35px;color:#6b7077}
-@media(max-width:800px){.portfolioGallery{grid-template-columns:1fr 1fr;gap:10px}.portfolioPhoto{border-radius:14px}.portfolioPhoto:after{display:none}.portfolioLightbox{padding:8px}.portfolioLightbox .lbPrev{left:5px}.portfolioLightbox .lbNext{right:5px}}
+/* Sales portfolio */
+.portfolioHero{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:end;margin-top:34px}
+.portfolioIntro{max-width:680px}.portfolioIntro h2{font-size:clamp(34px,4.5vw,52px);line-height:1.02;margin:10px 0 14px}
+.portfolioIntro p{font-size:17px;line-height:1.6;color:#626870;max-width:620px}
+.portfolioProof{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.portfolioProof span{background:#fff;border:1px solid #dfe3e7;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:850}
+.portfolioActions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.portfolioActions .btn{box-shadow:0 8px 25px #0000000d}
+.portfolioFeatured{margin-top:30px;display:grid;grid-template-columns:1.45fr .8fr .8fr;grid-template-rows:220px 220px;gap:12px}
+.portfolioFeatured .featuredPhoto:first-child{grid-row:1/3}
+.featuredPhoto{position:relative;border-radius:22px;overflow:hidden;background:#dfe2e6;cursor:pointer;box-shadow:0 16px 40px #00000014}
+.featuredPhoto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.featuredPhoto:hover img{transform:scale(1.04)}
+.featuredPhoto:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,#000b)}
+.featuredInfo{position:absolute;left:18px;right:18px;bottom:16px;color:#fff;z-index:2}
+.featuredInfo b{font-size:18px}.featuredInfo span{display:block;font-size:12px;opacity:.86;margin-top:4px}
+.portfolioSectionTitle{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:52px 0 16px}.portfolioSectionTitle h3{font-size:26px;margin:0}.portfolioSectionTitle p{margin:5px 0 0;color:#6b7077}
+.portfolioFolders{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.portfolioFolder{border:1px solid #dfe2e6;background:#fff;border-radius:999px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer}.portfolioFolder.active{background:#17191c;color:#fff;border-color:#17191c}
+.portfolioGallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.portfolioPhoto{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#dfe2e6;cursor:pointer;border:1px solid #e1e4e7}.portfolioPhoto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}.portfolioPhoto:hover img{transform:scale(1.045)}.portfolioPhoto:after{content:'Смотреть';position:absolute;right:10px;bottom:10px;background:#17191ddd;color:#fff;padding:7px 10px;border-radius:9px;font-size:11px;font-weight:850;opacity:0;transition:.2s}.portfolioPhoto:hover:after{opacity:1}
+.portfolioEmpty{padding:35px;background:#fff;border:1px dashed #cfd4da;border-radius:18px;color:#6b7077;text-align:center;grid-column:1/-1}
+.portfolioCta{margin-top:28px;padding:24px 26px;background:#17191c;color:#fff;border-radius:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}.portfolioCta h3{margin:0 0 5px;font-size:22px}.portfolioCta p{margin:0;color:#c7cad0;font-size:14px}
+.portfolioLightbox{position:fixed;inset:0;background:#000e;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}.portfolioLightbox.open{display:flex}.portfolioLightbox img{max-width:94vw;max-height:90vh;object-fit:contain;border-radius:10px}.portfolioLightbox .lbClose{position:absolute;top:18px;right:22px;border:0;background:#fff2;color:#fff;width:44px;height:44px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev,.portfolioLightbox .lbNext{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fff2;color:#fff;width:50px;height:50px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev{left:20px}.portfolioLightbox .lbNext{right:20px}.portfolioCaption{position:absolute;left:20px;bottom:18px;right:20px;text-align:center;color:#fff;font-weight:750;text-shadow:0 1px 4px #000}.portfolioLoading{text-align:center;padding:35px;color:#6b7077;grid-column:1/-1}
+@media(max-width:800px){.portfolioHero{grid-template-columns:1fr;gap:18px}.portfolioActions{justify-content:flex-start}.portfolioFeatured{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px}.portfolioFeatured .featuredPhoto:first-child{grid-row:1/3}.portfolioGallery{grid-template-columns:1fr 1fr;gap:9px}.portfolioPhoto{border-radius:13px}.portfolioPhoto:after{display:none}.portfolioCta{display:block}.portfolioCta .btn{margin-top:15px}.portfolioLightbox{padding:8px}.portfolioLightbox .lbPrev{left:5px}.portfolioLightbox .lbNext{right:5px}}
 </style>
 </head>
 <body>
@@ -30,7 +49,25 @@
 
 <section class="section" id="services"><div class="wrap"><div class="center"><div class="eyebrow">Услуги</div><h2>Полный ремонт под ключ</h2><p class="muted">От первого замера до сдачи готового объекта.</p></div><div class="grid3"><div class="service"><div class="num">01</div><h3>Квартиры</h3><p class="muted">Черновая и чистовая отделка, электрика, сантехника и все этапы ремонта.</p></div><div class="service"><div class="num">02</div><h3>Дома</h3><p class="muted">Комплексная организация ремонта частных домов с контролем этапов.</p></div><div class="service"><div class="num">03</div><h3>Коммерция</h3><p class="muted">Ремонт помещений под офисы, магазины и другие коммерческие задачи.</p></div></div></div></section>
 
-<section class="section" id="portfolio" style="background:#eceef0"><div class="wrap"><div class="eyebrow">Портфолио</div><h2>Реализованные ремонты</h2><p class="muted">Настоящие фотографии объектов РЕМОНТФОРМА. Фотографии автоматически загружаются из папки с реализованными ремонтами.</p><div id="portfolioFolders" class="portfolioFolders"></div><div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем фотографии объектов…</div></div></div></section>
+<section class="section" id="portfolio" style="background:#eceef0"><div class="wrap">
+  <div class="portfolioHero">
+    <div class="portfolioIntro">
+      <div class="eyebrow">Наши работы</div>
+      <h2>Ремонт, который хочется показать.</h2>
+      <p>Подобрали фотографии так, чтобы вы сразу увидели главное: качество отделки, аккуратность деталей и готовый результат. Сначала — избранные работы, затем вся подборка.</p>
+      <div class="portfolioProof"><span>✓ Реальные объекты</span><span>✓ Ремонт под ключ</span><span>✓ Казань</span></div>
+    </div>
+    <div class="portfolioActions">
+      <button class="btn primary" onclick="openCalc()">Рассчитать мой ремонт</button>
+      <a class="btn secondary" style="background:#fff;color:#17191c;border-color:#dfe2e6" href="https://t.me/RemontFormaBot">Задать вопрос</a>
+    </div>
+  </div>
+  <div id="portfolioFeatured" class="portfolioFeatured"><div class="portfolioLoading">Подбираем лучшие кадры…</div></div>
+  <div class="portfolioSectionTitle"><div><h3>Ещё реализованные проекты</h3><p>Выберите раздел и посмотрите детали.</p></div></div>
+  <div id="portfolioFolders" class="portfolioFolders"></div>
+  <div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем фотографии…</div></div>
+  <div class="portfolioCta"><div><h3>Понравился уровень ремонта?</h3><p>Рассчитаем предварительную стоимость вашего объекта за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
+</div></section>
 <div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt="Реализованный ремонт"><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
 
 <section class="section"><div class="wrap"><div class="center"><div class="eyebrow">Отзывы</div><h2>Отзывы клиентов</h2><p class="muted">Мы не придумываем отзывы за клиентов. После запуска реальные отзывы можно добавить сюда с именем, объектом и фото.</p></div><div class="reviews"><div class="review"><b>Как будет выглядеть отзыв</b><p>«Понравилось, что на каждом этапе было понятно, что делаем, сколько это стоит и что будет дальше.»</p><span class="muted">Пример оформления · не отзыв реального клиента</span></div><div class="review"><b>Фокус на результате</b><p>«Отдельно оценили порядок на объекте, понятную коммуникацию и контроль качества работ.»</p><span class="muted">Пример оформления · не отзыв реального клиента</span></div><div class="review"><b>Прозрачный процесс</b><p>«Сначала получили расчёт, затем замер и подробную смету. Было удобно принимать работу по этапам.»</p><span class="muted">Пример оформления · не отзыв реального клиента</span></div></div></div></section>
@@ -86,14 +123,60 @@ async function loadResult(){const r=document.getElementById('finalResult');const
 function openLead(){saveFields();if(!S.result){alert('Сначала дождитесь расчёта');return}document.getElementById('wizard').innerHTML='<div class="stepTitle">Получить точную смету</div><p class="muted">Оставьте номер телефона. Мы свяжемся с вами, уточним объект и договоримся о замере.</p><div class="leadBox"><div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div><div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div><div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div></div>';document.getElementById('progressText').textContent='Заявка';document.getElementById('bar').style.width='100%';document.getElementById('backBtn').classList.remove('hidden');document.getElementById('nextBtn').textContent='Отправить заявку';document.getElementById('nextBtn').onclick=submitLead}
 async function submitLead(){const phone=val('leadPhone').trim();if(!phone){alert('Введите телефон');return}const payload={name:val('leadName').trim(),phone,comment:val('leadComment').trim(),source:S.source||'site',medium:S.medium||'',campaign:S.campaign||'',referrer:document.referrer||'',object:{type:S.type,floor:S.floor,bath:S.bath,balcony:S.balcony,rooms:S.rooms,state:S.state,finish:S.finish,windows:S.windows},calculator:S.result,selection:{electrical:S.electrical,plumbing:S.plumbing,bathroom:S.bathroom,tile:S.tile,tileArea:S.tileArea,floorFinish:S.floorFinish,plinth:S.plinth,walls:S.walls,cleanElectrical:S.cleanElectrical,cleanPlumbing:S.cleanPlumbing,cleaning:S.cleaning,trash:S.trash},files:{photos:S.photos,plan:S.plan}};document.getElementById('nextBtn').disabled=true;try{const a=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),j=await a.json();if(!j.ok)throw new Error(j.error||'Ошибка');document.getElementById('wizard').innerHTML='<div class="success"><h3>✅ Заявка отправлена</h3><p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p><div class="buttons"><a class="btn primary" href="https://t.me/RemontFormaBot">Открыть Telegram</a><button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button></div></div>';document.getElementById('backBtn').classList.add('hidden');document.getElementById('nextBtn').style.display='none'}catch(e){alert('Не удалось отправить заявку. Попробуйте связаться с нами в Telegram.')}finally{document.getElementById('nextBtn').disabled=false}}
 let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все';
-async function loadPortfolio(){const box=document.getElementById('portfolioGallery'),folders=document.getElementById('portfolioFolders');if(!box)return;try{const a=await fetch('/api/portfolio'),j=await a.json();if(!j.ok||!j.images?.length)throw new Error();portfolioImages=j.images;const names=['Все',...new Set(portfolioImages.map(x=>x.folder).filter(Boolean))];folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+x.replace(/^.*\\//,'')+'</button>').join('');renderPortfolio('Все')}catch(e){box.innerHTML='<div class="portfolioEmpty">Фотографии пока недоступны. Откройте папку <a href="https://disk.yandex.ru/d/X4VLvyoCDpNVYA" target="_blank" rel="noopener"><b>Реализованные ремонты</b></a> на Яндекс Диске.</div>'}}
+
+function portfolioScore(x){
+  const s=((x.name||'')+' '+(x.folder||'')).toLowerCase();
+  let score=0;
+  if(/кух|гостин|спаль|сануз|ванн|прихож|коридор/.test(s)) score+=25;
+  if(/готов|итог|после|фото|интерьер|ремонт/.test(s)) score+=8;
+  if(/до|чернов|процесс|демонтаж/.test(s)) score-=18;
+  if(/screen|скрин|img_|dsc|photo/.test(s)) score+=1;
+  return score;
+}
+function portfolioLabel(x){
+  const s=((x.name||'')+' '+(x.folder||'')).toLowerCase();
+  if(/кух/.test(s)) return 'Кухня';
+  if(/гостин/.test(s)) return 'Гостиная';
+  if(/спаль/.test(s)) return 'Спальня';
+  if(/сануз|ванн/.test(s)) return 'Санузел';
+  if(/прихож|коридор/.test(s)) return 'Прихожая';
+  return 'Реализованный объект';
+}
+async function loadPortfolio(){
+  const box=document.getElementById('portfolioGallery'),folders=document.getElementById('portfolioFolders'),featured=document.getElementById('portfolioFeatured');
+  if(!box)return;
+  try{
+    const a=await fetch('/api/portfolio'),j=await a.json();
+    if(!j.ok||!j.images?.length)throw new Error();
+    portfolioImages=j.images;
+    portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
+    const ranked=[...portfolioImages].sort((a,b)=>b._score-a._score);
+    const seen=new Set(),selected=[];
+    for(const x of ranked){const key=(x.folder||'')+'|'+portfolioLabel(x);if(!seen.has(key)){seen.add(key);selected.push(x)}if(selected.length>=5)break}
+    const featuredItems=selected.length>=3?selected:ranked.slice(0,5);
+    featured.innerHTML=featuredItems.map((x,i)=>'<div class="featuredPhoto" onclick="openFeatured('+portfolioImages.indexOf(x)+')"><img loading="eager" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"><div class="featuredInfo"><b>'+escapeHtml(portfolioLabel(x))+'</b><span>Реализованный ремонт РЕМОНТФОРМА</span></div></div>').join('');
+    const names=['Все',...new Set(portfolioImages.map(x=>x.folder).filter(Boolean))];
+    folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x.replace(/^.*\\//,''))+'</button>').join('');
+    renderPortfolio('Все');
+  }catch(e){
+    featured.innerHTML='<div class="portfolioEmpty">Не удалось загрузить избранные работы.</div>';
+    box.innerHTML='<div class="portfolioEmpty">Фотографии пока недоступны. Откройте папку <a href="https://disk.yandex.ru/d/X4VLvyoCDpNVYA" target="_blank" rel="noopener"><b>Реализованные ремонты</b></a> на Яндекс Диске.</div>';
+  }
+}
 function filterPortfolio(folder,btn){portfolioFolder=folder;document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderPortfolio(folder)}
-function renderPortfolio(folder){const box=document.getElementById('portfolioGallery');portfolioFiltered=folder==='Все'?portfolioImages:portfolioImages.filter(x=>x.folder===folder);box.innerHTML=portfolioFiltered.map((x,i)=>'<div class="portfolioPhoto" onclick="openPortfolio('+i+')"><img loading="lazy" src="'+(x.preview||'')+'" alt="'+escapeHtml(x.name)+'" onerror="this.parentElement.style.display=\'none\'"><span style="position:absolute;left:-9999px">'+escapeHtml(x.name)+'</span></div>').join('')||'<div class="portfolioEmpty">В этой папке пока нет фотографий.</div>'}
+function renderPortfolio(folder){
+  const box=document.getElementById('portfolioGallery');
+  portfolioFiltered=folder==='Все'?[...portfolioImages].sort((a,b)=>(b._score||0)-(a._score||0)):portfolioImages.filter(x=>x.folder===folder);
+  box.innerHTML=portfolioFiltered.map((x,i)=>'<div class="portfolioPhoto" onclick="openPortfolio('+i+')"><img loading="lazy" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"></div>').join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
+}
 function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-function openPortfolio(i){portfolioIndex=i;const x=portfolioFiltered[i];if(!x)return;document.getElementById('portfolioLarge').src=x.preview||'';document.getElementById('portfolioCaption').textContent=x.name||'';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
+function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=portfolioImages;portfolioIndex=i;showPortfolioImage(x)}
+function openPortfolio(i){portfolioIndex=i;const x=portfolioFiltered[i];if(!x)return;showPortfolioImage(x)}
+function showPortfolioImage(x){document.getElementById('portfolioLarge').src=x.preview||'';document.getElementById('portfolioCaption').textContent=portfolioLabel(x)+' · РЕМОНТФОРМА';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
 function closePortfolio(){document.getElementById('portfolioLightbox').classList.remove('open');document.body.style.overflow=''}
-function portfolioMove(d){if(!portfolioFiltered.length)return;portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;openPortfolio(portfolioIndex)}
+function portfolioMove(d){if(!portfolioFiltered.length)return;portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;showPortfolioImage(portfolioFiltered[portfolioIndex])}
 document.addEventListener('keydown',e=>{if(!document.getElementById('portfolioLightbox').classList.contains('open'))return;if(e.key==='Escape')closePortfolio();if(e.key==='ArrowLeft')portfolioMove(-1);if(e.key==='ArrowRight')portfolioMove(1)});
+
 function printEstimate(){const q=S.result;document.getElementById('pdfArea').innerHTML='<h1>РЕМОНТФОРМА</h1><h2>Предварительный расчёт ремонта</h2><p>Объект: '+S.type+'</p><p>Площадь: '+q.floor+' м² · Санузел: '+q.bath+' м² · Балкон: '+q.balcony+' м²</p>'+q.rows.map(x=>'<p>'+x.name+' — '+x.quantity+' '+x.unit+' × '+money(x.price)+' = <b>'+money(x.cost)+'</b></p>').join('')+'<hr><h2>Итого: '+money(q.total)+'</h2><p>Цена за м² по полу: '+money(q.pricePerM2)+'</p><p>Предварительный расчёт. Точная смета после замера.</p>';window.print()}
 render();
 loadPortfolio();
