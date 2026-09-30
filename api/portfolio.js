@@ -63,7 +63,7 @@ async function collect(path, folderName, out, depth = 0) {
 
   await Promise.allSettled(items.map(async item => {
     // Yandex public API expects a path relative to the shared folder, not disk:/...
-    const itemPath = (path && path !== '/' ? path.replace(/\/$/, '') + '/' : '/') + encodeURIComponent(item.name).replace(/%2F/g, '/');
+    const itemPath = (path && path !== '/' ? path.replace(/\/$/, '') + '/' : '/') + item.name;
 
     if (item.type === 'dir') {
       try {
@@ -105,7 +105,7 @@ module.exports = async (req, res) => {
     const items = root && root._embedded && root._embedded.items || [];
 
     await Promise.allSettled(items.map(async item => {
-      const itemPath = '/' + encodeURIComponent(item.name).replace(/%2F/g, '/');
+      const itemPath = '/' + item.name;
       if (item.type === 'dir') {
         try { await collect(itemPath, item.name, images); } catch (_) {}
         return;
