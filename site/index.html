@@ -123,6 +123,59 @@ body{
   box-shadow:0 18px 45px rgba(20,24,28,.07);
   transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
 }
+#services .service{
+  position:relative;
+  min-height:260px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  color:#fff;
+  background-size:cover;
+  background-position:center;
+  isolation:isolate;
+}
+#services .service:nth-child(1){
+  background-image:url('/api/portfolio-image?path=%2F20231223_114527.jpg');
+}
+#services .service:nth-child(2){
+  background-image:url('/api/portfolio-image?path=%2F20231223_114512.jpg');
+}
+#services .service:nth-child(3){
+  background-image:url('/api/portfolio-image?path=%2F20231223_114444.jpg');
+}
+#services .service:before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(8,10,12,.12) 5%,rgba(8,10,12,.28) 38%,rgba(8,10,12,.88) 100%);
+  z-index:-1;
+}
+#services .service:after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:18px;
+  pointer-events:none;
+}
+#services .service>*{position:relative;z-index:1}
+#services .service .num{
+  color:#b9ff4a;
+  text-shadow:0 2px 8px #000;
+}
+#services .service h3{
+  margin:8px 0 7px;
+  font-size:27px;
+  color:#fff;
+  text-shadow:0 2px 10px rgba(0,0,0,.7);
+}
+#services .service p.muted{
+  color:#f1f2f3;
+  line-height:1.5;
+  text-shadow:0 2px 8px rgba(0,0,0,.75);
+}
+
 #services .service:hover,
 #services .step:hover{
   transform:translateY(-6px);
