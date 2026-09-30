@@ -22,23 +22,23 @@ const NEG = [
 ];
 
 function clean(s=''){
-  return s.replace(/<script[\\s\\S]*?<\\/script>/gi,' ')
-    .replace(/<style[\\s\\S]*?<\\/style>/gi,' ')
+  return s.replace(/<script[\s\S]*?<\/script>/gi,' ')
+    .replace(/<style[\s\S]*?<\/style>/gi,' ')
     .replace(/<[^>]+>/g,' ')
     .replace(/&nbsp;/g,' ').replace(/&quot;/g,'"').replace(/&#39;/g,"'")
-    .replace(/&amp;/g,'&').replace(/\\s+/g,' ').trim();
+    .replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
 }
 function decode(s){return clean(s);}
-function esc(s){return s.replace(/\\/g,'/').trim();}
+function esc(s){return s.replace(/\/g,'/').trim();}
 function area(text){
-  const m=text.match(/(?:площадь|площадью|площадь\\s*квартиры|\\bS\\b)\\s*[:=]?\\s*(\\d+(?:[.,]\\d+)?)\\s*(?:м2|м²|кв\\.?\\s*м)/i)
-    || text.match(/\\b(\\d+(?:[.,]\\d+)?)\\s*(?:м2|м²|кв\\.?\\s*м)\\b/i);
+  const m=text.match(/(?:площадь|площадью|площадь\s*квартиры|\bS\b)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*(?:м2|м²|кв\.?\s*м)/i)
+    || text.match(/\b(\d+(?:[.,]\d+)?)\s*(?:м2|м²|кв\.?\s*м)\b/i);
   return m?Number(m[1].replace(',','.')):null;
 }
 function budget(text){
-  const m=text.match(/(?:бюджет|стоимость|цена|сумма|на сумму)[^\\d]{0,20}(\\d[\\d\\s]{3,})(?:\\s*(?:руб|₽|р\\.?))?/i)
-    || text.match(/(\\d[\\d\\s]{4,})\\s*(?:₽|руб\\.?)/i);
-  return m?Number(m[1].replace(/\\s/g,'')):null;
+  const m=text.match(/(?:бюджет|стоимость|цена|сумма|на сумму)[^\d]{0,20}(\d[\d\s]{3,})(?:\s*(?:руб|₽|р\.?))?/i)
+    || text.match(/(\d[\d\s]{4,})\s*(?:₽|руб\.?)/i);
+  return m?Number(m[1].replace(/\s/g,'')):null;
 }
 function classify(text){
   const t=text.toLowerCase();
@@ -67,12 +67,12 @@ async function get(url){
 }
 function telegramItems(html,source){
   const out=[];
-  const re=/<div[^>]*class="[^"]*tgme_widget_message_wrap[^"]*"[^>]*>([\\s\\S]*?)<\\/div>\\s*<\\/div>\\s*<\\/div>/gi;
+  const re=/<div[^>]*class="[^"]*tgme_widget_message_wrap[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/gi;
   let m;
   while((m=re.exec(html))){
     const block=m[1];
     const tm=block.match(/<a[^>]+class="[^"]*tgme_widget_message_date[^"]*"[^>]+href="([^"]+)"/i);
-    const tx=block.match(/<div[^>]+class="[^"]*tgme_widget_message_text[^"]*"[^>]*>([\\s\\S]*?)<\\/div>/i);
+    const tx=block.match(/<div[^>]+class="[^"]*tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
     if(!tx) continue;
     const text=decode(tx[1]);
     if(text.length<20 || !relevant(text)) continue;
@@ -85,7 +85,7 @@ function telegramItems(html,source){
 function webItems(html,source){
   const out=[];
   const seen=new Set();
-  const re=/<a[^>]+href="([^"]+)"[^>]*>([\\s\\S]*?)<\\/a>/gi;
+  const re=/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
   let m;
   while((m=re.exec(html))){
     const text=decode(m[2]);
