@@ -113,10 +113,16 @@ for(const s of SOURCES){
 }
 
 const old=new Map((OUT.leads||[]).map(x=>[x.id,x]));
+const newIds=[];
 let added=0;
 for(const x of found){
-  if(!old.has(x.id)){ added++; old.set(x.id,{...x,status:'new',firstSeenAt:new Date().toISOString()}); }
-  else old.set(x.id,{...old.get(x.id),...x});
+  if(!old.has(x.id)){
+    added++;
+    newIds.push(x.id);
+    old.set(x.id,{...x,status:'new',firstSeenAt:new Date().toISOString()});
+  } else {
+    old.set(x.id,{...old.get(x.id),...x});
+  }
 }
 const leads=[...old.values()]
   .filter(x=>relevant((x.text||'')+' '+(x.title||'')))
@@ -131,5 +137,34 @@ OUT.stats={
   high:leads.filter(x=>x.score>=70).length
 };
 OUT.leads=leads;
+
+function msg(x){
+  return [
+    '🔥 НОВАЯ ЗАЯВКА — REMONTPRO','',
+    '📍 '+(x.type||'Объект')+' · Казань',
+    '📐 '+(x.area?x.area+' м²':'площадь не указана'),
+    '💰 '+(x.budget?Number(x.budget).toLocaleString('ru-RU')+' ₽':'бюджет не указан'),
+    '🎯 Соответствие: '+x.score+'%','',
+    (x.title||x.text||'').slice(0,500),'',
+    'Источник: '+x.source,x.url
+  ].join('\\n');
+}
+async function notify(){
+  const top=leads.filter(x=>newIds.includes(x.id)&&x.score>=70).slice(0,5);
+  if(!top.length) return;
+  const tgToken=process.env.TELEGRAM_BOT_TOKEN, tgChat=process.env.TELEGRAM_ADMIN_CHAT_ID;
+  if(tgToken&&tgChat) for(const x of top) await fetch('https://api.telegram.org/bot'+tgToken+'/sendMessage',{
+    method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({chat_id:tgChat,text:msg(x),disable_web_page_preview:false})
+  }).catch(()=>{});
+  const maxToken=process.env.MAX_BOT_TOKEN, maxChat=process.env.MAX_ADMIN_CHAT_ID;
+  if(maxToken&&maxChat) for(const x of top) await fetch('https://platform-api2.max.ru/messages?chat_id='+encodeURIComponent(maxChat),{
+    method:'POST',headers:{'Authorization':maxToken,'content-type':'application/json'},
+    body:JSON.stringify({text:msg(x)})
+  }).catch(()=>{});
+  const notified=new Set(top.map(x=>x.id));
+  OUT.leads=OUT.leads.map(x=>notified.has(x.id)?{...x,notifiedAt:new Date().toISOString()}:x);
+}
+await notify();
 await fs.writeFile(DATA,JSON.stringify(OUT,null,2)+'\\n');
 console.log(JSON.stringify(OUT.stats));
