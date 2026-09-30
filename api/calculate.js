@@ -1,21 +1,57 @@
 const { calculate } = require('../shared/remontforma-pricing.js');
 
-module.exports = function handler(req, res) {
-  if (req.method === 'GET') {
-    return res.status(200).json({
-      ok: true,
-      service: 'РЕМОНТФОРМА Calculator API',
-      version: '1.0.1'
-    });
-  }
-  if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  }
-  try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    const result = calculate(body);
-    return res.status(200).json({ ok: true, result });
-  } catch (e) {
-    return res.status(400).json({ ok: false, error: e?.message || 'Calculation error' });
-  }
+const SOURCES = [
+  {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116'},
+  {id:'telegram-stroy-kazann',name:'Telegram · Стройка/Ремонт/Отделка Казань',url:'https://t.me/s/Stroy_Kazann'},
+  {id:'telegram-stroykaremontkazan',name:'Telegram · СтРОЙКА/РЕМОНТ Казань',url:'https://t.me/s/stroykaremontkazan'},
+  {id:'telegram-kazanstroit',name:'Telegram · Стройка Ремонт Казань',url:'https://t.me/s/kazanstroit'},
+  {id:'telegram-stroykakzn',name:'Telegram · Ремонт стройка Казань',url:'https://t.me/s/stroykakzn'},
+  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut'}
+];
+
+const NEG=['ремонт автомобиля','оргтехники','телефона','компьютера','стиральной машины','холодильника','кондиционера','мелкий ремонт','мастер на час','вакансия','требуется мастер','ищу работу','резюме','зарплата'];
+const POS=['ремонт под ключ','ремонт квартиры','ремонт дома','ремонт коттеджа','комплексный ремонт','отделка квартиры','отделка дома','ремонт новостройки','ремонт вторички','ремонт офиса','ремонт магазина','ремонт коммерческого помещения','ремонт помещений','капитальный ремонт','текущий ремонт','нужен ремонт','нужна бригада','ищу бригаду','ищу подрядчика','ищу исполнителя','заказать ремонт','заказ на ремонт','требуется бригада','требуется подрядчик','требуется ремонт','нужна отделка','ищу мастеров','ищем бригаду','ищем подрядчика','ищем исполнителя','квартира под ремонт','дом под ремонт','объект под ремонт','объект на ремонт'];
+
+function clean(s=''){return s.replace(/<script[\\s\\S]*?<\\/script>/gi,' ').replace(/<style[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/\\s+/g,' ').trim();}
+function relevant(text){
+ const t=text.toLowerCase().replace(/ё/g,'е');
+ if(NEG.some(x=>t.includes(x))) return false;
+ return POS.some(x=>t.includes(x)) || (/(квартир|новостро|вторич|коттедж|дом|офис|магазин|салон|кафе|помещени|коммерц|объект)/.test(t) && /(нужен|нужна|нужно|ищу|ищем|требуется|заказать|заказчик|подрядчик|исполнитель|бригада|ремонт|отделк)/.test(t));
+}
+function area(text){const m=text.match(/(\\d+(?:[.,]\\d+)?)\\s*(?:м2|м²|кв\\.?\\s*м)/i);return m?Number(m[1].replace(',','.')):null;}
+function budget(text){const m=text.match(/(?:бюджет|стоимость|цена|сумма)[^\\d]{0,20}(\\d[\\d\\s]{3,})/i);return m?Number(m[1].replace(/\\s/g,'')):null;}
+function classify(text){const t=text.toLowerCase();if(/коммерц|офис|магазин|салон|кафе|помещени/.test(t))return 'Коммерция';if(/коттедж|дом/.test(t))return 'Дом';return 'Квартира';}
+function score(text,a){const t=text.toLowerCase();let s=0;if(/казан|казань/.test(t))s+=30;if(/нужен|нужна|нужно|ищу|ищем|требуется|заказать|заказчик/.test(t))s+=25;if(/под ключ|комплексн/.test(t))s+=25;if(/коммерц|офис|магазин|салон|кафе/.test(t))s+=15;if(a&&a>=40)s+=15;if(/бюджет|млн|₽|руб/.test(t))s+=5;if(/квартир|дом|коттедж|офис|магазин|помещени|объект/.test(t))s+=10;return Math.min(100,s);}
+async function liveAutoSearch(){
+ const results=await Promise.all(SOURCES.map(async s=>{
+   try{
+    const rr=await fetch(s.url,{headers:{'user-agent':'Mozilla/5.0 RemontPRO-AutoSearch'},signal:AbortSignal.timeout(12000)});
+    if(!rr.ok) throw new Error('HTTP '+rr.status);
+    const html=await rr.text(), out=[];
+    const re=/<div[^>]+class=["'][^"']*tgme_widget_message[^"']*["'][^>]*>([\\s\\S]*?)(?=<div[^>]+class=["'][^"']*tgme_widget_message_wrap|$)/gi;
+    let m;
+    while((m=re.exec(html))){
+      const block=m[1], tx=block.match(/<div[^>]+class=["'][^"']*tgme_widget_message_text[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/i);
+      if(!tx)continue;
+      const text=clean(tx[1]); if(text.length<20||!relevant(text))continue;
+      const tm=block.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["']/i);
+      const a=area(text);
+      out.push({id:s.id+'-'+Buffer.from((tm?.[1]||text.slice(0,100))).toString('base64url').slice(-24),source:s.name,url:tm?.[1]||s.url,title:text.slice(0,140),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null,status:'new'});
+    }
+    return {items:out,error:null};
+   }catch(e){return {items:[],error:e.message};}
+ }));
+ const leads=results.flatMap(x=>x.items).sort((a,b)=>b.score-a.score);
+ return {ok:true,updatedAt:new Date().toISOString(),stats:{found:leads.length,new:leads.length,duplicates:0,high:leads.filter(x=>x.score>=70).length},leads,diagnostics:results.map((x,i)=>({source:SOURCES[i].name,found:x.items.length,error:x.error}))};
+}
+
+module.exports = async function handler(req,res){
+ if(req.method==='GET' && req.query?.autosearch==='1'){
+   try{return res.status(200).json(await liveAutoSearch());}
+   catch(e){return res.status(500).json({ok:false,error:e?.message||'AutoSearch error'});}
+ }
+ if(req.method==='GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Calculator API',version:'1.0.1'});
+ if(req.method!=='POST') return res.status(405).json({ok:false,error:'Method not allowed'});
+ try{const body=typeof req.body==='string'?JSON.parse(req.body||'{}'):(req.body||{});return res.status(200).json({ok:true,result:calculate(body)});}
+ catch(e){return res.status(400).json({ok:false,error:e?.message||'Calculation error'});}
 };
