@@ -53,10 +53,10 @@ function clean(s=''){
 }
 function relevant(text){
   const t=text.toLowerCase().replace(/ё/g,'е');
-  const employerIntent=/(требуется|требуются|ищем|ищу|нужен|нужна|нужны|работа|работы|оплата|зарплата|бытовк|проживан|оплачиваем|звонить)\b/.test(t);
-  const workerTerms=/(рабоч|монтажник|монтажников|бригада|исполнител|мастер|сотрудник|персонал)/.test(t);
-  const employerPost=employerIntent && workerTerms && !/(ремонт квартир|ремонт дома|ремонт квартиры|объект под ремонт|квартира под ремонт|заказать ремонт|заказчик ищет|ищу подрядчика)/.test(t);
-  if(employerPost || NEG.some(x=>t.includes(x))) return false;
+  if(NEG.some(x=>t.includes(x))) return false;
+  const clientRequest=/(ремонт|отделк|под ключ|объект под ремонт|квартира под ремонт|дом под ремонт|заказать ремонт|заказчик|ищу подрядчика|ищу исполнителя|нужна бригада на ремонт|нужен ремонт)/.test(t);
+  const employerPost=EMPLOYER_PATTERNS.some(re=>re.test(t));
+  if(employerPost && !clientRequest) return false;
   const hasRepair=POS.some(x=>t.includes(x));
   const hasObject=/(квартир|новостро|вторич|коттедж|частн\w* дом|жил\w* дом|офис|магазин|салон|кафе|помещени|коммерц|объект)/.test(t);
   const hasClientIntent=/(нужен|нужна|нужно|ищу|ищем|заказать|заказчик|подрядчик|исполнитель|бригада|ремонт|отделк)/.test(t);
