@@ -9,7 +9,7 @@ const SOURCES = [
   {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut'}
 ];
 
-const NEG=['ремонт автомобиля','оргтехники','телефона','компьютера','стиральной машины','холодильника','кондиционера','мелкий ремонт','мастер на час','вакансия','требуется мастер','ищу работу','резюме','зарплата'];
+const NEG=['ремонт автомобиля','оргтехники','телефона','компьютера','стиральной машины','холодильника','кондиционера','мелкий ремонт','мастер на час','вакансия','ищу работу','резюме','зарплата'];
 const POS=['ремонт под ключ','ремонт квартиры','ремонт дома','ремонт коттеджа','комплексный ремонт','отделка квартиры','отделка дома','ремонт новостройки','ремонт вторички','ремонт офиса','ремонт магазина','ремонт коммерческого помещения','ремонт помещений','капитальный ремонт','текущий ремонт','нужен ремонт','нужна бригада','ищу бригаду','ищу подрядчика','ищу исполнителя','заказать ремонт','заказ на ремонт','требуется бригада','требуется подрядчик','требуется ремонт','нужна отделка','ищу мастеров','ищем бригаду','ищем подрядчика','ищем исполнителя','квартира под ремонт','дом под ремонт','объект под ремонт','объект на ремонт'];
 
 function clean(s=''){return s.replace(/<script[\\s\\S]*?<\\/script>/gi,' ').replace(/<style[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/\\s+/g,' ').trim();}
@@ -25,16 +25,15 @@ function score(text,a){const t=text.toLowerCase();let s=0;if(/казан|каз�
 async function liveAutoSearch(){
  const results=await Promise.all(SOURCES.map(async s=>{
    try{
-    const rr=await fetch(s.url,{headers:{'user-agent':'Mozilla/5.0 RemontPRO-AutoSearch'},signal:AbortSignal.timeout(12000)});
+    const rr=await fetch(s.url,{headers:{'user-agent':'Mozilla/5.0 RemontPRO-AutoSearch'},signal:AbortSignal.timeout(6000)});
     if(!rr.ok) throw new Error('HTTP '+rr.status);
     const html=await rr.text(), out=[];
-    const re=/<div[^>]+class=["'][^"']*tgme_widget_message[^"']*["'][^>]*>([\\s\\S]*?)(?=<div[^>]+class=["'][^"']*tgme_widget_message_wrap|$)/gi;
+    const re=/<div[^>]+class=["'][^"']*tgme_widget_message_text[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi;
     let m;
     while((m=re.exec(html))){
-      const block=m[1], tx=block.match(/<div[^>]+class=["'][^"']*tgme_widget_message_text[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/i);
-      if(!tx)continue;
-      const text=clean(tx[1]); if(text.length<20||!relevant(text))continue;
-      const tm=block.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["']/i);
+      const text=clean(m[1]); if(text.length<20||!relevant(text))continue;
+      const nearby=html.slice(Math.max(0,m.index-8000),Math.min(html.length,m.index+12000));
+      const tm=nearby.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["']/i);
       const a=area(text);
       out.push({id:s.id+'-'+Buffer.from((tm?.[1]||text.slice(0,100))).toString('base64url').slice(-24),source:s.name,url:tm?.[1]||s.url,title:text.slice(0,140),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null,status:'new'});
     }
