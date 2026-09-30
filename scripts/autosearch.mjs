@@ -29,7 +29,7 @@ const POS = [
 const NEG = [
   'ремонт автомобиля','оргтехники','телефона','компьютера','стиральной машины',
   'холодильника','кондиционера','мелкий ремонт','мастер на час','вакансия',
-  'требуется мастер','ищу работу','ищу работу вахтой','резюме','зарплата',
+  'ищу работу','ищу работу вахтой','резюме','зарплата',
   'устроиться на работу','требуются рабочие','требуются сотрудники'
 ];
 
@@ -85,16 +85,14 @@ async function get(url){
 }
 function telegramItems(html,source){
   const out=[];
-  const re=/<div[^>]+class=["'][^"']*tgme_widget_message[^"']*["'][^>]*>([\\s\\S]*?)(?=<div[^>]+class=["'][^"']*tgme_widget_message_wrap|$)/gi;
+  const re=/<div[^>]+class=["'][^"']*tgme_widget_message_text[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi;
   let m;
   while((m=re.exec(html))){
-    const block=m[1];
-    const tx=block.match(/<div[^>]+class=["'][^"']*tgme_widget_message_text[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/i);
-    if(!tx) continue;
-    const text=decode(tx[1]);
+    const text=decode(m[1]);
     if(text.length<20 || !relevant(text)) continue;
-    const tm=block.match(/<a[^>]+class=["'][^"']*tgme_widget_message_date[^"']*["'][^>]+href=["']([^"']+)["']/i)
-      || block.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["'][^>]*class=["'][^"']*tgme_widget_message_date/i);
+    const from=Math.max(0,m.index-8000), to=Math.min(html.length,m.index+12000);
+    const nearby=html.slice(from,to);
+    const tm=nearby.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["']/i);
     const link=tm?.[1] || source.url;
     const a=area(text);
     out.push({
