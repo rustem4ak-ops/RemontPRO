@@ -7,6 +7,11 @@
 <style>
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f6f8;color:#17191c}a{text-decoration:none;color:inherit}.wrap{max-width:1160px;margin:auto;padding:0 20px}
 .hero{background:radial-gradient(circle at 82% 18%,#3a414a 0,#20242a 30%,#15171a 62%);color:#fff;padding:18px 0 88px;position:relative;overflow:hidden}.hero:after{content:'';position:absolute;right:-180px;top:120px;width:520px;height:520px;border:1px solid #ffffff18;border-radius:50%;box-shadow:0 0 0 70px #ffffff05,0 0 0 140px #ffffff03}.nav{display:flex;justify-content:space-between;align-items:center;position:fixed;top:0;left:0;right:0;width:100%;padding:14px max(20px,calc((100% - 1160px)/2));border-bottom:1px solid #ffffff18;background:rgba(21,23,26,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 30px #0003;z-index:500}.logo{font-size:23px;font-weight:950;letter-spacing:.4px}.navlinks{display:flex;gap:24px;color:#c7cad0;font-size:14px}
+
+.mobileContactIcons{display:none;align-items:center;gap:8px}
+.mobileContactIcon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff2b;border-radius:10px;background:#ffffff12;color:#fff;font-size:18px;line-height:1}
+.mobileContactIcon:hover{background:#ffffff22}
+@media(max-width:800px){.mobileContactIcons{display:flex}.nav .logo{font-size:18px}.nav{gap:10px}.navlinks{display:none}}
 .heroGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center;padding-top:100px}.eyebrow{color:#b9ff4a;font-weight:850;text-transform:uppercase;font-size:12px;letter-spacing:1.5px}h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-3px;margin:15px 0 22px}h2{font-size:38px;letter-spacing:-1.5px;margin:0 0 15px}.lead{font-size:19px;line-height:1.55;color:#c9cbd0;max-width:690px}.buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-block;padding:14px 20px;border:0;border-radius:12px;font-weight:850;cursor:pointer;font:inherit}.primary{background:#b9ff4a;color:#10120d}.secondary{border:1px solid #555b63;color:#fff;background:transparent}
 .card{background:#fff;color:#17191c;border-radius:24px;padding:26px;box-shadow:0 20px 60px #0005}.teaser{background:linear-gradient(145deg,#ffffff16,#ffffff08);border:1px solid #ffffff25;border-radius:22px;padding:25px;line-height:1.5;backdrop-filter:blur(12px)}.teaser span{color:#c9cbd0;font-size:14px}.trust{background:#fff;border-bottom:1px solid #e7e9ec}.trustGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e7e9ec}.trustItem{background:#fff;padding:22px 18px}.trustItem b{display:block;font-size:17px;margin-bottom:5px}.trustItem span{font-size:13px;color:#70757d}.section{padding:82px 0}.muted{color:#656a72}.center{text-align:center}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:35px}.service,.step,.review,.portfolioCard{background:#fff;padding:25px;border-radius:18px;border:1px solid #e5e7ea}.service h3{margin:9px 0;font-size:21px}.num{font-size:13px;font-weight:900;color:#6d7279}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:35px}.cta{background:#b9ff4a;padding:60px 0}.footer{background:#15171a;color:#aaa;padding:35px 0}.footer strong{color:#fff}
 .portfolio{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}.portfolioCard{min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;background:linear-gradient(145deg,#2b3036,#dfe3e7 62%,#fff);color:#fff}.portfolioCard:before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#000b)}.portfolioCard>*{position:relative;z-index:1}.portfolioCard .muted{color:#e5e7ea}.portfolioCard b{font-size:20px}.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}.review p{line-height:1.55}.review b{font-size:14px}
@@ -32,6 +37,8 @@
 .portfolioSectionTitle{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:52px 0 16px}.portfolioSectionTitle h3{font-size:26px;margin:0}.portfolioSectionTitle p{margin:5px 0 0;color:#6b7077}
 .portfolioFolders{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.portfolioFolder{border:1px solid #dfe2e6;background:#fff;border-radius:999px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer}.portfolioFolder.active{background:#17191c;color:#fff;border-color:#17191c}
 .portfolioGallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.portfolioPhoto{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#dfe2e6;cursor:pointer;border:1px solid #e1e4e7}.portfolioPhoto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}.portfolioPhoto:hover img{transform:scale(1.045)}.portfolioPhoto:after{content:'Смотреть';position:absolute;right:10px;bottom:10px;background:#17191ddd;color:#fff;padding:7px 10px;border-radius:9px;font-size:11px;font-weight:850;opacity:0;transition:.2s}.portfolioPhoto:hover:after{opacity:1}
+
+.portfolioMoreWrap,.reviewsMoreWrap{display:flex;justify-content:center;margin-top:20px}.portfolioMoreWrap .btn,.reviewsMoreWrap .btn{min-width:210px}.reviewHidden{display:none}.reviewHidden.reviewVisible{display:block}
 .portfolioEmpty{padding:35px;background:#fff;border:1px dashed #cfd4da;border-radius:18px;color:#6b7077;text-align:center;grid-column:1/-1}
 .portfolioCta{margin-top:28px;padding:24px 26px;background:#17191c;color:#fff;border-radius:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}.portfolioCta h3{margin:0 0 5px;font-size:22px}.portfolioCta p{margin:0;color:#c7cad0;font-size:14px}
 .portfolioLightbox{position:fixed;inset:0;background:#000e;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}.portfolioLightbox.open{display:flex}.portfolioLightbox img{max-width:94vw;max-height:90vh;object-fit:contain;border-radius:10px}.portfolioLightbox .lbClose{position:absolute;top:18px;right:22px;border:0;background:#fff2;color:#fff;width:44px;height:44px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev,.portfolioLightbox .lbNext{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fff2;color:#fff;width:50px;height:50px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev{left:20px}.portfolioLightbox .lbNext{right:20px}.portfolioCaption{position:absolute;left:20px;bottom:18px;right:20px;text-align:center;color:#fff;font-weight:750;text-shadow:0 1px 4px #000}.portfolioLoading{text-align:center;padding:35px;color:#6b7077;grid-column:1/-1}
@@ -140,6 +147,7 @@ body{
 #services .service:nth-child(2){
 }
 #services .service:nth-child(3){
+  background-image:url('/assets/commercial-renovation.jpg');
 }
 #services .service:before{
   content:'';
@@ -249,7 +257,7 @@ body{
 </style>
 </head>
 <body>
-<header class="hero"><div class="wrap"><nav class="nav"><div class="logo">РЕМОНТФОРМА</div><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div></nav>
+<header class="hero"><div class="wrap"><nav class="nav"><div class="logo">РЕМОНТФОРМА</div><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div><div class="mobileContactIcons"><a class="mobileContactIcon" href="https://t.me/RemontFormaBot" aria-label="Telegram">✈</a><a class="mobileContactIcon" href="#contacts" aria-label="Контакты">☎</a></div></nav>
 <div class="heroGrid"><div><div class="eyebrow">Казань · ремонт под ключ</div><h1>Ремонт, который начинается с точного расчёта.</h1><p class="lead">Квартиры, дома и коммерческие помещения. Замер, смета, организация работ и контроль ремонта — в одном месте.</p><div class="buttons"><button class="btn primary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/RemontFormaBot">Написать в Telegram</a></div></div>
 <div><div class="teaser">🧮 <b>Онлайн-расчёт</b><br><span>Ответьте на вопросы, получите предварительную стоимость и при желании оставьте контакты для точной сметы.</span></div><button class="btn primary" style="width:100%;margin-top:12px" onclick="openCalc()">Рассчитать ремонт</button></div></div></div></header>
 
@@ -276,6 +284,7 @@ body{
   <div class="portfolioSectionTitle"><div><h3>Реальные работы</h3><p>Сначала — самые показательные интерьеры. Ниже — детали отделки и санузлов.</p></div></div>
   <div id="portfolioFolders" class="portfolioFolders"></div>
   <div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем фотографии…</div></div>
+  <div class="portfolioMoreWrap"><button id="portfolioMore" class="btn" onclick="showMorePortfolio()" style="background:#17191c;color:#fff;display:none">Показать ещё фото</button></div>
   <div class="portfolioCta"><div><h3>Хотите такой же результат?</h3><p>Оставьте параметры объекта — <strong>предварительный расчёт</strong> получите за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
 </div></section>
 <div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt="Реализованный ремонт"><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
@@ -290,14 +299,15 @@ body{
     <div class="review"><b>Пример отзыва · квартира</b><p>«Рустем, спасибо за ремонт. Больше всего понравилось, что не пришлось постоянно контролировать каждый этап. По ходу работ всё объясняли, показывали и предупреждали, если нужно было принять решение.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
     <div class="review"><b>Пример отзыва · новостройка</b><p>«Делали ремонт в новой квартире практически с нуля. Получилось именно то, что хотели: аккуратно, современно и без ощущения, что деньги ушли непонятно куда. Отдельное спасибо за порядок на объекте.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
     <div class="review"><b>Пример отзыва · санузел</b><p>«Особенно переживали за санузел и плитку, потому что там очень много нюансов. В итоге всё получилось ровно, аккуратно, швы чистые. Результатом довольны, пользоваться приятно каждый день.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · дом</b><p>«В доме всегда сложнее организовать ремонт, чем в квартире, но здесь понравился именно подход к организации. Работы шли последовательно, вопросы решались быстро, а по итогу получили готовый результат без бесконечной стройки.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · кухня и гостиная</b><p>«Очень понравилось, как в итоге получилось пространство кухни и гостиной. На этапе ремонта были сомнения по некоторым решениям, но всё обсудили и нашли нормальный вариант. Сейчас смотрим на результат и понимаем, что сделали правильно.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · капитальный ремонт</b><p>«Ремонт был большой, поэтому главным для нас была организация. Не ожидали, что можно настолько спокойно пройти весь процесс. По срокам и этапам держали в курсе, недочёты исправлялись без долгих разговоров.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · отделка</b><p>«Хорошо, когда подрядчик не просто делает по списку, а думает о результате. Несколько раз подсказали решения, которые мы сами бы не учли. В итоге получилось аккуратно и намного лучше, чем представляли в начале.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · первый ремонт</b><p>«Это был наш первый серьёзный ремонт, поэтому сначала было страшновато. Здесь понравилось, что всё объясняли простым языком: что сейчас делаем, зачем и что будет следующим этапом. Для нас это сильно упростило весь процесс.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · результат</b><p>«После окончания ремонта прошлись по квартире и реально искали, к чему придраться. В итоге мелкие моменты быстро поправили, а основным результатом остались очень довольны. Квартира наконец выглядит именно как готовый дом, а не стройка.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Пример отзыва · дом</b><p>«В доме всегда сложнее организовать ремонт, чем в квартире, но здесь понравился именно подход к организации. Работы шли последовательно, вопросы решались быстро, а по итогу получили готовый результат без бесконечной стройки.»</p><span class="muted">Заготовка · имя клиента добавить посл<div class="review reviewHidden" data-review-hidden>></div>
+    <div class="review"><b>Пример отзыва · кухня и гостиная</b><p>«Очень понравилось, как в итоге получилось пространство кухни и гостиной. На этапе ремонта были сомнения по некоторым решениям, но всё обсудили и нашли нормальный вариант. Сейчас смотрим на результат и понимаем, что сделали правильно.»</p><span class="muted">Загот<div class="review reviewHidden" data-review-hidden>обавить после согласования</span></div>
+    <div class="review"><b>Пример отзыва · капитальный ремонт</b><p>«Ремонт был большой, поэтому главным для нас была организация. Не ожидали, что можно настолько спокойно пройти весь процесс. По срокам и этапам держали в курсе, недочёты исправлялись без долгих разговоро<div class="review reviewHidden" data-review-hidden>muted">Заготовка · имя клиента добавить после согласования</span></div>
+    <div class="review"><b>Пример отзыва · отделка</b><p>«Хорошо, когда подрядчик не просто делает по списку, а думает о результате. Несколько раз подсказали решения, которые мы сами бы не учли. В итоге получилось аккуратно и намного<div class="review reviewHidden" data-review-hidden>ляли в начале.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
+    <div class="review"><b>Пример отзыва · первый ремонт</b><p>«Это был наш первый серьёзный ремонт, поэтому сначала было страшновато. Здесь понравилось, что всё объясняли простым языком: что сейчас делаем, зачем и что <div class="review reviewHidden" data-review-hidden>ом. Для нас это сильно упростило весь процесс.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
+    <div class="review"><b>Пример отзыва · результат</b><p>«После окончания ремонта прошлись по квартире и реально искали, к чему придраться. В итоге мелкие моменты быстро поправили, а основным ре<div class="review reviewHidden" data-review-hidden>чень довольны. Квартира наконец выглядит именно как готовый дом, а не стройка.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
     <div class="review"><b>Пример отзыва · рекомендация</b><p>«Спасибо за работу. Для меня главный показатель — когда после ремонта не хочется ещё месяц что-то переделывать. Здесь именно так: всё закончили, убрали, показали результат. Если понадобится следующий объект, обращусь снова.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-  </div>
+
+  <div class="reviewsMoreWrap"><button id="reviewsMore" class="btn" onclick="showMoreReviews()" style="background:#17191c;color:#fff">Показать ещё отзывы</button></div>  </div>
 </div></section>
 
 <section class="section" id="steps" style="background:#eceef0"><div class="wrap"><div class="eyebrow">Процесс</div><h2>Как мы работаем</h2><div class="steps"><div class="step"><b>01. Заявка</b><p class="muted">Параметры объекта и задачи.</p></div><div class="step"><b>02. Замер</b><p class="muted">Уточняем объёмы и особенности.</p></div><div class="step"><b>03. Смета</b><p class="muted">Формируем понятный расчёт.</p></div><div class="step"><b>04. Ремонт</b><p class="muted">Организуем и контролируем работы.</p></div></div></div></section>
@@ -350,7 +360,7 @@ function prevStep(){saveFields();if(S.step){S.step--;render()}}
 async function loadResult(){const r=document.getElementById('finalResult');const body={floor:S.floor,bath:S.bath,balcony:S.balcony,electrical:S.electrical,plumbing:S.plumbing,bathroom:S.bathroom,tile:S.tile,tileArea:S.tileArea,laminate:S.floorFinish==='quartz'||S.floorFinish==='laminate',plinth:S.plinth,walls:S.walls,cleanElectrical:S.cleanElectrical,cleanPlumbing:S.cleanPlumbing,cleaning:S.cleaning,trash:S.trash};try{const a=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),j=await a.json();if(!j.ok)throw new Error();S.result=j.result;const q=j.result,rows=q.rows||[];const stage=(title,fn)=>{const it=rows.filter(fn),sum=it.reduce((a,x)=>a+x.cost,0);return sum?'<div class="resultStage"><b>'+title+'</b>'+it.map(x=>'<div>'+x.name+' — '+money(x.cost)+'</div>').join('')+'<strong>Итого: '+money(sum)+'</strong></div>':''};r.innerHTML='<div class="muted">Объект: '+S.type+' · '+q.floor+' м² · основная площадь '+q.mainArea+' м²</div>'+stage('Этап 1 — Электрика, сантехника и санузел',x=>/Электрика|Сантехника|санузел/.test(x.name))+stage('Этап 2 — Плитка',x=>x.name.startsWith('Плитка'))+stage('Этап 3 — Напольные покрытия',x=>x.name.startsWith('Ламинат / кварцвинил'))+stage('Этап 4 — Стены и плинтусы',x=>/обои|покраску|декоративку|Плинтус/.test(x.name))+stage('Этап 5 — Чистовые работы',x=>/Чистовая/.test(x.name))+stage('Этап 6 — Завершение',x=>/Клининг|Вывоз/.test(x.name))+'<div class="resultTotal"><span>ИТОГО</span><span>'+money(q.total)+'</span></div><div class="resultTotal" style="font-size:15px"><span>Цена за м² по полу</span><span>'+money(q.pricePerM2)+'</span></div><div class="hint">Предварительный расчёт. Точная смета формируется после замера и согласования состава работ.</div>'}catch(e){r.innerHTML='Не удалось получить расчёт. Попробуйте ещё раз.'}}
 function openLead(){saveFields();if(!S.result){alert('Сначала дождитесь расчёта');return}document.getElementById('wizard').innerHTML='<div class="stepTitle">Получить точную смету</div><p class="muted">Оставьте номер телефона. Мы свяжемся с вами, уточним объект и договоримся о замере.</p><div class="leadBox"><div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div><div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div><div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div></div>';document.getElementById('progressText').textContent='Заявка';document.getElementById('bar').style.width='100%';document.getElementById('backBtn').classList.remove('hidden');document.getElementById('nextBtn').textContent='Отправить заявку';document.getElementById('nextBtn').onclick=submitLead}
 async function submitLead(){const phone=val('leadPhone').trim();if(!phone){alert('Введите телефон');return}const payload={name:val('leadName').trim(),phone,comment:val('leadComment').trim(),source:S.source||'site',medium:S.medium||'',campaign:S.campaign||'',referrer:document.referrer||'',object:{type:S.type,floor:S.floor,bath:S.bath,balcony:S.balcony,rooms:S.rooms,state:S.state,finish:S.finish,windows:S.windows},calculator:S.result,selection:{electrical:S.electrical,plumbing:S.plumbing,bathroom:S.bathroom,tile:S.tile,tileArea:S.tileArea,floorFinish:S.floorFinish,plinth:S.plinth,walls:S.walls,cleanElectrical:S.cleanElectrical,cleanPlumbing:S.cleanPlumbing,cleaning:S.cleaning,trash:S.trash},files:{photos:S.photos,plan:S.plan}};document.getElementById('nextBtn').disabled=true;try{const a=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),j=await a.json();if(!j.ok)throw new Error(j.error||'Ошибка');document.getElementById('wizard').innerHTML='<div class="success"><h3>✅ Заявка отправлена</h3><p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p><div class="buttons"><a class="btn primary" href="https://t.me/RemontFormaBot">Открыть Telegram</a><button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button></div></div>';document.getElementById('backBtn').classList.add('hidden');document.getElementById('nextBtn').style.display='none'}catch(e){alert('Не удалось отправить заявку. Попробуйте связаться с нами в Telegram.')}finally{document.getElementById('nextBtn').disabled=false}}
-let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все';
+let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все',portfolioVisibleCount=8,reviewVisibleCount=3;
 
 const FEATURED_NAMES=[
   '20231223_114527.jpg',
@@ -434,21 +444,45 @@ async function loadPortfolio(){
     box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
   }
 }
+function showMorePortfolio(){
+  portfolioVisibleCount+=8;
+  renderPortfolio(portfolioFolder);
+}
 function filterPortfolio(folder,btn){
   portfolioFolder=folder;
+  portfolioVisibleCount=8;
   document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
   renderPortfolio(folder);
 }
 function renderPortfolio(folder){
   const box=document.getElementById('portfolioGallery');
+  const more=document.getElementById('portfolioMore');
   portfolioFiltered=(folder==='Все'?[...portfolioImages]:portfolioImages.filter(x=>x.folder===folder)).sort(portfolioSort);
-  box.innerHTML=portfolioFiltered.map((x,i)=>{
+  const visible=portfolioFiltered.slice(0,portfolioVisibleCount);
+  box.innerHTML=visible.map((x,i)=>{
     const src=x.preview||x.url||'';
     return '<div class="portfolioPhoto" onclick="openPortfolio('+i+')">'+
       '<img loading="lazy" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'">'+
       '<div class="photoTag">'+escapeHtml(portfolioLabel(x))+'</div></div>';
   }).join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
+  if(more){
+    const left=Math.max(0,portfolioFiltered.length-portfolioVisibleCount);
+    more.style.display=left?'inline-block':'none';
+    more.textContent=left?'Показать ещё фото ('+left+')':'';
+  }
+}
+function showMoreReviews(){
+  const hidden=[...document.querySelectorAll('[data-review-hidden]')];
+  const next=hidden.slice(0,3);
+  next.forEach(x=>x.classList.add('reviewVisible'));
+  reviewVisibleCount+=next.length;
+  const btn=document.getElementById('reviewsMore');
+  const left=hidden.filter(x=>!x.classList.contains('reviewVisible')).length;
+  if(btn){
+    btn.style.display=left?'inline-block':'none';
+    if(left)btn.textContent='Показать ещё отзывы ('+left+')';
+  }
 }
 function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=[...portfolioImages].sort(portfolioSort);portfolioIndex=portfolioFiltered.indexOf(x);showPortfolioImage(x)}
