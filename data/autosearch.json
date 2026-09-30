@@ -1,81 +1,10 @@
 {
-  "updatedAt": "2026-09-30T19:02:27.157Z",
+  "updatedAt": null,
   "stats": {
-    "found": 5,
-    "new": 5,
+    "found": 0,
+    "new": 0,
     "duplicates": 0,
     "high": 0
   },
-  "leads": [
-    {
-      "id": "rostender-kazan-GA0LDQt9C-0LLQsNC90LjRjw",
-      "source": "РосТендер · ремонт в Казани",
-      "url": "https://rostender.info/region/tatarstan-respublika/95271186-tender-subsidii-na-rekonstrukciyu-kapitalnyj-remont-i-ili-osnashchenie-oborudovaniem-obektov-obrazovaniya",
-      "title": "субсидии на реконструкцию, капитальный ремонт и (или) оснащение оборудованием объектов образования",
-      "text": "субсидии на реконструкцию, капитальный ремонт и (или) оснащение оборудованием объектов образования",
-      "area": null,
-      "budget": null,
-      "type": "Квартира",
-      "score": 0,
-      "publishedAt": null,
-      "status": "new",
-      "firstSeenAt": "2026-09-30T19:02:27.152Z"
-    },
-    {
-      "id": "rostender-kazan-uNCz0LAg0J_QsNC80Y_RgtC4",
-      "source": "РосТендер · ремонт в Казани",
-      "url": "https://rostender.info/region/tatarstan-respublika/kazan/95185773-tender-tekushchij-remont-dvuh-pomeshchenij-memoriala-kniga-pamyati-po-adresu-gkazan-ulhyamasheva-d-44a",
-      "title": "Текущий ремонт двух помещений Мемориала Книга Памяти",
-      "text": "Текущий ремонт двух помещений Мемориала Книга Памяти",
-      "area": null,
-      "budget": null,
-      "type": "Коммерция",
-      "score": 0,
-      "publishedAt": null,
-      "status": "new",
-      "firstSeenAt": "2026-09-30T19:02:27.157Z"
-    },
-    {
-      "id": "rostender-kazan-DQlNCeINCa0LDQt9Cw0L3RjA",
-      "source": "РосТендер · ремонт в Казани",
-      "url": "https://rostender.info/region/tatarstan-respublika/kazan/95182413-tender-stroitelno-otdelochnye-raboty-v-pomeshchenie-do-kazan",
-      "title": "Строительно-отделочные работы в помещение ДО Казань",
-      "text": "Строительно-отделочные работы в помещение ДО Казань",
-      "area": null,
-      "budget": null,
-      "type": "Коммерция",
-      "score": 30,
-      "publishedAt": null,
-      "status": "new",
-      "firstSeenAt": "2026-09-30T19:02:27.157Z"
-    },
-    {
-      "id": "rostender-kazan-GC0L3Ri9GFINC_0LvQuNGCKQ",
-      "source": "РосТендер · ремонт в Казани",
-      "url": "https://rostender.info/region/tatarstan-respublika/kazan/95150705-tender-tekushchij-remont-glavnogo-i-zapasnogo-vhoda-v-zdanie-snyatie-i-ustanovka-granitnyh-plit-dlya-nujd-upravleniya-ao-tatenergo",
-      "title": "Текущий ремонт главного и запасного входа в здание (снятие и установка гранитных плит)",
-      "text": "Текущий ремонт главного и запасного входа в здание (снятие и установка гранитных плит)",
-      "area": null,
-      "budget": null,
-      "type": "Квартира",
-      "score": 0,
-      "publishedAt": null,
-      "status": "new",
-      "firstSeenAt": "2026-09-30T19:02:27.157Z"
-    },
-    {
-      "id": "rostender-kazan-wg0KDQuNCy0YzQtdGA0LAgKQ",
-      "source": "РосТендер · ремонт в Казани",
-      "url": "https://rostender.info/region/tatarstan-respublika/kazan/95088480-tender-kapitalnyj-remont-i-osnashchenie-v-konferenc-zale-monte-karlo-otel-rivera",
-      "title": "Капитальный ремонт и оснащение в конференц-зале Монте-Карло (отель Ривьера )",
-      "text": "Капитальный ремонт и оснащение в конференц-зале Монте-Карло (отель Ривьера )",
-      "area": null,
-      "budget": null,
-      "type": "Квартира",
-      "score": 0,
-      "publishedAt": null,
-      "status": "new",
-      "firstSeenAt": "2026-09-30T19:02:27.157Z"
-    }
-  ]
-}\n
+  "leads": []
+}
