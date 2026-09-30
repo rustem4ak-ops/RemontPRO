@@ -36,6 +36,26 @@
 .portfolioCta{margin-top:28px;padding:24px 26px;background:#17191c;color:#fff;border-radius:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}.portfolioCta h3{margin:0 0 5px;font-size:22px}.portfolioCta p{margin:0;color:#c7cad0;font-size:14px}
 .portfolioLightbox{position:fixed;inset:0;background:#000e;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}.portfolioLightbox.open{display:flex}.portfolioLightbox img{max-width:94vw;max-height:90vh;object-fit:contain;border-radius:10px}.portfolioLightbox .lbClose{position:absolute;top:18px;right:22px;border:0;background:#fff2;color:#fff;width:44px;height:44px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev,.portfolioLightbox .lbNext{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fff2;color:#fff;width:50px;height:50px;border-radius:50%;font-size:30px;cursor:pointer}.portfolioLightbox .lbPrev{left:20px}.portfolioLightbox .lbNext{right:20px}.portfolioCaption{position:absolute;left:20px;bottom:18px;right:20px;text-align:center;color:#fff;font-weight:750;text-shadow:0 1px 4px #000}.portfolioLoading{text-align:center;padding:35px;color:#6b7077;grid-column:1/-1}
 @media(max-width:800px){.portfolioHero{grid-template-columns:1fr;gap:18px}.portfolioActions{justify-content:flex-start}.portfolioFeatured{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px}.portfolioFeatured .featuredPhoto:first-child{grid-row:1/3}.portfolioGallery{grid-template-columns:1fr 1fr;gap:9px}.portfolioPhoto{border-radius:13px}.portfolioPhoto:after{display:none}.portfolioCta{display:block}.portfolioCta .btn{margin-top:15px}.portfolioLightbox{padding:8px}.portfolioLightbox .lbPrev{left:5px}.portfolioLightbox .lbNext{right:5px}}
+
+/* Sales portfolio v2 */
+.portfolio{position:relative}
+.portfolioHero{margin-top:28px}
+.portfolioIntro h2{max-width:760px}
+.portfolioIntro p{max-width:700px}
+.portfolioProof span{box-shadow:0 5px 18px #00000009}
+.portfolioFeatured{grid-template-columns:1.7fr .85fr .85fr;grid-template-rows:235px 235px;gap:14px;margin-top:34px}
+.portfolioFeatured .featuredPhoto:first-child{box-shadow:0 22px 55px #00000020}
+.featuredPhoto{border-radius:24px}
+.featuredInfo{left:20px;bottom:18px}
+.featuredInfo b{font-size:20px;letter-spacing:-.2px}
+.featuredInfo span{font-size:12px}
+.featuredTag{display:inline-block;margin-bottom:7px;padding:5px 8px;border-radius:999px;background:#b9ff4a;color:#10120d;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.7px}
+.portfolioSectionTitle{margin-top:58px}
+.portfolioPhoto{background:#d7dadd;box-shadow:0 8px 25px #0000000a}
+.portfolioPhoto:after{content:'Открыть фото'}
+.portfolioCta{margin-top:34px}
+.portfolioCta strong{color:#b9ff4a}
+@media(max-width:800px){.portfolioFeatured{grid-template-columns:1fr 1fr;grid-template-rows:210px 160px;gap:9px}.portfolioFeatured .featuredPhoto:first-child{grid-row:1/3}.featuredInfo{left:14px;right:14px;bottom:13px}.featuredInfo b{font-size:16px}}
 </style>
 </head>
 <body>
@@ -52,21 +72,21 @@
 <section class="section" id="portfolio" style="background:#eceef0"><div class="wrap">
   <div class="portfolioHero">
     <div class="portfolioIntro">
-      <div class="eyebrow">Наши работы</div>
-      <h2>Ремонт, который хочется показать.</h2>
-      <p>Подобрали фотографии так, чтобы вы сразу увидели главное: качество отделки, аккуратность деталей и готовый результат. Сначала — избранные работы, затем вся подборка.</p>
-      <div class="portfolioProof"><span>✓ Реальные объекты</span><span>✓ Ремонт под ключ</span><span>✓ Казань</span></div>
+      <div class="eyebrow">Портфолио РЕМОНТФОРМА</div>
+      <h2>Сначала покажем то, за что выбирают подрядчика.</h2>
+      <p>Не просто лента фотографий. В начале — отобранные кадры готовых интерьеров: кухня, гостиная, спальня, санузел и детали отделки. Ниже — остальные реализованные работы.</p>
+      <div class="portfolioProof"><span>✓ Реальные реализованные объекты</span><span>✓ Готовые интерьеры</span><span>✓ Ремонт под ключ в Казани</span></div>
     </div>
     <div class="portfolioActions">
       <button class="btn primary" onclick="openCalc()">Рассчитать мой ремонт</button>
-      <a class="btn secondary" style="background:#fff;color:#17191c;border-color:#dfe2e6" href="https://t.me/RemontFormaBot">Задать вопрос</a>
+      <a class="btn secondary" style="background:#fff;color:#17191c;border-color:#dfe2e6" href="https://t.me/RemontFormaBot">Обсудить проект</a>
     </div>
   </div>
-  <div id="portfolioFeatured" class="portfolioFeatured"><div class="portfolioLoading">Подбираем лучшие кадры…</div></div>
-  <div class="portfolioSectionTitle"><div><h3>Ещё реализованные проекты</h3><p>Выберите раздел и посмотрите детали.</p></div></div>
+  <div id="portfolioFeatured" class="portfolioFeatured"><div class="portfolioLoading">Отбираем лучшие фотографии…</div></div>
+  <div class="portfolioSectionTitle"><div><h3>Все работы</h3><p>Смотрите детали и выбирайте стиль, который вам нравится.</p></div></div>
   <div id="portfolioFolders" class="portfolioFolders"></div>
   <div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем фотографии…</div></div>
-  <div class="portfolioCta"><div><h3>Понравился уровень ремонта?</h3><p>Рассчитаем предварительную стоимость вашего объекта за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
+  <div class="portfolioCta"><div><h3>Хотите такой же результат?</h3><p>Оставьте параметры объекта — <strong>предварительный расчёт</strong> получите за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
 </div></section>
 <div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt="Реализованный ремонт"><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
 
@@ -127,10 +147,13 @@ let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='В
 function portfolioScore(x){
   const s=((x.name||'')+' '+(x.folder||'')).toLowerCase();
   let score=0;
-  if(/кух|гостин|спаль|сануз|ванн|прихож|коридор/.test(s)) score+=25;
-  if(/готов|итог|после|фото|интерьер|ремонт/.test(s)) score+=8;
-  if(/до|чернов|процесс|демонтаж/.test(s)) score-=18;
-  if(/screen|скрин|img_|dsc|photo/.test(s)) score+=1;
+  // Продажные кадры: готовые комнаты и интерьерные сцены выше технических фото.
+  if(/готов|после|интерьер|дизайн|ремонт/.test(s)) score+=18;
+  if(/кух|гостин|спаль|сануз|ванн|прихож|коридор/.test(s)) score+=24;
+  if(/детал|стен|пол|потол|свет|мебел/.test(s)) score+=7;
+  if(/до|чернов|демонтаж|процесс|стройк|гряз/.test(s)) score-=28;
+  if(/скрин|скриншот|whatsapp|telegram/.test(s)) score-=40;
+  if(/img_|dsc|photo/.test(s)) score+=1;
   return score;
 }
 function portfolioLabel(x){
@@ -140,8 +163,10 @@ function portfolioLabel(x){
   if(/спаль/.test(s)) return 'Спальня';
   if(/сануз|ванн/.test(s)) return 'Санузел';
   if(/прихож|коридор/.test(s)) return 'Прихожая';
+  if(/детал/.test(s)) return 'Детали';
   return 'Реализованный объект';
 }
+function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
 async function loadPortfolio(){
   const box=document.getElementById('portfolioGallery'),folders=document.getElementById('portfolioFolders'),featured=document.getElementById('portfolioFeatured');
   if(!box)return;
@@ -150,11 +175,18 @@ async function loadPortfolio(){
     if(!j.ok||!j.images?.length)throw new Error();
     portfolioImages=j.images;
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
-    const ranked=[...portfolioImages].sort((a,b)=>b._score-a._score);
-    const seen=new Set(),selected=[];
-    for(const x of ranked){const key=(x.folder||'')+'|'+portfolioLabel(x);if(!seen.has(key)){seen.add(key);selected.push(x)}if(selected.length>=5)break}
+    const ranked=[...portfolioImages].sort(portfolioSort);
+    const selected=[],usedLabels=new Set();
+    for(const x of ranked){
+      const label=portfolioLabel(x);
+      if(!usedLabels.has(label)){usedLabels.add(label);selected.push(x)}
+      if(selected.length>=5)break;
+    }
     const featuredItems=selected.length>=3?selected:ranked.slice(0,5);
-    featured.innerHTML=featuredItems.map((x,i)=>'<div class="featuredPhoto" onclick="openFeatured('+portfolioImages.indexOf(x)+')"><img loading="eager" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"><div class="featuredInfo"><b>'+escapeHtml(portfolioLabel(x))+'</b><span>Реализованный ремонт РЕМОНТФОРМА</span></div></div>').join('');
+    featured.innerHTML=featuredItems.map((x,i)=>{
+      const idx=portfolioImages.indexOf(x);
+      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')"><img loading="eager" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"><div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span><b>Реализованный ремонт</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
+    }).join('');
     const names=['Все',...new Set(portfolioImages.map(x=>x.folder).filter(Boolean))];
     folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x.replace(/^.*\\//,''))+'</button>').join('');
     renderPortfolio('Все');
@@ -166,13 +198,13 @@ async function loadPortfolio(){
 function filterPortfolio(folder,btn){portfolioFolder=folder;document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderPortfolio(folder)}
 function renderPortfolio(folder){
   const box=document.getElementById('portfolioGallery');
-  portfolioFiltered=folder==='Все'?[...portfolioImages].sort((a,b)=>(b._score||0)-(a._score||0)):portfolioImages.filter(x=>x.folder===folder);
+  portfolioFiltered=folder==='Все'?[...portfolioImages].sort(portfolioSort):portfolioImages.filter(x=>x.folder===folder).sort(portfolioSort);
   box.innerHTML=portfolioFiltered.map((x,i)=>'<div class="portfolioPhoto" onclick="openPortfolio('+i+')"><img loading="lazy" src="'+(x.preview||'')+'" alt="'+escapeHtml(portfolioLabel(x))+'" onerror="this.parentElement.style.display=\'none\'"></div>').join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
 }
 function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=portfolioImages;portfolioIndex=i;showPortfolioImage(x)}
+function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=[...portfolioImages].sort(portfolioSort);portfolioIndex=portfolioFiltered.indexOf(x);showPortfolioImage(x)}
 function openPortfolio(i){portfolioIndex=i;const x=portfolioFiltered[i];if(!x)return;showPortfolioImage(x)}
-function showPortfolioImage(x){document.getElementById('portfolioLarge').src=x.preview||'';document.getElementById('portfolioCaption').textContent=portfolioLabel(x)+' · РЕМОНТФОРМА';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
+function showPortfolioImage(x){document.getElementById('portfolioLarge').src=x.preview||'';document.getElementById('portfolioCaption').textContent=portfolioLabel(x)+' · РЕМОНТФОРМА · Казань';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
 function closePortfolio(){document.getElementById('portfolioLightbox').classList.remove('open');document.body.style.overflow=''}
 function portfolioMove(d){if(!portfolioFiltered.length)return;portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;showPortfolioImage(portfolioFiltered[portfolioIndex])}
 document.addEventListener('keydown',e=>{if(!document.getElementById('portfolioLightbox').classList.contains('open'))return;if(e.key==='Escape')closePortfolio();if(e.key==='ArrowLeft')portfolioMove(-1);if(e.key==='ArrowRight')portfolioMove(1)});
