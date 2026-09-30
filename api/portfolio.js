@@ -49,7 +49,7 @@ async function getFolder(path) {
 async function collect(path, folderName, out) {
   const data = await getFolder(path);
   const items = data && data._embedded && data._embedded.items || [];
-  for (const item of items) {
+  await Promise.all(items.map(async item => {
     const itemPath = item.path || ((path ? path + '/' : '') + item.name);
     if (item.type === 'dir') {
       await collect(itemPath, item.name || folderName, out);
@@ -63,7 +63,7 @@ async function collect(path, folderName, out) {
         size: Number(item.size || 0)
       });
     }
-  }
+  }));
 }
 
 module.exports = async (req, res) => {
