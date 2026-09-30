@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'scripts/autosearch.mjs'
-      - 'data/autosearch.json'
       - '.github/workflows/autosearch.yml'
   schedule:
     - cron: "*/15 * * * *"
