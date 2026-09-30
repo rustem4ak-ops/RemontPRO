@@ -2,6 +2,7 @@
   "version": 2,
   "rewrites": [
     { "source": "/", "destination": "/site/index.html" },
-    { "source": "/index.html", "destination": "/site/index.html" }
+    { "source": "/index.html", "destination": "/site/index.html" },
+    { "source": "/autosearch", "destination": "/site/autosearch.html" }
   ]
 }
