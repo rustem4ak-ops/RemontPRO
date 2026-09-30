@@ -155,12 +155,12 @@ async function notify(){
   const tgToken=process.env.TELEGRAM_BOT_TOKEN, tgChat=process.env.TELEGRAM_ADMIN_CHAT_ID;
   if(tgToken&&tgChat) for(const x of top) await fetch('https://api.telegram.org/bot'+tgToken+'/sendMessage',{
     method:'POST',headers:{'content-type':'application/json'},
-    body:JSON.stringify({chat_id:tgChat,text:msg(x),disable_web_page_preview:false})
+    body:JSON.stringify({chat_id:tgChat,text:msg(x),disable_web_page_preview:false,reply_markup:telegramMarkup(x)})
   }).catch(()=>{});
   const maxToken=process.env.MAX_BOT_TOKEN, maxChat=process.env.MAX_ADMIN_CHAT_ID;
   if(maxToken&&maxChat) for(const x of top) await fetch('https://platform-api2.max.ru/messages?chat_id='+encodeURIComponent(maxChat),{
     method:'POST',headers:{'Authorization':maxToken,'content-type':'application/json'},
-    body:JSON.stringify({text:msg(x)})
+    body:JSON.stringify({text:msg(x),attachments:maxAttachments(x)})
   }).catch(()=>{});
   const notified=new Set(top.map(x=>x.id));
   OUT.leads=OUT.leads.map(x=>notified.has(x.id)?{...x,notifiedAt:new Date().toISOString()}:x);
