@@ -26,6 +26,8 @@ jobs:
           TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
           MAX_BOT_TOKEN: ${{ secrets.MAX_BOT_TOKEN }}
           MAX_ADMIN_CHAT_ID: ${{ secrets.MAX_ADMIN_CHAT_ID }}
+          VK_ACCESS_TOKEN: ${{ secrets.VK_ACCESS_TOKEN }}
+          VK_PUBLIC_GROUPS: ${{ secrets.VK_PUBLIC_GROUPS }}
         run: node scripts/autosearch.mjs
       - name: Save results
         run: |
