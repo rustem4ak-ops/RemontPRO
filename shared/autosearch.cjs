@@ -8,6 +8,18 @@ const SOURCES = [
   {id:'telegram-vsem-podryad',name:'Telegram · Всем подряд',url:'https://t.me/s/vsem_podryad',type:'telegram_construction',city:null},
   {id:'telegram-sosedi61kvartal',name:'Telegram · 61 Квартал ЖК | Соседи',url:'https://t.me/s/sosedi61kvartal',type:'telegram_jk',city:'Казань'},
   {id:'telegram-domkzn',name:'Telegram · Дом и соседи Казань',url:'https://t.me/s/domkzn',type:'telegram_local',city:'Казань'},
+  {id:'telegram-kuyuki-official',name:'Посёлки · Куюки — official',url:'https://t.me/s/kuyuki_official',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-salmachi-info',name:'Посёлки · Салмачи • Куюки | ИНФО ЧАТ',url:'https://t.me/s/salmachi_info',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-salmachi-online',name:'Посёлки · Салмачи — Куюки | Чат',url:'https://t.me/s/salmachi_online_chat',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-konstantinovka-kazan',name:'Посёлки · Константиновка Казань',url:'https://t.me/s/konstantinovka_kazan',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-osinovo',name:'Посёлки · Осиново — Радужный — Салават Купере',url:'https://t.me/s/osinovoo16',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-biektay-chat',name:'Посёлки · Высокая Гора — чат жителей',url:'https://t.me/s/chat_biektay',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-biektay-vgora',name:'Посёлки · Высокая Гора — Биектау',url:'https://t.me/s/biektay_vgora',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-usady',name:'Посёлки · Усады — объявления и соседи',url:'https://t.me/s/kazan_usady',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-laiysh-kzn',name:'Посёлки · Лаишевский район — Лаишево — Сокуры — Столбище — Усады — Ковали',url:'https://t.me/s/laish_kzn',type:'telegram_village',city:'Казань',radiusKm:50},
+  {id:'telegram-zelenodolsk',name:'Посёлки/города · Зеленодольск Life',url:'https://t.me/s/zelenodolsk_news',type:'telegram_local',city:'Казань',radiusKm:50},
+  {id:'telegram-zeldol',name:'Посёлки/города · Зеленодольск.Онлайн',url:'https://t.me/s/zeldol',type:'telegram_local',city:'Казань',radiusKm:50},
+  {id:'telegram-verhniy-uslon',name:'Посёлки · Казань — Верхний Услон',url:'https://t.me/s/perepravakazan',type:'telegram_local',city:'Казань',radiusKm:50},
   {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web_catalog',city:'Казань'}
 ];
 
@@ -78,7 +90,7 @@ function analyze(text,source){
   const object=OBJECT_RE.test(t);
   const city=/(казан|казань|татарстан)/.test(t) || source.city==='Казань';
   if(source.type==='telegram_lead_channel' && !city) return {ok:false,reason:'не Казань'};
-  if(source.type==='telegram_construction' && !city) return {ok:false,reason:'не Казань'};
+  if((source.type==='telegram_construction' || source.type==='telegram_village' || source.type==='telegram_local') && !city) return {ok:false,reason:'не Казань/пригород'};
   if(!object) return {ok:false,reason:'нет объекта ремонта'};
   if(!direct && !question) return {ok:false,reason:'нет намерения заказать'};
   if(!CLIENT_RE.test(t) && !question) return {ok:false,reason:'не похоже на заказчика'};
@@ -167,7 +179,7 @@ async function scanSources(){
     ok:true,updatedAt:new Date().toISOString(),
     stats:{found:all.length,new:all.length,duplicates:all.length-leads.length,high:leads.filter(x=>x.level==='hot').length,hot:leads.filter(x=>x.level==='hot').length,potential:leads.filter(x=>x.level==='potential').length},
     leads,diagnostics,
-    access:{catalogZhK:discovered.length,scannedSources:sources.length,note:'Публичные источники сканируются. Закрытые чаты ЖК не считаются пустыми: для чтения нужен разрешённый доступ.'}
+    access:{catalogZhK:discovered.length,scannedSources:sources.length,nearKazanRadiusKm:50,note:'Добавлены публичные группы и каналы поселков/пригородов в радиусе до 50 км от Казани. Закрытые чаты не считаются пустыми: для чтения нужен разрешённый доступ.'}
   };
 }
 async function notifyTelegram(leads){
