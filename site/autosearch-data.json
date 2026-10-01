@@ -1,14 +1,14 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-01T18:05:35.698Z",
+  "updatedAt": "2026-10-01T18:27:01.180Z",
   "stats": {
-    "found": 11,
+    "found": 48,
     "new": 0,
-    "duplicates": 0,
+    "duplicates": 4,
     "high": 2,
     "hot": 2,
     "potential": 9,
-    "tenders": 0,
+    "tenders": 33,
     "vk": 0
   },
   "leads": [
@@ -32,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.003Z",
+      "firstSeenAt": "2026-10-01T18:26:56.614Z",
       "status": "new"
     },
     {
@@ -55,7 +55,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.058Z",
+      "firstSeenAt": "2026-10-01T18:26:56.614Z",
       "status": "new"
     },
     {
@@ -77,7 +77,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.996Z",
+      "firstSeenAt": "2026-10-01T18:26:57.596Z",
       "status": "new"
     },
     {
@@ -98,7 +98,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.996Z",
+      "firstSeenAt": "2026-10-01T18:26:57.597Z",
       "status": "new"
     },
     {
@@ -119,7 +119,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.058Z",
+      "firstSeenAt": "2026-10-01T18:26:56.294Z",
       "status": "new"
     },
     {
@@ -140,7 +140,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.058Z",
+      "firstSeenAt": "2026-10-01T18:26:56.614Z",
       "status": "new"
     },
     {
@@ -161,7 +161,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.058Z",
+      "firstSeenAt": "2026-10-01T18:26:56.614Z",
       "status": "new"
     },
     {
@@ -182,7 +182,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.995Z",
+      "firstSeenAt": "2026-10-01T18:26:57.596Z",
       "status": "new"
     },
     {
@@ -203,7 +203,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.995Z",
+      "firstSeenAt": "2026-10-01T18:26:57.596Z",
       "status": "new"
     },
     {
@@ -224,7 +224,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.995Z",
+      "firstSeenAt": "2026-10-01T18:26:57.596Z",
       "status": "new"
     },
     {
@@ -245,7 +245,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T18:05:32.996Z",
+      "firstSeenAt": "2026-10-01T18:26:57.597Z",
       "status": "new"
     },
     {
@@ -266,7 +266,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -288,7 +288,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -310,7 +310,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -332,7 +332,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -354,7 +354,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -376,7 +376,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -398,7 +398,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -420,7 +420,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -442,7 +442,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -464,7 +464,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:47.650Z",
+      "firstSeenAt": "2026-10-01T18:26:59.623Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -486,7 +486,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.449Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -508,7 +508,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.449Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -530,7 +530,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.449Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -552,7 +552,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.450Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -574,7 +574,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.450Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -596,7 +596,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.450Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -618,7 +618,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.450Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -640,7 +640,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:48.450Z",
+      "firstSeenAt": "2026-10-01T18:27:00.382Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -662,7 +662,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.458Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -684,7 +684,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.458Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -706,7 +706,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.458Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -728,7 +728,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.458Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -750,7 +750,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.458Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -772,7 +772,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.458Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -794,7 +794,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -816,7 +816,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -838,7 +838,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -860,7 +860,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -882,7 +882,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -904,7 +904,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -926,7 +926,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -948,7 +948,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -970,7 +970,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T17:51:49.459Z",
+      "firstSeenAt": "2026-10-01T18:27:01.180Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1295,23 +1295,26 @@
     {
       "source": "B2B-Center · ремонт квартир Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-kvartir/",
-      "found": 0,
-      "status": "unavailable",
-      "error": "HTTP 403"
+      "found": 14,
+      "status": "readable",
+      "error": null,
+      "type": "tender"
     },
     {
       "source": "B2B-Center · ремонт зданий Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-zdanij-i-sooruzhenij/",
-      "found": 0,
-      "status": "unavailable",
-      "error": "HTTP 403"
+      "found": 8,
+      "status": "readable",
+      "error": null,
+      "type": "tender"
     },
     {
       "source": "B2B-Center · текущий ремонт Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/",
-      "found": 0,
-      "status": "unavailable",
-      "error": "HTTP 403"
+      "found": 15,
+      "status": "readable",
+      "error": null,
+      "type": "tender"
     }
   ],
   "access": {
