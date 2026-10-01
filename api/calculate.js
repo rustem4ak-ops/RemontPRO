@@ -6,7 +6,13 @@ const SOURCES = [
   {id:'telegram-stroykaremontkazan',name:'Telegram · СтРОЙКА/РЕМОНТ Казань',url:'https://t.me/s/stroykaremontkazan'},
   {id:'telegram-kazanstroit',name:'Telegram · Стройка Ремонт Казань',url:'https://t.me/s/kazanstroit'},
   {id:'telegram-stroykakzn',name:'Telegram · Ремонт стройка Казань',url:'https://t.me/s/stroykakzn'},
-  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut'}
+  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut'},
+  {id:'telegram-moyritm-kzn',name:'ЖК · Мой Ритм Казань',url:'https://t.me/s/moyritm_kzn'},
+  {id:'telegram-altinyar-kzn',name:'ЖК · Алтын Яр Казань',url:'https://t.me/s/altinyar_kzn'},
+  {id:'telegram-letokazan',name:'ЖК · Лето Казань',url:'https://t.me/s/letokazan'},
+  {id:'telegram-parkmayak-kzn',name:'ЖК · Парк Маяк Казань',url:'https://t.me/s/park_mayak_kzn'},
+  {id:'telegram-obvkzn-siberovo',name:'ЖК · Сиберово Казань',url:'https://t.me/s/obvkzn'},
+  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/'}
 ];
 
 const NEG=[
