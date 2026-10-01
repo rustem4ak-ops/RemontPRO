@@ -1,4 +1,5 @@
 name: RemontPRO AutoSearch 24/7
+# Lead radar: public Telegram + verified Kazan communities
 
 on:
   push:
