@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": null,
+  "updatedAt": "2026-10-01T09:32:19.824Z",
   "stats": {
     "found": 0,
     "new": 0,
@@ -10,8 +10,45 @@
     "potential": 0
   },
   "leads": [],
-  "diagnostics": [],
+  "diagnostics": [
+    {
+      "source": "Telegram · Шабашка / Работа в Казани",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Подработка Казань 24/7",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Шабашка Халтура Казань",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Стройка Строительство Казань",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Стройка|Ремонт|Казань|Новости",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Заявки на ремонт квартир",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    }
+  ],
   "access": {
-    "note": "Новая версия AutoSearch: показываются только заявки с признаками реального заказчика."
+    "note": "Публичные источники сканируются. Закрытые чаты ЖК не считаются пустыми: для чтения нужен разрешённый доступ."
   }
 }
