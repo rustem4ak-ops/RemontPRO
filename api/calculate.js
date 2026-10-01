@@ -1,18 +1,12 @@
 const { calculate } = require('../shared/remontforma-pricing.js');
 
 const SOURCES = [
-  {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116'},
-  {id:'telegram-stroy-kazann',name:'Telegram · Стройка/Ремонт/Отделка Казань',url:'https://t.me/s/Stroy_Kazann'},
-  {id:'telegram-stroykaremontkazan',name:'Telegram · СтРОЙКА/РЕМОНТ Казань',url:'https://t.me/s/stroykaremontkazan'},
-  {id:'telegram-kazanstroit',name:'Telegram · Стройка Ремонт Казань',url:'https://t.me/s/kazanstroit'},
-  {id:'telegram-stroykakzn',name:'Telegram · Ремонт стройка Казань',url:'https://t.me/s/stroykakzn'},
-  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut'},
-  {id:'telegram-moyritm-kzn',name:'ЖК · Мой Ритм Казань',url:'https://t.me/s/moyritm_kzn'},
-  {id:'telegram-altinyar-kzn',name:'ЖК · Алтын Яр Казань',url:'https://t.me/s/altinyar_kzn'},
-  {id:'telegram-letokazan',name:'ЖК · Лето Казань',url:'https://t.me/s/letokazan'},
-  {id:'telegram-parkmayak-kzn',name:'ЖК · Парк Маяк Казань',url:'https://t.me/s/park_mayak_kzn'},
-  {id:'telegram-obvkzn-siberovo',name:'ЖК · Сиберово Казань',url:'https://t.me/s/obvkzn'},
-  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/'}
+  {id:'telegram-jkazan',name:'Telegram · Шабашка / Работа в Казани',url:'https://t.me/s/jkazan',type:'telegram_public'},
+  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut',type:'telegram_public'},
+  {id:'telegram-tenderlar23',name:'Telegram · Стройка|Ремонт|Казань|Новости',url:'https://t.me/s/tenderlar23',type:'telegram_public'},
+  {id:'telegram-stroyou116kzn',name:'Telegram · Стройка Строительство Казань',url:'https://t.me/s/stroyou116kzn',type:'telegram_public'},
+  {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116',type:'telegram_public'},
+  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web_catalog'}
 ];
 
 const NEG=[
@@ -98,41 +92,31 @@ function score(text,a){
 async function liveAutoSearch(){
   const results=await Promise.all(SOURCES.map(async s=>{
     try{
-      const rr=await fetch(s.url,{
-        headers:{'User-Agent':'Mozilla/5.0','Accept':'text/html,application/xhtml+xml'},
-        redirect:'follow',
-        signal:AbortSignal.timeout(8000)
-      });
+      const rr=await fetch(s.url,{headers:{'User-Agent':'Mozilla/5.0','Accept':'text/html,application/xhtml+xml'},redirect:'follow',signal:AbortSignal.timeout(8000)});
       if(!rr.ok) throw new Error('HTTP '+rr.status);
       const html=await rr.text();
-      const out=[];
-      const re=/tgme_widget_message_text[^>]*>([\s\S]*?)<\/div>/gi;
-      let m;
+      if(s.type==='web_catalog'){
+        const m=html.match(/(\d{2,3})\s*(?:жилых комплексов|ЖК)/i);
+        return {items:[],found:0,status:'catalog',catalogCount:m?Number(m[1]):null,error:null};
+      }
+      const out=[],re=/tgme_widget_message_text[^>]*>([\s\S]*?)<\/div>/gi;let m;
       while((m=re.exec(html))){
-        const text=clean(m[1]);
-        if(text.length<20||!relevant(text))continue;
+        const text=clean(m[1]); if(text.length<20||!relevant(text)) continue;
         const nearby=html.slice(Math.max(0,m.index-12000),Math.min(html.length,m.index+12000));
         const tm=nearby.match(/href=["'](https?:\/\/t\.me\/[^"']+\/\d+)["']/i);
         const a=area(text);
-        out.push({
-          id:s.id+'-'+Buffer.from((tm?.[1]||text.slice(0,100))).toString('base64url').slice(-24),
-          source:s.name,url:tm?.[1]||s.url,title:text.slice(0,140),text,
-          area:a,budget:budget(text),type:classify(text),score:score(text,a),
-          publishedAt:null,status:'new'
-        });
+        out.push({id:s.id+'-'+Buffer.from((tm?.[1]||text.slice(0,100))).toString('base64url').slice(-24),source:s.name,url:tm?.[1]||s.url,title:text.slice(0,140),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null,status:'new'});
       }
-      return {items:out,error:null};
-    }catch(e){return {items:[],error:e?.message||String(e)};}
+      return {items:out,found:out.length,status:'readable',error:null};
+    }catch(e){return {items:[],found:0,status:'unavailable',error:e?.message||String(e)};}
   }));
   const leads=results.flatMap(x=>x.items).sort((a,b)=>b.score-a.score);
-  return {
-    ok:true,updatedAt:new Date().toISOString(),
-    stats:{
-      found:leads.length,new:leads.length,duplicates:0,
-      high:leads.filter(x=>x.score>=70).length
-    },
+  const catalog=results.find(x=>x.status==='catalog');
+  return {ok:true,updatedAt:new Date().toISOString(),
+    stats:{found:leads.length,new:leads.length,duplicates:0,high:leads.filter(x=>x.score>=70).length},
     leads,
-    diagnostics:results.map((x,i)=>({source:SOURCES[i].name,found:x.items.length,error:x.error}))
+    diagnostics:results.map((x,i)=>({source:SOURCES[i].name,found:x.found,status:x.status,catalogCount:x.catalogCount||null,error:x.error||null})),
+    access:{catalogZhK:catalog?.catalogCount||0,note:'Закрытые/приватные чаты ЖК не считаются пустыми: для чтения нужен разрешённый доступ.'}
   };
 }
 
