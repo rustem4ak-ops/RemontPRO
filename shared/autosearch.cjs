@@ -28,6 +28,15 @@ const SOURCES = [
   {id:'b2b-kazan-current',name:'B2B-Center · текущий ремонт Татарстан',url:'https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/',type:'tender',city:'Казань',parser:'tender'}
 ];
 
+// Публичные стены VK подключаются через VK_ACCESS_TOKEN и VK_PUBLIC_GROUPS.
+// VK_PUBLIC_GROUPS: домены групп через запятую, например remontkazan,novostroiki_kazan.
+function vkGroups(){
+  return String(process.env.VK_PUBLIC_GROUPS||'').split(',').map(x=>x.trim()).filter(Boolean).map((domain,i)=>({
+    id:'vk-'+domain.replace(/[^a-z0-9_\-]/gi,'-'), name:'VK · '+domain, domain,
+    url:'https://vk.com/'+domain, type:'vk_public', city:'Казань'
+  }));
+}
+
 const NEG = [
   'предлагаю услуги','оказываю услуги','оказываем услуги','выполняем ремонт','выполняю ремонт',
   'делаем ремонт','сделаем ремонт','ремонт под ключ от','закажите ремонт','заказать ремонт у нас',
@@ -154,6 +163,35 @@ function discoverCatalog(html){
   }
   return [...links].slice(0,80);
 }
+async function fetchVk(domain,count=30){
+  const token=process.env.VK_ACCESS_TOKEN;
+  if(!token) throw new Error('VK_ACCESS_TOKEN is not configured');
+  const u=new URL('https://api.vk.com/method/wall.get');
+  u.searchParams.set('access_token',token);
+  u.searchParams.set('v','5.199');
+  u.searchParams.set('domain',domain);
+  u.searchParams.set('count',String(count));
+  u.searchParams.set('filter','owner');
+  const r=await fetch(u,{headers:{'User-Agent':'RemontFormaAutoSearch/3.0'},signal:AbortSignal.timeout(12000)});
+  if(!r.ok) throw new Error('VK HTTP '+r.status);
+  const d=await r.json();
+  if(d.error) throw new Error('VK '+(d.error.error_code||'')+': '+(d.error.error_msg||'API error'));
+  return d.response?.items||[];
+}
+function vkItems(posts,source){
+  const out=[];
+  for(const p of posts){
+    const text=clean(p.text||''); if(!text) continue;
+    const info=analyze(text,source); if(!info.ok) continue;
+    const a=area(text),b=budget(text),sc=score(text,info,source);
+    const id=source.id+'-'+String(p.id);
+    out.push({id,source:source.name,url:'https://vk.com/'+source.domain+'?w=wall-'+Math.abs(Number(p.owner_id||0))+'_'+p.id,
+      title:text.slice(0,160),text,author:null,area:a,budget:b,type:classify(text),score:sc,level:level(sc,text),
+      reasons:info.reasons,city:info.city,publishedAt:p.date?new Date(p.date*1000).toISOString():null,
+      firstSeenAt:new Date().toISOString(),status:'new',leadType:'vk_public'});
+  }
+  return out;
+}
 async function fetchText(url,ms=12000){
   const r=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 (compatible; RemontFormaAutoSearch/3.0)','Accept':'text/html,application/xhtml+xml'},redirect:'follow',signal:AbortSignal.timeout(ms)});
   if(!r.ok) throw new Error('HTTP '+r.status);
@@ -210,7 +248,7 @@ function tenderItems(text,source){
 }
 
 async function scanSources(){
-  const base=SOURCES.filter(x=>x.type!=='web_catalog');
+  const base=[...SOURCES.filter(x=>x.type!=='web_catalog'),...vkGroups()];
   let discovered=[];
   try{
     const catalog=await fetchText('https://kazan.chatnovosela.ru/');
@@ -220,11 +258,14 @@ async function scanSources(){
   const diagnostics=[]; const all=[];
   for(const s of sources){
     try{
-      const html=await fetchText(s.url);
       let items=[];
-      if(s.type==='telegram_public'||s.type==='telegram_lead_channel'||s.type==='telegram_construction'||s.type==='telegram_jk'||s.type==='telegram_village'||s.type==='telegram_local') items=parseTelegram(html,s);
-      else if(s.type==='marketplace_orders') items=marketplaceItems(clean(html),s);
-      else if(s.type==='tender') items=tenderItems(clean(html),s);
+      if(s.type==='vk_public') items=vkItems(await fetchVk(s.domain,30),s);
+      else {
+        const html=await fetchText(s.url);
+        if(s.type==='telegram_public'||s.type==='telegram_lead_channel'||s.type==='telegram_construction'||s.type==='telegram_jk'||s.type==='telegram_village'||s.type==='telegram_local') items=parseTelegram(html,s);
+        else if(s.type==='marketplace_orders') items=marketplaceItems(clean(html),s);
+        else if(s.type==='tender') items=tenderItems(clean(html),s);
+      }
       diagnostics.push({source:s.name,url:s.url,found:items.length,status:'readable',error:null,type:s.type});
       all.push(...items);
     }catch(e){
@@ -236,9 +277,9 @@ async function scanSources(){
   const leads=[...unique.values()].sort((a,b)=>b.score-a.score).slice(0,300);
   return {
     ok:true,updatedAt:new Date().toISOString(),
-    stats:{found:all.length,new:all.length,duplicates:Math.max(0,all.length-leads.length),high:leads.filter(x=>x.level==='hot').length,hot:leads.filter(x=>x.level==='hot').length,potential:leads.filter(x=>x.level==='potential').length,tenders:leads.filter(x=>x.level==='tender').length},
+    stats:{found:all.length,new:all.length,duplicates:Math.max(0,all.length-leads.length),high:leads.filter(x=>x.level==='hot').length,hot:leads.filter(x=>x.level==='hot').length,potential:leads.filter(x=>x.level==='potential').length,tenders:leads.filter(x=>x.level==='tender').length,vk:leads.filter(x=>x.leadType==='vk_public').length},
     leads,diagnostics,
-    access:{catalogZhK:discovered.length,scannedSources:sources.length,nearKazanRadiusKm:50,note:'Добавлены публичные группы и каналы поселков/пригородов в радиусе до 50 км от Казани. Закрытые чаты не считаются пустыми: для чтения нужен разрешённый доступ.'}
+    access:{catalogZhK:discovered.length,scannedSources:sources.length,nearKazanRadiusKm:50,vkConfigured:!!process.env.VK_ACCESS_TOKEN,vkGroupsConfigured:vkGroups().length,note:'Добавлены публичные группы и каналы поселков/пригородов в радиусе до 50 км от Казани. Закрытые чаты не считаются пустыми: для чтения нужен разрешённый доступ.'}
   };
 }
 async function notifyTelegram(leads){
