@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-01T09:35:53.945Z",
+  "updatedAt": "2026-10-01T09:37:29.875Z",
   "stats": {
     "found": 0,
     "new": 0,
@@ -59,11 +59,25 @@
       "found": 0,
       "status": "readable",
       "error": null
+    },
+    {
+      "source": "Telegram · 61 Квартал ЖК | Соседи",
+      "url": "https://t.me/s/sosedi61kvartal",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Дом и соседи Казань",
+      "url": "https://t.me/s/domkzn",
+      "found": 0,
+      "status": "readable",
+      "error": null
     }
   ],
   "access": {
     "catalogZhK": 0,
-    "scannedSources": 7,
+    "scannedSources": 9,
     "note": "Публичные источники сканируются. Закрытые чаты ЖК не считаются пустыми: для чтения нужен разрешённый доступ."
   }
 }
