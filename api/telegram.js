@@ -1,4 +1,5 @@
 const { calculate } = require('../shared/remontforma-pricing.js');
+const { analyze, score, level, area, budget, classify } = require('../shared/autosearch.cjs');
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const API = 'https://api.telegram.org/bot';
@@ -20,6 +21,25 @@ const keyboard = rows => ({ reply_markup: { keyboard: rows, resize_keyboard: tru
 const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\n\nПоэтому пришлите номер телефона, чтобы обсудить все подробности.';
 const inline = rows => ({ reply_markup: { inline_keyboard: rows } });
 const force = { reply_markup: { force_reply: true, selective: true } };
+const liveLeadSeen = globalThis.__RF_LIVE_LEADS || (globalThis.__RF_LIVE_LEADS = new Set());
+async function monitorGroupMessage(m) {
+  const text = String(m.text || m.caption || '').trim();
+  if (!text || !m.chat || !['group','supergroup'].includes(m.chat.type)) return false;
+  const source = { id:'telegram-group-'+m.chat.id, name:'Telegram · '+(m.chat.title || 'группа'), type:'telegram_group', city:'Казань' };
+  const info = analyze(text, source);
+  if (!info.ok) return true;
+  const id = String(m.chat.id)+':'+String(m.message_id);
+  if (liveLeadSeen.has(id)) return true;
+  liveLeadSeen.add(id); if (liveLeadSeen.size > 5000) liveLeadSeen.delete(liveLeadSeen.values().next().value);
+  const sc = score(text, info, source), lv = level(sc, text);
+  if (lv !== 'hot') return true;
+  const msg = '🔥 НОВЫЙ ГОРЯЧИЙ ЛИД ИЗ ЧАТА ЖК\\n\\n' + text + '\\n\\n🏢 ' + (m.chat.title || 'Группа') + '\\n📍 ' + classify(text) + (area(text) ? ' · ' + area(text) + ' м²' : '') + '\\n🎯 ' + sc + '%\\n🔎 ' + info.reasons.join(' · ');
+  if (process.env.TELEGRAM_ADMIN_CHAT_ID) await tg('sendMessage', {chat_id:process.env.TELEGRAM_ADMIN_CHAT_ID,text:msg});
+  if (process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID) {
+    await fetch('https://platform-api2.max.ru/messages?chat_id='+encodeURIComponent(process.env.MAX_ADMIN_CHAT_ID), {method:'POST',headers:{'Authorization':process.env.MAX_BOT_TOKEN,'content-type':'application/json'},body:JSON.stringify({text:msg})});
+  }
+  return true;
+}
 
 function save(id, s) { sessions.set(String(id), s); }
 function get(id) { return sessions.get(String(id)); }
@@ -134,6 +154,7 @@ module.exports = async function handler(req,res) {
     if (u.callback_query) { await callback(u.callback_query); return res.status(200).json({ok:true}); }
     const m=u.message;
     if (!m || !m.chat || !m.chat.id) return res.status(200).json({ok:true});
+    if (['group','supergroup'].includes(m.chat.type)) { await monitorGroupMessage(m); return res.status(200).json({ok:true,mode:'group-monitor'}); }
     const id=m.chat.id, text=String(m.text||'').trim();
 
     if (text==='/admin') {
