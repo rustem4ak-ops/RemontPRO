@@ -47,9 +47,9 @@ const EMPLOYER_PATTERNS=[
 ];
 
 function clean(s=''){
-  return s.replace(/<script[\\s\\S]*?<\\/script>/gi,' ')
-    .replace(/<style[\\s\\S]*?<\\/style>/gi,' ')
-    .replace(/<br\\s*\\/?>/gi,' ').replace(/<\\/p>/gi,' ')
+  return s.replace(/<script[\s\S]*?<\/script>/gi,' ')
+    .replace(/<style[\s\S]*?<\/style>/gi,' ')
+    .replace(/<br\\s*\/?>/gi,' ').replace(/<\/p>/gi,' ')
     .replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ')
     .replace(/&quot;/gi,'\"').replace(/&#39;/gi,"'")
     .replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
@@ -122,9 +122,9 @@ async function liveAutoSearch(){
         const m=html.match(/(\d{2,3})\s*(?:жилых комплексов|ЖК)/i);
         return {items:[],found:0,status:'catalog',catalogCount:m?Number(m[1]):null,error:null};
       }
-      const out=[],re=/tgme_widget_message_text[^>]*>([\\s\\S]*?)<\\/div>/gi;let m;
+      const out=[],re=/tgme_widget_message_text[^>]*>([\s\S]*?)<\/div>/gi;let m;
       while((m=re.exec(html))){
-        const text=clean(m[1]); if(text.length<20||!relevant(text)) continue;
+        const text=clean(m[1]); if(text.length<20||!relevant(text,s)) continue;
         const nearby=html.slice(Math.max(0,m.index-12000),Math.min(html.length,m.index+12000));
         const tm=nearby.match(/href=["'](https?:\/\/t\.me\/[^"']+\/\d+)["']/i);
         const a=area(text); const info=analyze(text,s); const sc=score(text,a,s);
