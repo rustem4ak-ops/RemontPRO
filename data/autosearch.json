@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-01T09:58:46.575Z",
+  "updatedAt": "2026-10-01T10:04:01.588Z",
   "stats": {
     "found": 47,
     "new": 0,
@@ -8,7 +8,8 @@
     "high": 2,
     "hot": 2,
     "potential": 9,
-    "tenders": 32
+    "tenders": 32,
+    "vk": 0
   },
   "leads": [
     {
@@ -16,7 +17,7 @@
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
       "title": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обго",
-      "text": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обговорить детали, согласовать проект, посчитать возможную стоимость и риски. Есть проект отделки Московский 29 сентября 2026 Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 3 Автозаводский 1 Вахитовский 3 Кировский 3 Комсомольский 1 Московский 3 Ново-Савиновский 3 Приволжский 3 Советский 3 Центральный 1 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 4 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 1 от 8000 ₽ 1 от 11200 ₽ 1 от 40000 ₽ 1 от 284700 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 4 Комплексный ремонт 2 Частичный ремонт 1 Ремонт коттеджей 1 Ремонт нежилых помещений 1 Ремонт кухни 2 Ремонт бытовок 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт кладовок",
+      "text": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обговорить детали, согласовать проект, посчитать возможную стоимость и риски. Есть проект отделки Московский 29 сентября 2026 Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 3 Автозаводский 1 Вахитовский 3 Кировский 3 Комсомольский 1 Московский 3 Ново-Савиновский 3 Приволжский 3 Советский 3 Центральный 1 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 4 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 1 от 8000 ₽ 1 от 10600 ₽ 1 от 40000 ₽ 1 от 284000 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 4 Комплексный ремонт 2 Частичный ремонт 1 Ремонт коттеджей 1 Ремонт нежилых помещений 1 Ремонт кухни 2 Ремонт бытовок 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт кладовок",
       "author": null,
       "area": 50,
       "budget": 500000,
@@ -31,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:40.729Z",
+      "firstSeenAt": "2026-10-01T10:03:56.974Z",
       "status": "new"
     },
     {
@@ -53,7 +54,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:40.729Z",
+      "firstSeenAt": "2026-10-01T10:03:56.974Z",
       "status": "new"
     },
     {
@@ -75,7 +76,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:42.137Z",
+      "firstSeenAt": "2026-10-01T10:03:57.669Z",
       "status": "new"
     },
     {
@@ -96,7 +97,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:42.137Z",
+      "firstSeenAt": "2026-10-01T10:03:57.670Z",
       "status": "new"
     },
     {
@@ -117,7 +118,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:40.667Z",
+      "firstSeenAt": "2026-10-01T10:03:56.902Z",
       "status": "new"
     },
     {
@@ -138,7 +139,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:40.729Z",
+      "firstSeenAt": "2026-10-01T10:03:56.974Z",
       "status": "new"
     },
     {
@@ -159,7 +160,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:40.729Z",
+      "firstSeenAt": "2026-10-01T10:03:56.974Z",
       "status": "new"
     },
     {
@@ -180,7 +181,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:42.136Z",
+      "firstSeenAt": "2026-10-01T10:03:57.669Z",
       "status": "new"
     },
     {
@@ -201,7 +202,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:42.137Z",
+      "firstSeenAt": "2026-10-01T10:03:57.669Z",
       "status": "new"
     },
     {
@@ -222,7 +223,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:42.137Z",
+      "firstSeenAt": "2026-10-01T10:03:57.669Z",
       "status": "new"
     },
     {
@@ -243,7 +244,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:42.137Z",
+      "firstSeenAt": "2026-10-01T10:03:57.670Z",
       "status": "new"
     },
     {
@@ -264,7 +265,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.430Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -286,7 +287,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.430Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -308,7 +309,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -330,7 +331,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -352,7 +353,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -374,7 +375,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -396,7 +397,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -418,7 +419,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -440,7 +441,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -462,7 +463,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:44.727Z",
+      "firstSeenAt": "2026-10-01T10:04:00.431Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -484,7 +485,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -506,7 +507,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -528,7 +529,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -550,7 +551,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -572,7 +573,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -594,7 +595,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -616,7 +617,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -638,7 +639,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:45.712Z",
+      "firstSeenAt": "2026-10-01T10:04:00.939Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -660,7 +661,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.574Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -682,7 +683,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.574Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -704,7 +705,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.574Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -726,7 +727,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.574Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -748,7 +749,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -770,7 +771,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -792,7 +793,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -814,7 +815,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -836,7 +837,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -858,7 +859,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -880,7 +881,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -902,7 +903,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -924,7 +925,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -946,7 +947,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-01T09:58:46.575Z",
+      "firstSeenAt": "2026-10-01T10:04:01.588Z",
       "status": "new",
       "leadType": "tender"
     }
@@ -1165,6 +1166,8 @@
     "catalogZhK": 0,
     "scannedSources": 26,
     "nearKazanRadiusKm": 50,
+    "vkConfigured": false,
+    "vkGroupsConfigured": 0,
     "note": "Добавлены публичные группы и каналы поселков/пригородов в радиусе до 50 км от Казани. Закрытые чаты не считаются пустыми: для чтения нужен разрешённый доступ."
   }
 }
