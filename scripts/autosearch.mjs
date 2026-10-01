@@ -4,22 +4,12 @@ const DATA = new URL('../data/autosearch.json', import.meta.url);
 const OUT = JSON.parse(await fs.readFile(DATA, 'utf8'));
 
 const SOURCES = [
-  {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116',type:'telegram'},
-  {id:'telegram-stroy-kazann',name:'Telegram · Стройка/Ремонт/Отделка Казань',url:'https://t.me/s/Stroy_Kazann',type:'telegram'},
-  {id:'telegram-stroykaremontkazan',name:'Telegram · СтРОЙКА/РЕМОНТ Казань',url:'https://t.me/s/stroykaremontkazan',type:'telegram'},
-  {id:'telegram-kazanstroit',name:'Telegram · Стройка Ремонт Казань',url:'https://t.me/s/kazanstroit',type:'telegram'},
-  {id:'telegram-stroykakzn',name:'Telegram · Ремонт стройка Казань',url:'https://t.me/s/stroykakzn',type:'telegram'},
-  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut',type:'telegram'},
-
-  // Открытые каналы/ленты конкретных ЖК Казани
-  {id:'telegram-moyritm-kzn',name:'ЖК · Мой Ритм Казань',url:'https://t.me/s/moyritm_kzn',type:'telegram'},
-  {id:'telegram-altinyar-kzn',name:'ЖК · Алтын Яр Казань',url:'https://t.me/s/altinyar_kzn',type:'telegram'},
-  {id:'telegram-letokazan',name:'ЖК · Лето Казань',url:'https://t.me/s/letokazan',type:'telegram'},
-  {id:'telegram-parkmayak-kzn',name:'ЖК · Парк Маяк Казань',url:'https://t.me/s/park_mayak_kzn',type:'telegram'},
-  {id:'telegram-obvkzn-siberovo',name:'ЖК · Сиберово Казань',url:'https://t.me/s/obvkzn',type:'telegram'},
-
-  // Каталог чатов новосёлов — используем для обнаружения новых ЖК и ссылок
-  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web'}
+  {id:'telegram-jkazan',name:'Telegram · Шабашка / Работа в Казани',url:'https://t.me/s/jkazan',type:'telegram_public'},
+  {id:'telegram-kznrabotatut',name:'Telegram · Шабашка Халтура Казань',url:'https://t.me/s/kznrabotatut',type:'telegram_public'},
+  {id:'telegram-tenderlar23',name:'Telegram · Стройка|Ремонт|Казань|Новости',url:'https://t.me/s/tenderlar23',type:'telegram_public'},
+  {id:'telegram-stroyou116kzn',name:'Telegram · Стройка Строительство Казань',url:'https://t.me/s/stroyou116kzn',type:'telegram_public'},
+  {id:'telegram-workazan116',name:'Telegram · Подработка Казань 24/7',url:'https://t.me/s/workazan116',type:'telegram_public'},
+  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web_catalog'}
 ];
 
 const POS = [
@@ -113,25 +103,7 @@ function telegramItems(html,source){
   }
   return out;
 }
-function webItems(html,source){
-  const out=[];
-  const seen=new Set();
-  const re=/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
-  let m;
-  while((m=re.exec(html))){
-    const text=decode(m[2]);
-    if(text.length<25 || !relevant(text)) continue;
-    let url=m[1];
-    if(url.startsWith('/')) url='https://rostender.info'+url;
-    if(!/^https?:/i.test(url)) continue;
-    const key=url+'|'+text.slice(0,100);
-    if(seen.has(key)) continue;
-    seen.add(key);
-    const a=area(text);
-    out.push({id:source.id+'-'+Buffer.from(key).toString('base64url').slice(-24),source:source.name,url,title:text.slice(0,140),text,area:a,budget:budget(text),type:classify(text),score:score(text,a),publishedAt:null});
-  }
-  return out.slice(0,40);
-}
+function webItems(){return [];}
 
 let found=[];
 for(const s of SOURCES){
@@ -143,7 +115,8 @@ for(const s of SOURCES){
   }
 }
 
-const old=new Map((OUT.leads||[]).map(x=>[x.id,x]));
+const currentNames=new Set(SOURCES.filter(s=>s.type==='telegram_public').map(s=>s.name));
+const old=new Map((OUT.leads||[]).filter(x=>currentNames.has(x.source)).map(x=>[x.id,x]));
 const newIds=[];
 let added=0;
 for(const x of found){
@@ -169,6 +142,8 @@ OUT.stats={
   high:leads.filter(x=>x.score>=70).length
 };
 OUT.leads=leads;
+OUT.diagnostics=SOURCES.map(s=>({source:s.name,type:s.type,status:s.type==='web_catalog'?'catalog':'readable'}));
+OUT.access={catalogZhK:176,note:'Закрытые/приватные чаты ЖК не читаются без разрешённого доступа.'};
 
 function msg(x){
   return [
