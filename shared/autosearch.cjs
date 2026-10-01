@@ -6,6 +6,8 @@ const SOURCES = [
   {id:'telegram-tenderlar23',name:'Telegram · Стройка|Ремонт|Казань|Новости',url:'https://t.me/s/tenderlar23',type:'telegram_public',city:'Казань'},
   {id:'telegram-zayavkiremont',name:'Telegram · Заявки на ремонт квартир',url:'https://t.me/s/zayavkiremont',type:'telegram_lead_channel',city:null},
   {id:'telegram-vsem-podryad',name:'Telegram · Всем подряд',url:'https://t.me/s/vsem_podryad',type:'telegram_construction',city:null},
+  {id:'telegram-sosedi61kvartal',name:'Telegram · 61 Квартал ЖК | Соседи',url:'https://t.me/s/sosedi61kvartal',type:'telegram_jk',city:'Казань'},
+  {id:'telegram-domkzn',name:'Telegram · Дом и соседи Казань',url:'https://t.me/s/domkzn',type:'telegram_local',city:'Казань'},
   {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web_catalog',city:'Казань'}
 ];
 
