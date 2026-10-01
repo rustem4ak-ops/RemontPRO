@@ -109,7 +109,7 @@ let found=[];
 for(const s of SOURCES){
   try{
     const html=await get(s.url);
-    found.push(...(s.type==='telegram'?telegramItems(html,s):webItems(html,s)));
+    found.push(...(s.type==='telegram_public'?telegramItems(html,s):webItems(html,s)));
   }catch(e){
     console.log('[source error]',s.id,e.message);
   }
