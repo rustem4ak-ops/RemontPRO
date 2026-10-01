@@ -582,9 +582,9 @@ module.exports = async function handler(req, res) {
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
 
-    if (update.update_type === 'message_created' && update.chat_id && (update.message?.recipient?.chat_id || update.message?.recipient?.user_id)) {
-      const isGroup = !!update.chat_id && !!update.message?.recipient?.chat_id && update.message?.recipient?.chat_id !== update.message?.recipient?.user_id;
-      if(isGroup) await monitorMaxGroupMessage(update);
+    if (update.update_type === 'message_created' && update.message?.recipient?.chat_id) {
+      await monitorMaxGroupMessage(update);
+      return res.status(200).json({ ok: true, mode: 'group-monitor' });
     }
 
     if (update.update_type === 'message_callback') {
