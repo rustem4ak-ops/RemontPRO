@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-01T09:37:29.875Z",
+  "updatedAt": "2026-10-01T09:45:16.906Z",
   "stats": {
     "found": 0,
     "new": 0,
@@ -73,11 +73,96 @@
       "found": 0,
       "status": "readable",
       "error": null
+    },
+    {
+      "source": "Посёлки · Куюки — official",
+      "url": "https://t.me/s/kuyuki_official",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Салмачи • Куюки | ИНФО ЧАТ",
+      "url": "https://t.me/s/salmachi_info",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Салмачи — Куюки | Чат",
+      "url": "https://t.me/s/salmachi_online_chat",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Константиновка Казань",
+      "url": "https://t.me/s/konstantinovka_kazan",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Осиново — Радужный — Салават Купере",
+      "url": "https://t.me/s/osinovoo16",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Высокая Гора — чат жителей",
+      "url": "https://t.me/s/chat_biektay",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Высокая Гора — Биектау",
+      "url": "https://t.me/s/biektay_vgora",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Усады — объявления и соседи",
+      "url": "https://t.me/s/kazan_usady",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Лаишевский район — Лаишево — Сокуры — Столбище — Усады — Ковали",
+      "url": "https://t.me/s/laish_kzn",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки/города · Зеленодольск Life",
+      "url": "https://t.me/s/zelenodolsk_news",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки/города · Зеленодольск.Онлайн",
+      "url": "https://t.me/s/zeldol",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Посёлки · Казань — Верхний Услон",
+      "url": "https://t.me/s/perepravakazan",
+      "found": 0,
+      "status": "readable",
+      "error": null
     }
   ],
   "access": {
     "catalogZhK": 0,
-    "scannedSources": 9,
-    "note": "Публичные источники сканируются. Закрытые чаты ЖК не считаются пустыми: для чтения нужен разрешённый доступ."
+    "scannedSources": 21,
+    "nearKazanRadiusKm": 50,
+    "note": "Добавлены публичные группы и каналы поселков/пригородов в радиусе до 50 км от Казани. Закрытые чаты не считаются пустыми: для чтения нужен разрешённый доступ."
   }
 }
