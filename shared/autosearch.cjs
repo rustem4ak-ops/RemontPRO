@@ -45,21 +45,21 @@ const OBJECT_RE=/(квартир|новостро|вторич|коттедж|ч
 const CLIENT_RE=/(ищу|нужен|нужна|нужно|посоветуйте|подскажите|порекомендуйте|кто может|кто делал|кто знает|сколько стоит|где найти|получил ключи|получили ключи|купил квартиру|купили квартиру)/;
 
 function clean(s=''){
-  return s.replace(/<script[\\s\\S]*?<\\/script>/gi,' ')
-    .replace(/<style[\\s\\S]*?<\\/style>/gi,' ')
-    .replace(/<br\\s*\\/?>/gi,' ').replace(/<[^>]+>/g,' ')
+  return s.replace(/<script[\s\S]*?<\/script>/gi,' ')
+    .replace(/<style[\s\S]*?<\/style>/gi,' ')
+    .replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,' ')
     .replace(/&nbsp;/gi,' ').replace(/&quot;/gi,'"').replace(/&#39;/gi,"'")
     .replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
-    .replace(/\\s+/g,' ').trim();
+    .replace(/\s+/g,' ').trim();
 }
 function area(text){
-  const m=text.match(/(\\d+(?:[.,]\\d+)?)\\s*(?:м2|м²|кв\\.?\\s*м)/i);
+  const m=text.match(/(\d+(?:[.,]\d+)?)\s*(?:м2|м²|кв\.?\s*м)/i);
   return m?Number(m[1].replace(',','.')):null;
 }
 function budget(text){
-  const m=text.match(/(?:бюджет|стоимость|цена|сумма)[^\\d]{0,30}(\\d[\\d\\s]{3,})/i)
-    || text.match(/(\\d[\\d\\s]{4,})\\s*(?:₽|руб\\.?)/i);
-  return m?Number(m[1].replace(/\\s/g,'')):null;
+  const m=text.match(/(?:бюджет|стоимость|цена|сумма)[^\d]{0,30}(\d[\d\s]{3,})/i)
+    || text.match(/(\d[\d\s]{4,})\s*(?:₽|руб\.?)/i);
+  return m?Number(m[1].replace(/\s/g,'')):null;
 }
 function classify(text){
   const t=text.toLowerCase();
@@ -108,13 +108,13 @@ function level(sc,text){
   return sc>=82 && details>=2 ? 'hot' : 'potential';
 }
 function parseTelegram(html,source){
-  const out=[],re=/tgme_widget_message_text[^>]*>([\\s\\S]*?)<\\/div>/gi; let m;
+  const out=[],re=/tgme_widget_message_text[^>]*>([\s\S]*?)<\/div>/gi; let m;
   while((m=re.exec(html))){
     const text=clean(m[1]); const info=analyze(text,source);
     if(!info.ok) continue;
     const nearby=html.slice(Math.max(0,m.index-14000),Math.min(html.length,m.index+14000));
-    const tm=nearby.match(/href=["'](https?:\\/\\/t\\.me\\/[^"']+\\/\\d+)["']/i);
-    const author=nearby.match(/tgme_widget_message_author_name[^>]*>([\\s\\S]*?)<\\/a>/i);
+    const tm=nearby.match(/href=["'](https?:\/\/t\.me\/[^"']+\/\d+)["']/i);
+    const author=nearby.match(/tgme_widget_message_author_name[^>]*>([\s\S]*?)<\/a>/i);
     const dt=nearby.match(/datetime=["']([^"']+)["']/i);
     const a=area(text),b=budget(text),sc=score(text,info,source);
     out.push({
@@ -128,7 +128,7 @@ function parseTelegram(html,source){
   return out;
 }
 function discoverCatalog(html){
-  const links=new Set(); const re=/https?:\\/\\/(?:t\\.me)\\/(?:s\\/)?([A-Za-z0-9_]{4,})/g; let m;
+  const links=new Set(); const re=/https?:\/\/(?:t\.me)\/(?:s\/)?([A-Za-z0-9_]{4,})/g; let m;
   while((m=re.exec(html))){
     const username=m[1]; if(!['s','joinchat'].includes(username)) links.add('https://t.me/s/'+username);
   }
@@ -171,14 +171,14 @@ async function scanSources(){
 async function notifyTelegram(leads){
   if(!process.env.TELEGRAM_BOT_TOKEN||!process.env.TELEGRAM_ADMIN_CHAT_ID)return;
   for(const x of leads.filter(x=>x.level==='hot').slice(0,5)){
-    const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД\\n\\n'+x.text+'\\n\\n📍 '+x.type+(x.area?' · '+x.area+' м²':'')+'\\n🎯 '+x.score+'%\\n🔎 '+x.reasons.join(' · ')+'\\n\\n'+x.url;
+    const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД\n\n'+x.text+'\n\n📍 '+x.type+(x.area?' · '+x.area+' м²':'')+'\n🎯 '+x.score+'%\n🔎 '+x.reasons.join(' · ')+'\n\n'+x.url;
     await fetch('https://api.telegram.org/bot'+process.env.TELEGRAM_BOT_TOKEN+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:process.env.TELEGRAM_ADMIN_CHAT_ID,text:msg})});
   }
 }
 async function notifyMax(leads){
   if(!process.env.MAX_BOT_TOKEN||!process.env.MAX_ADMIN_CHAT_ID)return;
   for(const x of leads.filter(x=>x.level==='hot').slice(0,5)){
-    const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД\\n\\n'+x.text+'\\n\\n📍 '+x.type+(x.area?' · '+x.area+' м²':'')+'\\n🎯 '+x.score+'%\\n🔎 '+x.reasons.join(' · ')+'\\n\\n'+x.url;
+    const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД\n\n'+x.text+'\n\n📍 '+x.type+(x.area?' · '+x.area+' м²':'')+'\n🎯 '+x.score+'%\n🔎 '+x.reasons.join(' · ')+'\n\n'+x.url;
     const url='https://platform-api2.max.ru/messages?chat_id='+encodeURIComponent(process.env.MAX_ADMIN_CHAT_ID);
     await fetch(url,{method:'POST',headers:{'Authorization':process.env.MAX_BOT_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({text:msg,disable_link_preview:false})});
   }
