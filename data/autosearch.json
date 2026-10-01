@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-01T09:32:19.824Z",
+  "updatedAt": "2026-10-01T09:35:53.945Z",
   "stats": {
     "found": 0,
     "new": 0,
@@ -13,42 +13,57 @@
   "diagnostics": [
     {
       "source": "Telegram · Шабашка / Работа в Казани",
+      "url": "https://t.me/s/jkazan",
       "found": 0,
       "status": "readable",
       "error": null
     },
     {
       "source": "Telegram · Подработка Казань 24/7",
+      "url": "https://t.me/s/workazan116",
       "found": 0,
       "status": "readable",
       "error": null
     },
     {
       "source": "Telegram · Шабашка Халтура Казань",
+      "url": "https://t.me/s/kznrabotatut",
       "found": 0,
       "status": "readable",
       "error": null
     },
     {
       "source": "Telegram · Стройка Строительство Казань",
+      "url": "https://t.me/s/stroyou116kzn",
       "found": 0,
       "status": "readable",
       "error": null
     },
     {
       "source": "Telegram · Стройка|Ремонт|Казань|Новости",
+      "url": "https://t.me/s/tenderlar23",
       "found": 0,
       "status": "readable",
       "error": null
     },
     {
       "source": "Telegram · Заявки на ремонт квартир",
+      "url": "https://t.me/s/zayavkiremont",
+      "found": 0,
+      "status": "readable",
+      "error": null
+    },
+    {
+      "source": "Telegram · Всем подряд",
+      "url": "https://t.me/s/vsem_podryad",
       "found": 0,
       "status": "readable",
       "error": null
     }
   ],
   "access": {
+    "catalogZhK": 0,
+    "scannedSources": 7,
     "note": "Публичные источники сканируются. Закрытые чаты ЖК не считаются пустыми: для чтения нужен разрешённый доступ."
   }
-}
+}\n
