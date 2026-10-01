@@ -196,4 +196,4 @@ async function runScheduled(existing={}){
   await notifyTelegram(freshHot); await notifyMax(freshHot);
   return {...scan,stats:{...scan.stats,new:fresh.length,hot:leads.filter(x=>x.level==='hot').length,potential:leads.filter(x=>x.level==='potential').length},leads};
 }
-module.exports={SOURCES,runLive,runScheduled};
+module.exports={SOURCES,runLive,runScheduled,analyze,score,level,area,budget,classify};
