@@ -1,5 +1,6 @@
 const https = require('https');
 const { calculate } = require('../shared/remontforma-pricing.js');
+const { analyze, score, level, area, budget, classify } = require('../shared/autosearch.cjs');
 
 const TOKEN = process.env.MAX_BOT_TOKEN;
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
@@ -85,6 +86,30 @@ function maxRequest(path, method = 'GET', body) {
 }
 
 const sessions = globalThis.__RF_MAX_SESSIONS || (globalThis.__RF_MAX_SESSIONS = new Map());
+const liveLeadSeen = globalThis.__RF_MAX_LIVE_LEADS || (globalThis.__RF_MAX_LIVE_LEADS = new Set());
+
+async function monitorMaxGroupMessage(update){
+  const m=update.message||{};
+  const text=String(m.body?.text||m.text||'').trim();
+  const chatId=update.chat_id||m.recipient?.chat_id;
+  if(!text||!chatId) return false;
+  const source={id:'max-chat-'+chatId,name:'MAX · '+(m.recipient?.title||'группа'),type:'telegram_group',city:'Казань'};
+  const info=analyze(text,source);
+  if(!info.ok) return false;
+  const sc=score(text,info,source);
+  if(level(sc,text)!=='hot') return false;
+  const messageId=m.body?.mid||m.id||update.message_id||String(update.timestamp||Date.now());
+  const dedup=String(chatId)+':'+String(messageId);
+  if(liveLeadSeen.has(dedup)) return false;
+  liveLeadSeen.add(dedup);
+  if(liveLeadSeen.size>3000){ const first=liveLeadSeen.values().next().value; liveLeadSeen.delete(first); }
+  const title=m.recipient?.title||'группа MAX';
+  const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД ИЗ MAX\\n\\n'+text+'\\n\\n🏢 '+title+'\\n📍 '+classify(text)+(area(text)?' · '+area(text)+' м²':'')+'\\n🎯 '+sc+'%\\n🔎 '+info.reasons.join(' · ');
+  if(process.env.TELEGRAM_BOT_TOKEN&&process.env.TELEGRAM_ADMIN_CHAT_ID){
+    try{await fetch('https://api.telegram.org/bot'+process.env.TELEGRAM_BOT_TOKEN+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:process.env.TELEGRAM_ADMIN_CHAT_ID,text:msg})});}catch(_){}
+  }
+  return true;
+}
 
 function save(id, state) { sessions.set(String(id), state); }
 function get(id) { return sessions.get(String(id)); }
@@ -557,10 +582,19 @@ module.exports = async function handler(req, res) {
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
 
+    if (update.update_type === 'message_created' && update.chat_id && (update.message?.recipient?.chat_id || update.message?.recipient?.user_id)) {
+      const isGroup = !!update.chat_id && !!update.message?.recipient?.chat_id && update.message?.recipient?.chat_id !== update.message?.recipient?.user_id;
+      if(isGroup) await monitorMaxGroupMessage(update);
+    }
+
     if (update.update_type === 'message_callback') {
       await handleCallback(update);
     } else if (update.update_type === 'message_created') {
       await handleMessage(update);
+    } else if (update.update_type === 'bot_added') {
+      // MAX присылает chat_id в событии; сам факт подключения фиксируем логикой webhook.
+    } else if (update.update_type === 'bot_removed') {
+      // После удаления бота новые сообщения из этого чата больше не обрабатываются.
     } else if (update.update_type === 'bot_started') {
       const id = update.chat_id || update.user?.user_id;
       if (id) await start(id);
