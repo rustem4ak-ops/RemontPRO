@@ -20,7 +20,12 @@ const SOURCES = [
   {id:'telegram-zelenodolsk',name:'Посёлки/города · Зеленодольск Life',url:'https://t.me/s/zelenodolsk_news',type:'telegram_local',city:'Казань',radiusKm:50},
   {id:'telegram-zeldol',name:'Посёлки/города · Зеленодольск.Онлайн',url:'https://t.me/s/zeldol',type:'telegram_local',city:'Казань',radiusKm:50},
   {id:'telegram-verhniy-uslon',name:'Посёлки · Казань — Верхний Услон',url:'https://t.me/s/perepravakazan',type:'telegram_local',city:'Казань',radiusKm:50},
-  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web_catalog',city:'Казань'}
+  {id:'kazan-chatnovosela',name:'ЖК · Каталог чатов новосёлов Казани',url:'https://kazan.chatnovosela.ru/',type:'web_catalog',city:'Казань'},
+  {id:'profi-kazan-remont',name:'Профи.ру · заказы на ремонт квартир в Казани',url:'https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/',type:'marketplace_orders',city:'Казань',parser:'profi'},
+  {id:'stroybirza-kazan-remont',name:'СтройБиржа · заказы на ремонт в Казани',url:'https://stroybirza.ru/zakazy-na-remont/kazan',type:'marketplace_orders',city:'Казань',parser:'stroybirza'},
+  {id:'b2b-kazan-remont',name:'B2B-Center · ремонт квартир Татарстан',url:'https://www.b2b-center.ru/search/respublika-tatarstan/remont-kvartir/',type:'tender',city:'Казань',parser:'tender'},
+  {id:'b2b-kazan-buildings',name:'B2B-Center · ремонт зданий Татарстан',url:'https://www.b2b-center.ru/search/respublika-tatarstan/remont-zdanij-i-sooruzhenij/',type:'tender',city:'Казань',parser:'tender'},
+  {id:'b2b-kazan-current',name:'B2B-Center · текущий ремонт Татарстан',url:'https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/',type:'tender',city:'Казань',parser:'tender'}
 ];
 
 const NEG = [
@@ -52,7 +57,8 @@ const QUESTION = [
   /какую\s+бригаду\s+посоветуете/,
   /где\s+найти\s+(?:мастера|бригаду|подрядчика)/,
   /нужен\s+кто-то\s+(?:на|для)\s+(?:ремонт|отделк|плитк|электрик|сантех)/,
-  /ищу\s+(?:контакты|рекомендации|мастера|бригаду|ремонт)/,\n  /(?:нужно|надо)\s+(?:сделать|провести)\s+(?:ремонт|отделку|плитку|электрику|сантехнику)/
+  /ищу\s+(?:контакты|рекомендации|мастера|бригаду|ремонт)/,
+  /(?:нужно|надо)\s+(?:сделать|провести)\s+(?:ремонт|отделку|плитку|электрику|сантехнику)/
 ];
 
 const OBJECT_RE=/(квартир|новостро|вторич|коттедж|частн(?:ый|ом) дом|дом|офис|магазин|салон|кафе|помещени|коммерц|объект|сануз|ванн|кухн)/;
@@ -153,6 +159,56 @@ async function fetchText(url,ms=12000){
   if(!r.ok) throw new Error('HTTP '+r.status);
   return r.text();
 }
+
+function marketplaceItems(text,source){
+  const out=[];
+  if(source.parser==='profi'){
+    const parts=text.split(/(?=Мастер по ремонту)/g).slice(1);
+    for(const raw of parts){
+      const chunk=raw.slice(0,1100).trim();
+      if(!/ремонт|отделк|сануз|плитк|электрик|сантех/i.test(chunk)) continue;
+      if(!OBJECT_RE.test(chunk.toLowerCase())) continue;
+      const a=area(chunk),b=budget(chunk);
+      const info={ok:true,reasons:['клиентский заказ','Казань'],city:true,direct:true,question:false};
+      if(a) info.reasons.push('есть площадь');
+      if(b) info.reasons.push('есть бюджет');
+      const sc=Math.min(100,78+(a?7:0)+(b?5:0)+(/под ключ|комплексн/i.test(chunk)?5:0));
+      const id=source.id+'-'+Buffer.from(chunk.slice(0,180)).toString('base64url').slice(-28);
+      out.push({id,source:source.name,url:source.url,title:chunk.split(/\s{2,}/)[0].slice(0,160),text:chunk,
+        author:null,area:a,budget:b,type:classify(chunk),score:sc,level:sc>=82?'hot':'potential',
+        reasons:info.reasons,city:true,publishedAt:null,firstSeenAt:new Date().toISOString(),status:'new'});
+    }
+  } else if(source.parser==='stroybirza'){
+    const chunks=text.split(/(?=Заказ|квартира|новостройка|санузел|под ключ)/gi);
+    for(const raw of chunks){
+      const chunk=raw.slice(0,1400).trim();
+      if(!/ремонт|отделк|плитк|сануз|новостройк/i.test(chunk) || !OBJECT_RE.test(chunk.toLowerCase())) continue;
+      const a=area(chunk),b=budget(chunk);
+      const sc=Math.min(100,75+(a?8:0)+(b?6:0)+(/под ключ|готовой смет/i.test(chunk)?5:0));
+      const id=source.id+'-'+Buffer.from(chunk.slice(0,180)).toString('base64url').slice(-28);
+      out.push({id,source:source.name,url:source.url,title:chunk.slice(0,160),text:chunk,
+        author:null,area:a,budget:b,type:classify(chunk),score:sc,level:sc>=82?'hot':'potential',
+        reasons:['клиентский заказ','Казань'].concat(a?['есть площадь']:[],b?['есть бюджет']:[]),
+        city:true,publishedAt:null,firstSeenAt:new Date().toISOString(),status:'new'});
+    }
+  }
+  return out.slice(0,80);
+}
+function tenderItems(text,source){
+  const out=[]; const chunks=text.split(/(?=Опубликовано:|Закупка №|Выполнение работ)/g);
+  for(const raw of chunks){
+    const chunk=raw.slice(0,1800).trim();
+    if(!/ремонт|отделоч|строитель|плитк|здани|помещен|квартир/i.test(chunk)) continue;
+    const b=budget(chunk);
+    const id=source.id+'-'+Buffer.from(chunk.slice(0,220)).toString('base64url').slice(-28);
+    out.push({id,source:source.name,url:source.url,title:chunk.slice(0,170),text:chunk,
+      author:null,area:area(chunk),budget:b,type:/квартир|жил|дом/i.test(chunk)?'Квартира':'Коммерция',
+      score:60+(b?15:0),level:'tender',reasons:['публичный тендер','Татарстан'],city:true,
+      publishedAt:null,firstSeenAt:new Date().toISOString(),status:'new',leadType:'tender'});
+  }
+  return out.slice(0,100);
+}
+
 async function scanSources(){
   const base=SOURCES.filter(x=>x.type!=='web_catalog');
   let discovered=[];
@@ -165,8 +221,11 @@ async function scanSources(){
   for(const s of sources){
     try{
       const html=await fetchText(s.url);
-      const items=parseTelegram(html,s);
-      diagnostics.push({source:s.name,url:s.url,found:items.length,status:'readable',error:null});
+      let items=[];
+      if(s.type==='telegram_public'||s.type==='telegram_lead_channel'||s.type==='telegram_construction'||s.type==='telegram_jk'||s.type==='telegram_village'||s.type==='telegram_local') items=parseTelegram(html,s);
+      else if(s.type==='marketplace_orders') items=marketplaceItems(clean(html),s);
+      else if(s.type==='tender') items=tenderItems(clean(html),s);
+      diagnostics.push({source:s.name,url:s.url,found:items.length,status:'readable',error:null,type:s.type});
       all.push(...items);
     }catch(e){
       diagnostics.push({source:s.name,url:s.url,found:0,status:'unavailable',error:e?.message||String(e)});
@@ -177,7 +236,7 @@ async function scanSources(){
   const leads=[...unique.values()].sort((a,b)=>b.score-a.score).slice(0,300);
   return {
     ok:true,updatedAt:new Date().toISOString(),
-    stats:{found:all.length,new:all.length,duplicates:all.length-leads.length,high:leads.filter(x=>x.level==='hot').length,hot:leads.filter(x=>x.level==='hot').length,potential:leads.filter(x=>x.level==='potential').length},
+    stats:{found:all.length,new:all.length,duplicates:Math.max(0,all.length-leads.length),high:leads.filter(x=>x.level==='hot').length,hot:leads.filter(x=>x.level==='hot').length,potential:leads.filter(x=>x.level==='potential').length,tenders:leads.filter(x=>x.level==='tender').length},
     leads,diagnostics,
     access:{catalogZhK:discovered.length,scannedSources:sources.length,nearKazanRadiusKm:50,note:'Добавлены публичные группы и каналы поселков/пригородов в радиусе до 50 км от Казани. Закрытые чаты не считаются пустыми: для чтения нужен разрешённый доступ.'}
   };
