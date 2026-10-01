@@ -7,6 +7,6 @@ const DATA = new URL('../data/autosearch.json', import.meta.url);
 const OUT = JSON.parse(await fs.readFile(DATA, 'utf8'));
 
 const result = await runScheduled(OUT);
-await fs.writeFile(DATA, JSON.stringify(result,null,2)+'\\n');
+await fs.writeFile(DATA, JSON.stringify(result,null,2)+'\n');
 await fs.writeFile(new URL('../site/autosearch-data.json',import.meta.url), JSON.stringify(result,null,2)+'\\n');
 console.log(JSON.stringify(result.stats));
