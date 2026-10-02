@@ -161,7 +161,7 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.4.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.5.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
@@ -255,11 +255,24 @@ module.exports = async function handler(req,res) {
     }
     if (s && s.step==='bath') {
       const v=num(text); if(v===null) throw new Error('Введите площадь санузла числом, например 5');
-      s.bath=v; await ask(id,'windows','🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',s); return res.status(200).json({ok:true});
+      s.bath=v;
+      // Фиксируем переход в windows ДО отправки сообщения, чтобы повторная доставка
+      // одного и того же update не могла снова запустить вопрос про окна.
+      s.step='windows';
+      s.windowQuestionSent=true;
+      save(id,s);
+      await tg('sendMessage',{chat_id:id,text:'🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',...force});
+      return res.status(200).json({ok:true});
     }
     if (s && s.step==='windows') {
       const v=num(text); if(v===null || !Number.isInteger(v)) throw new Error('Введите количество окон целым числом, например 5');
-      s.windows=v; s.step='electrical'; save(id,s); await buttons(id,'electrical','⚡ Электрика',[[{text:'Нет',callback_data:'E0'}],[{text:'Частичный монтаж',callback_data:'E1'}],[{text:'Полный монтаж',callback_data:'E2'}]],s); return res.status(200).json({ok:true});
+      s.windows=v;
+      // После ввода количества окон следующий шаг всегда только electrical.
+      s.step='electrical';
+      s.windowQuestionSent=false;
+      save(id,s);
+      await buttons(id,'electrical','⚡ Электрика',[[{text:'Нет',callback_data:'E0'}],[{text:'Частичный монтаж',callback_data:'E1'}],[{text:'Полный монтаж',callback_data:'E2'}]],s);
+      return res.status(200).json({ok:true});
     }
     if (s && s.step==='tileArea') {
       const v=num(text); if(v===null) throw new Error('Введите площадь плитки числом, например 12');
