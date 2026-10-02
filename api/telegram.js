@@ -134,8 +134,12 @@ async function callback(q) {
     case 'P0': s.plumbing='none'; s.step='bathroom'; save(id,s); return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P1': s.plumbing='partial'; s.step='bathroom'; save(id,s); return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P2': s.plumbing='full'; s.step='bathroom'; save(id,s); return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'B0': s.bathroom='none'; s.step='tileArea'; save(id,s); return ask(id,'tileArea','🧱 Плитка\n\nНапишите площадь плитки в м² (коридор, комнаты)',s);
-    case 'B1': s.bathroom='classic'; s.step='tileArea'; save(id,s); return ask(id,'tileArea','🧱 Плитка (коридор, комнаты)\n\nНапишите площадь пола в м², например: 12',s);
+    case 'B0':
+      s.bathroom='none';
+      return ask(id,'tileArea','🧱 Плитка\n\nНапишите площадь плитки в м² (коридор, комнаты)',{...s,step:'tileArea'});
+    case 'B1':
+      s.bathroom='classic';
+      return ask(id,'tileArea','🧱 Плитка (коридор, комнаты)\n\nНапишите площадь пола в м², например: 12',{...s,step:'tileArea'});
     case 'LQ': case 'LL': return buttons(id,'plinth','📏 Плинтус',[[{text:'Нет',callback_data:'PL0'}],[{text:'Пластиковый',callback_data:'PL1'}],[{text:'Полиуретановый',callback_data:'PL2'}]],s);
     case 'PL0': s.plinth='none'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
     case 'PL1': s.plinth='plastic'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
@@ -161,7 +165,12 @@ module.exports = async function handler(req,res) {
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    if (u.callback_query) { await callback(u.callback_query); return res.status(200).json({ok:true}); }
+    if (u.callback_query) {
+      const cbKey = 'cb:' + String(u.update_id || u.callback_query.id);
+      if (!remember(processedUpdates, cbKey)) return res.status(200).json({ok:true,duplicate:true});
+      await callback(u.callback_query);
+      return res.status(200).json({ok:true});
+    }
     const m=u.message;
     if (!m || !m.chat || !m.chat.id) return res.status(200).json({ok:true});
     const updateKey = String(u.update_id || (m.chat.id + ':' + m.message_id));
