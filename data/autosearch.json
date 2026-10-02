@@ -1,14 +1,14 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-02T20:49:01.313Z",
+  "updatedAt": "2026-10-02T20:59:32.360Z",
   "stats": {
-    "found": 47,
-    "new": 1,
-    "duplicates": 4,
+    "found": 11,
+    "new": 0,
+    "duplicates": 0,
     "high": 2,
     "hot": 4,
     "potential": 9,
-    "tenders": 32,
+    "tenders": 0,
     "vk": 0
   },
   "leads": [
@@ -32,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:54.718Z",
+      "firstSeenAt": "2026-10-02T20:59:29.619Z",
       "status": "new"
     },
     {
@@ -55,7 +55,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:54.718Z",
+      "firstSeenAt": "2026-10-02T20:59:29.619Z",
       "status": "new"
     },
     {
@@ -122,7 +122,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:55.640Z",
+      "firstSeenAt": "2026-10-02T20:59:30.508Z",
       "status": "new"
     },
     {
@@ -143,7 +143,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:55.640Z",
+      "firstSeenAt": "2026-10-02T20:59:30.508Z",
       "status": "new"
     },
     {
@@ -164,7 +164,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:54.645Z",
+      "firstSeenAt": "2026-10-02T20:59:29.615Z",
       "status": "new"
     },
     {
@@ -185,7 +185,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:54.718Z",
+      "firstSeenAt": "2026-10-02T20:59:29.619Z",
       "status": "new"
     },
     {
@@ -206,7 +206,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:54.718Z",
+      "firstSeenAt": "2026-10-02T20:59:29.620Z",
       "status": "new"
     },
     {
@@ -227,7 +227,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:55.639Z",
+      "firstSeenAt": "2026-10-02T20:59:30.507Z",
       "status": "new"
     },
     {
@@ -248,7 +248,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:55.639Z",
+      "firstSeenAt": "2026-10-02T20:59:30.508Z",
       "status": "new"
     },
     {
@@ -269,7 +269,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:55.639Z",
+      "firstSeenAt": "2026-10-02T20:59:30.508Z",
       "status": "new"
     },
     {
@@ -290,7 +290,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T20:48:55.640Z",
+      "firstSeenAt": "2026-10-02T20:59:30.508Z",
       "status": "new"
     },
     {
@@ -1428,26 +1428,23 @@
     {
       "source": "B2B-Center · ремонт квартир Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-kvartir/",
-      "found": 14,
-      "status": "readable",
-      "error": null,
-      "type": "tender"
+      "found": 0,
+      "status": "unavailable",
+      "error": "HTTP 403"
     },
     {
       "source": "B2B-Center · ремонт зданий Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-zdanij-i-sooruzhenij/",
-      "found": 8,
-      "status": "readable",
-      "error": null,
-      "type": "tender"
+      "found": 0,
+      "status": "unavailable",
+      "error": "HTTP 403"
     },
     {
       "source": "B2B-Center · текущий ремонт Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/",
-      "found": 14,
-      "status": "readable",
-      "error": null,
-      "type": "tender"
+      "found": 0,
+      "status": "unavailable",
+      "error": "HTTP 403"
     }
   ],
   "access": {
