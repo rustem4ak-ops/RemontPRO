@@ -1,14 +1,14 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-02T23:29:47.565Z",
+  "updatedAt": "2026-10-02T23:40:44.026Z",
   "stats": {
-    "found": 11,
+    "found": 47,
     "new": 0,
-    "duplicates": 0,
+    "duplicates": 4,
     "high": 2,
     "hot": 4,
     "potential": 9,
-    "tenders": 0,
+    "tenders": 32,
     "vk": 0
   },
   "leads": [
@@ -32,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:44.633Z",
+      "firstSeenAt": "2026-10-02T23:40:38.043Z",
       "status": "new"
     },
     {
@@ -55,7 +55,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:44.633Z",
+      "firstSeenAt": "2026-10-02T23:40:38.043Z",
       "status": "new"
     },
     {
@@ -122,7 +122,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:45.590Z",
+      "firstSeenAt": "2026-10-02T23:40:38.960Z",
       "status": "new"
     },
     {
@@ -143,7 +143,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:45.590Z",
+      "firstSeenAt": "2026-10-02T23:40:38.960Z",
       "status": "new"
     },
     {
@@ -164,7 +164,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:44.628Z",
+      "firstSeenAt": "2026-10-02T23:40:38.039Z",
       "status": "new"
     },
     {
@@ -185,7 +185,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:44.633Z",
+      "firstSeenAt": "2026-10-02T23:40:38.043Z",
       "status": "new"
     },
     {
@@ -206,7 +206,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:44.633Z",
+      "firstSeenAt": "2026-10-02T23:40:38.043Z",
       "status": "new"
     },
     {
@@ -227,7 +227,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:45.590Z",
+      "firstSeenAt": "2026-10-02T23:40:38.960Z",
       "status": "new"
     },
     {
@@ -248,7 +248,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:45.590Z",
+      "firstSeenAt": "2026-10-02T23:40:38.960Z",
       "status": "new"
     },
     {
@@ -269,7 +269,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:45.590Z",
+      "firstSeenAt": "2026-10-02T23:40:38.960Z",
       "status": "new"
     },
     {
@@ -290,7 +290,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:29:45.590Z",
+      "firstSeenAt": "2026-10-02T23:40:38.960Z",
       "status": "new"
     },
     {
@@ -311,7 +311,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -333,7 +333,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -355,7 +355,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -377,7 +377,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -399,7 +399,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -421,7 +421,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -443,7 +443,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -465,7 +465,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -487,7 +487,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -509,7 +509,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:48.435Z",
+      "firstSeenAt": "2026-10-02T23:40:42.442Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -531,7 +531,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.257Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -553,7 +553,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.257Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -575,7 +575,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.258Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -597,7 +597,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.258Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -619,7 +619,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.258Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -641,7 +641,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.258Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -663,7 +663,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.258Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -685,7 +685,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:49.840Z",
+      "firstSeenAt": "2026-10-02T23:40:43.258Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -707,7 +707,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -729,7 +729,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -751,7 +751,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -773,7 +773,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -795,7 +795,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -817,7 +817,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -839,7 +839,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -861,7 +861,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -883,7 +883,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -905,7 +905,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -927,7 +927,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -949,7 +949,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -971,7 +971,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -979,8 +979,8 @@
       "id": "b2b-kazan-current-sCAwLDAwICYjODM4MTsg0J7RgNCz",
       "source": "B2B-Center · текущий ремонт Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/",
-      "title": "Опубликовано: 28.09.2026 08:26 мск Подать заявку до: 12.10.2026 15:00 мск | Осталось 9 дней 13 часов Коммерческие Закупка Система электронных торгов B2B-Center ЗАПРОС ПРЕ",
-      "text": "Опубликовано: 28.09.2026 08:26 мск Подать заявку до: 12.10.2026 15:00 мск | Осталось 9 дней 13 часов Коммерческие Закупка Система электронных торгов B2B-Center ЗАПРОС ПРЕДЛОЖЕНИЙ Подробнее Начальная цена 0,00 &#8381; Организатор Публичное акционерное общество \"Татнефть\" имени В.Д.Шашина Коммерческие Закупка Система электронных торгов B2B-Center ЗАПРОС ПРЕДЛОЖЕНИЙ ПОКАЗАТЬ ЕЩЕ Поиск тендеров Тендеры по регионам Тендеры по отраслям Новые тендеры Стандарты и нормы Организаторы тендеров Закупки Текущий ремонт в других регионах Алтайский край Амурская область Архангельская область Астраханская область Белгородская область Брянская область Владимирская область Волгоградская область Вологодская область Воронежская область Еврейская автономная область Забайкальский край Ивановская область Иркутская область Кабардино-Балкарская Республика Калининградская область Калужская область Камчатский край Карачаево-Черкесская Республика Кемеровская область Кировская область Костромская область Краснодарский край Красноярский край Курганская область Курская область Ленинградская область Липецкая область Магаданская область Москва Московская область Мурманская область Ненецкий автономный округ Нижегородская область Новгородская область Новосибирская область Омская область Оренбургская область Орловская область Пензенская область Пермский край Приморский край Псковская область Республика Адыгея Республика Алтай Республика Башкортостан Республика Бурятия Республика Дагестан Республика Ингушетия Республика Калмыкия Республика Карелия Республика Коми Республика Марий Эл Республика Мордовия Республика Саха (Якутия) Республика Северная Осетия - Алания Республика Тыва Республика Хакасия Ростовская область Рязанская область Самарская область Санкт-Петербург Саратовская область Сахалинская область С",
+      "title": "Опубликовано: 28.09.2026 08:26 мск Подать заявку до: 12.10.2026 15:00 мск | Осталось 9 дней 12 часов Коммерческие Закупка Система электронных торгов B2B-Center ЗАПРОС ПРЕ",
+      "text": "Опубликовано: 28.09.2026 08:26 мск Подать заявку до: 12.10.2026 15:00 мск | Осталось 9 дней 12 часов Коммерческие Закупка Система электронных торгов B2B-Center ЗАПРОС ПРЕДЛОЖЕНИЙ Подробнее Начальная цена 0,00 &#8381; Организатор Публичное акционерное общество \"Татнефть\" имени В.Д.Шашина Коммерческие Закупка Система электронных торгов B2B-Center ЗАПРОС ПРЕДЛОЖЕНИЙ ПОКАЗАТЬ ЕЩЕ Поиск тендеров Тендеры по регионам Тендеры по отраслям Новые тендеры Стандарты и нормы Организаторы тендеров Закупки Текущий ремонт в других регионах Алтайский край Амурская область Архангельская область Астраханская область Белгородская область Брянская область Владимирская область Волгоградская область Вологодская область Воронежская область Еврейская автономная область Забайкальский край Ивановская область Иркутская область Кабардино-Балкарская Республика Калининградская область Калужская область Камчатский край Карачаево-Черкесская Республика Кемеровская область Кировская область Костромская область Краснодарский край Красноярский край Курганская область Курская область Ленинградская область Липецкая область Магаданская область Москва Московская область Мурманская область Ненецкий автономный округ Нижегородская область Новгородская область Новосибирская область Омская область Оренбургская область Орловская область Пензенская область Пермский край Приморский край Псковская область Республика Адыгея Республика Алтай Республика Башкортостан Республика Бурятия Республика Дагестан Республика Ингушетия Республика Калмыкия Республика Карелия Республика Коми Республика Марий Эл Республика Мордовия Республика Саха (Якутия) Республика Северная Осетия - Алания Республика Тыва Республика Хакасия Ростовская область Рязанская область Самарская область Санкт-Петербург Саратовская область Сахалинская область С",
       "author": null,
       "area": null,
       "budget": null,
@@ -993,7 +993,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-02T23:18:50.673Z",
+      "firstSeenAt": "2026-10-02T23:40:44.026Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1428,23 +1428,26 @@
     {
       "source": "B2B-Center · ремонт квартир Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-kvartir/",
-      "found": 0,
-      "status": "unavailable",
-      "error": "HTTP 403"
+      "found": 14,
+      "status": "readable",
+      "error": null,
+      "type": "tender"
     },
     {
       "source": "B2B-Center · ремонт зданий Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-zdanij-i-sooruzhenij/",
-      "found": 0,
-      "status": "unavailable",
-      "error": "HTTP 403"
+      "found": 8,
+      "status": "readable",
+      "error": null,
+      "type": "tender"
     },
     {
       "source": "B2B-Center · текущий ремонт Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/",
-      "found": 0,
-      "status": "unavailable",
-      "error": "HTTP 403"
+      "found": 14,
+      "status": "readable",
+      "error": null,
+      "type": "tender"
     }
   ],
   "access": {
