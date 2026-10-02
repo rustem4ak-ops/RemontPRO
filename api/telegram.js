@@ -131,11 +131,11 @@ async function callback(q) {
     case 'E0': s.electrical='none'; return buttons(id,'plumbing','🚰 Сантехника',[[{text:'Нет',callback_data:'P0'}],[{text:'Частичный монтаж',callback_data:'P1'}],[{text:'Полный монтаж',callback_data:'P2'}]],s);
     case 'E1': s.electrical='partial'; return buttons(id,'plumbing','🚰 Сантехника',[[{text:'Нет',callback_data:'P0'}],[{text:'Частичный монтаж',callback_data:'P1'}],[{text:'Полный монтаж',callback_data:'P2'}]],s);
     case 'E2': s.electrical='full'; return buttons(id,'plumbing','🚰 Сантехника',[[{text:'Нет',callback_data:'P0'}],[{text:'Частичный монтаж',callback_data:'P1'}],[{text:'Полный монтаж',callback_data:'P2'}]],s);
-    case 'P0': s.plumbing='none'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'P1': s.plumbing='partial'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'P2': s.plumbing='full'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'B0': s.bathroom='none'; return ask(id,'tileArea','🧱 Плитка\n\nНапишите площадь плитки в м² (коридор, комнаты)',s);
-    case 'B1': s.bathroom='classic'; return ask(id,'tileArea','🧱 Плитка (коридор, комнаты)\n\nНапишите площадь пола в м², например: 12',s);
+    case 'P0': s.plumbing='none'; s.step='bathroom'; save(id,s); return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
+    case 'P1': s.plumbing='partial'; s.step='bathroom'; save(id,s); return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
+    case 'P2': s.plumbing='full'; s.step='bathroom'; save(id,s); return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
+    case 'B0': s.bathroom='none'; s.step='tileArea'; save(id,s); return ask(id,'tileArea','🧱 Плитка\n\nНапишите площадь плитки в м² (коридор, комнаты)',s);
+    case 'B1': s.bathroom='classic'; s.step='tileArea'; save(id,s); return ask(id,'tileArea','🧱 Плитка (коридор, комнаты)\n\nНапишите площадь пола в м², например: 12',s);
     case 'LQ': case 'LL': return buttons(id,'plinth','📏 Плинтус',[[{text:'Нет',callback_data:'PL0'}],[{text:'Пластиковый',callback_data:'PL1'}],[{text:'Полиуретановый',callback_data:'PL2'}]],s);
     case 'PL0': s.plinth='none'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
     case 'PL1': s.plinth='plastic'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
@@ -157,7 +157,7 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.3.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.4.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
