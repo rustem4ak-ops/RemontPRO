@@ -70,6 +70,7 @@ async function buttons(id, step, text, rows, s) {
 function input(s) {
   return {
     floor: s.floor, bath: s.bath || 0, balcony: 0,
+    windows: s.windows || 0,
     electrical: s.electrical || 'none',
     plumbing: s.plumbing || 'none',
     bathroom: s.bathroom || 'none',
@@ -92,7 +93,7 @@ async function result(id, s) {
     ['1️⃣', 'Черновая электрика + черновая сантехника', sum(['Электрика', 'Сантехника'])],
     ['2️⃣', 'Плиточные работы', sum(['Классический санузел', 'Плитка'])],
     ['3️⃣', 'Напольные работы', sum(['Ламинат / кварцвинил', 'Плинтус'])],
-    ['4️⃣', 'Стены', sum(['Подготовка под обои + обои', 'Подготовка под покраску + покраска', 'Подготовка под декоративку + декоративка'])],
+    ['4️⃣', 'Стены', sum(['Окна', 'Подготовка под обои + обои', 'Подготовка под покраску + покраска', 'Подготовка под декоративку + декоративка'])],
     ['5️⃣', 'Чистовая электрика / сантехника', sum(['Чистовая электрика', 'Чистовая сантехника'])],
     ['6️⃣', 'Завершающие работы', sum(['Клининг', 'Вывоз мусора'])]
   ];
@@ -107,7 +108,7 @@ async function result(id, s) {
   for (const [icon, name, value] of stages) {
     lines.push(icon + ' <b>' + name + '</b>', '💰 <b>' + money(value) + '</b>', '');
   }
-  lines.push('💵 <b>ИТОГО: ' + money(r.total) + '</b>', '📐 Цена за м²: <b>' + money(r.pricePerM2) + '</b>', '', '📞 Для консультации отправьте номер телефона.');
+  lines.push('💵 <b>ИТОГО: ' + money(r.total) + '</b>', '📐 Цена за м²: <b>' + money(r.pricePerM2) + '</b>', '', '⚠️ <i>Расчёт является приблизительным. Более точный расчёт можно сделать после осмотра объекта.</i>', '', '📞 Для консультации отправьте номер телефона.');
   save(id, { ...s, step: 'result', result: r });
   return tg('sendMessage', { chat_id: id, text: lines.join('\n'), parse_mode: 'HTML', ...keyboard([['📞 Оставить номер телефона'], ['🔄 Рассчитать заново']]) });
 }
@@ -124,8 +125,8 @@ async function callback(q) {
     case 'P0': s.plumbing='none'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P1': s.plumbing='partial'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P2': s.plumbing='full'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'B0': s.bathroom='none'; return ask(id,'tileArea','🧱 Плитка\n\nНапишите площадь плитки в м2 (коридор, комнаты)',s);
-    case 'B1': s.bathroom='classic'; return ask(id,'tileArea','🧱 Плитка (коридор, комнаты)\n\nНапишите площадь пола в м², например: 12',s);
+    case 'B0': s.bathroom='none'; return ask(id,'windows','🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',s);
+    case 'B1': s.bathroom='classic'; return ask(id,'windows','🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',s);
     case 'LQ': case 'LL': return buttons(id,'plinth','📏 Плинтус',[[{text:'Нет',callback_data:'PL0'}],[{text:'Пластиковый',callback_data:'PL1'}],[{text:'Полиуретановый',callback_data:'PL2'}]],s);
     case 'PL0': s.plinth='none'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
     case 'PL1': s.plinth='plastic'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
@@ -147,7 +148,7 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.0.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.1.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
@@ -233,7 +234,11 @@ module.exports = async function handler(req,res) {
     }
     if (s && s.step==='bath') {
       const v=num(text); if(v===null) throw new Error('Введите площадь санузла числом, например 5');
-      s.bath=v; await buttons(id,'electrical','⚡ Электрика',[[{text:'Нет',callback_data:'E0'}],[{text:'Частичный монтаж',callback_data:'E1'}],[{text:'Полный монтаж',callback_data:'E2'}]],s); return res.status(200).json({ok:true});
+      s.bath=v; await ask(id,'windows','🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',s); return res.status(200).json({ok:true});
+    }
+    if (s && s.step==='windows') {
+      const v=num(text); if(v===null || !Number.isInteger(v)) throw new Error('Введите количество окон целым числом, например 5');
+      s.windows=v; await buttons(id,'electrical','⚡ Электрика',[[{text:'Нет',callback_data:'E0'}],[{text:'Частичный монтаж',callback_data:'E1'}],[{text:'Полный монтаж',callback_data:'E2'}]],s); return res.status(200).json({ok:true});
     }
     if (s && s.step==='tileArea') {
       const v=num(text); if(v===null) throw new Error('Введите площадь плитки числом, например 12');
