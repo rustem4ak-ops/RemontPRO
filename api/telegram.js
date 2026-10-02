@@ -22,6 +22,14 @@ const commercialText = 'Ремонт в коммерции стоит дешев
 const inline = rows => ({ reply_markup: { inline_keyboard: rows } });
 const force = { reply_markup: { force_reply: true, selective: true } };
 const liveLeadSeen = globalThis.__RF_LIVE_LEADS || (globalThis.__RF_LIVE_LEADS = new Set());
+const processedUpdates = globalThis.__RF_TG_PROCESSED_UPDATES || (globalThis.__RF_TG_PROCESSED_UPDATES = new Set());
+const processedCallbacks = globalThis.__RF_TG_PROCESSED_CALLBACKS || (globalThis.__RF_TG_PROCESSED_CALLBACKS = new Set());
+function remember(set, key, max = 5000) {
+  if (set.has(key)) return false;
+  set.add(key);
+  if (set.size > max) set.delete(set.values().next().value);
+  return true;
+}
 async function monitorGroupMessage(m) {
   const text = String(m.text || m.caption || '').trim();
   if (!text || !m.chat || !['group','supergroup'].includes(m.chat.type)) return false;
@@ -116,6 +124,7 @@ async function result(id, s) {
 async function callback(q) {
   const id = q.message && q.message.chat && q.message.chat.id;
   if (!id) return;
+  if (!remember(processedCallbacks, String(q.id))) return;
   await tg('answerCallbackQuery', { callback_query_id: q.id });
   const s = get(id) || {};
   switch (q.data) {
@@ -125,8 +134,8 @@ async function callback(q) {
     case 'P0': s.plumbing='none'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P1': s.plumbing='partial'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
     case 'P2': s.plumbing='full'; return buttons(id,'bathroom','🚿 Санузел',[[{text:'Нет',callback_data:'B0'}],[{text:'Классический санузел',callback_data:'B1'}]],s);
-    case 'B0': s.bathroom='none'; return ask(id,'windows','🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',s);
-    case 'B1': s.bathroom='classic'; return ask(id,'windows','🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',s);
+    case 'B0': s.bathroom='none'; s.step='windows'; save(id,s); return tg('sendMessage',{chat_id:id,text:'🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',...force});
+    case 'B1': s.bathroom='classic'; s.step='windows'; save(id,s); return tg('sendMessage',{chat_id:id,text:'🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',...force});
     case 'LQ': case 'LL': return buttons(id,'plinth','📏 Плинтус',[[{text:'Нет',callback_data:'PL0'}],[{text:'Пластиковый',callback_data:'PL1'}],[{text:'Полиуретановый',callback_data:'PL2'}]],s);
     case 'PL0': s.plinth='none'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
     case 'PL1': s.plinth='plastic'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
@@ -148,13 +157,15 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.1.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.2.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     if (u.callback_query) { await callback(u.callback_query); return res.status(200).json({ok:true}); }
     const m=u.message;
     if (!m || !m.chat || !m.chat.id) return res.status(200).json({ok:true});
+    const updateKey = String(u.update_id || (m.chat.id + ':' + m.message_id));
+    if (!remember(processedUpdates, updateKey)) return res.status(200).json({ok:true,duplicate:true});
     if (['group','supergroup'].includes(m.chat.type)) { await monitorGroupMessage(m); return res.status(200).json({ok:true,mode:'group-monitor'}); }
     const id=m.chat.id, text=String(m.text||'').trim();
 
@@ -239,7 +250,7 @@ module.exports = async function handler(req,res) {
     }
     if (s && s.step==='windows') {
       const v=num(text); if(v===null || !Number.isInteger(v)) throw new Error('Введите количество окон целым числом, например 5');
-      s.windows=v; await buttons(id,'electrical','⚡ Электрика',[[{text:'Нет',callback_data:'E0'}],[{text:'Частичный монтаж',callback_data:'E1'}],[{text:'Полный монтаж',callback_data:'E2'}]],s); return res.status(200).json({ok:true});
+      s.windows=v; s.step='electrical'; save(id,s); await buttons(id,'electrical','⚡ Электрика',[[{text:'Нет',callback_data:'E0'}],[{text:'Частичный монтаж',callback_data:'E1'}],[{text:'Полный монтаж',callback_data:'E2'}]],s); return res.status(200).json({ok:true});
     }
     if (s && s.step==='tileArea') {
       const v=num(text); if(v===null) throw new Error('Введите площадь плитки числом, например 12');
