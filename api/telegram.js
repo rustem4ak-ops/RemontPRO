@@ -193,7 +193,8 @@ module.exports = async function handler(req,res) {
             type: s.objectType === 'h' ? 'Дом' : 'Квартира',
             floor: s.floor || 0,
             bath: s.bath || 0,
-            balcony: 0
+            balcony: 0,
+            windows: s.windows || 0
           }
         };
 
