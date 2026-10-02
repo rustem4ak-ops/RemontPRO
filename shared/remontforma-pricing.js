@@ -13,7 +13,8 @@ const DEFAULT_RATES = {
   cleanElectrical: { under40: 1000, from40to80: 700, from80to150: 600, over150: 500 },
   cleanPlumbing: 6000,
   cleaning: 400,
-  trash: { upTo150: 1000, over150: 800 }
+  trash: { upTo150: 1000, over150: 800 },
+  windows: 20000
 };
 
 const n = (v) => Math.max(0, Number(v) || 0);
@@ -63,6 +64,8 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
   const autoWall = wallItems.filter(([k]) => n(input.walls?.[k]?.area)<=0);
   const remain = Math.max(0,wallsArea-manualWall);
   for (const [k,name,p] of wallItems) { const q=n(input.walls?.[k]?.area)|| (autoWall.length ? remain/autoWall.length : 0); add(name,q*p,q,'м²',p); }
+
+  if (n(input.windows) > 0) add('Окна', n(input.windows)*rates.windows, n(input.windows), 'шт.', rates.windows);
 
   if (input.cleanElectrical) { const p=rateCleanElectrical(floor,rates.cleanElectrical); add('Чистовая электрика',floor*p,floor,'м²',p); }
   if (input.cleanPlumbing) add('Чистовая сантехника',bath*rates.cleanPlumbing,bath,'м² санузла',rates.cleanPlumbing);
