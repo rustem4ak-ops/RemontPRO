@@ -1,17 +1,40 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-03T09:05:28.051Z",
+  "updatedAt": "2026-10-03T09:22:07.540Z",
   "stats": {
-    "found": 46,
+    "found": 47,
     "new": 0,
     "duplicates": 4,
-    "high": 3,
+    "high": 4,
     "hot": 7,
     "potential": 9,
     "tenders": 30,
     "vk": 0
   },
   "leads": [
+    {
+      "id": "profi-kazan-remont-tdGC0LDQu9C4LCDRgdC-0LPQu9Cw",
+      "source": "Профи.ру · заказы на ремонт квартир в Казани",
+      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
+      "title": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обго",
+      "text": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обговорить детали, согласовать проект, посчитать возможную стоимость и риски. Есть проект отделки Московский 29 сентября 2026 Откликнуться",
+      "author": null,
+      "area": 50,
+      "budget": 500000,
+      "type": "Коммерция",
+      "score": 95,
+      "level": "hot",
+      "reasons": [
+        "клиентский заказ",
+        "Казань",
+        "есть площадь",
+        "есть бюджет"
+      ],
+      "city": true,
+      "publishedAt": null,
+      "firstSeenAt": "2026-10-03T09:22:01.808Z",
+      "status": "new"
+    },
     {
       "id": "profi-kazan-remont-j9Cx0YDRjyAyMDI2INCe0YLQutC7",
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
@@ -32,30 +55,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:22.247Z",
-      "status": "new"
-    },
-    {
-      "id": "profi-kazan-remont-tdGC0LDQu9C4LCDRgdC-0LPQu9Cw",
-      "source": "Профи.ру · заказы на ремонт квартир в Казани",
-      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "title": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обго",
-      "text": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обговорить детали, согласовать проект, посчитать возможную стоимость и риски. Есть проект отделки Московский 29 сентября 2026 Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 6 Вахитовский 6 Кировский 6 Московский 6 Ново-Савиновский 6 Приволжский 6 Советский 6 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 6 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 2 от 4000 ₽ 2 от 8000 ₽ 2 от 24300 ₽ 2 от 285600 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 6 Комплексный ремонт 3 Частичный ремонт 1 Ремонт коттеджей 3 Ремонт нежилых помещений 1 Ремонт кухни 3 Ремонт бытовок 1 Ремонт комнаты 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт крылец 1 Ремонт входных групп 1 Другие",
-      "author": null,
-      "area": 50,
-      "budget": 500000,
-      "type": "Коммерция",
-      "score": 95,
-      "level": "hot",
-      "reasons": [
-        "клиентский заказ",
-        "Казань",
-        "есть площадь",
-        "есть бюджет"
-      ],
-      "city": true,
-      "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:22.247Z",
+      "firstSeenAt": "2026-10-03T09:22:01.815Z",
       "status": "new"
     },
     {
@@ -63,7 +63,7 @@
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
       "title": "Мастер по ремонту (ремонт комнаты) Комната. Количество комнат: 1. Площадь комнаты: 19 м². Высота потолков: 2.5 м. Укладка напольного покрытия. Поклейка обоев, У",
-      "text": "Мастер по ремонту (ремонт комнаты) Комната. Количество комнат: 1. Площадь комнаты: 19 м². Высота потолков: 2.5 м. Укладка напольного покрытия. Поклейка обоев, Укладка ламината. Дизайн-проекта нет Приволжский вчера Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 6 Вахитовский 6 Кировский 6 Московский 6 Ново-Савиновский 6 Приволжский 6 Советский 6 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 6 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 2 от 4000 ₽ 2 от 8000 ₽ 2 от 27500 ₽ 2 от 282400 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 6 Комплексный ремонт 3 Частичный ремонт 1 Ремонт коттеджей 3 Ремонт нежилых помещений 1 Ремонт кухни 3 Ремонт бытовок 1 Ремонт комнаты 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт крылец 1 Ремонт входных групп 1 Другие параметры Доступные людям с инвалидностью 0 С ежедневной оплатой 0",
+      "text": "Мастер по ремонту (ремонт комнаты) Комната. Количество комнат: 1. Площадь комнаты: 19 м². Высота потолков: 2.5 м. Укладка напольного покрытия. Поклейка обоев, Укладка ламината. Дизайн-проекта нет Приволжский вчера Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 6 Вахитовский 6 Кировский 6 Московский 6 Ново-Савиновский 6 Приволжский 6 Советский 6 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 6 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 2 от 4000 ₽ 2 от 8000 ₽ 2 от 25500 ₽ 2 от 286400 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 6 Комплексный ремонт 3 Частичный ремонт 1 Ремонт коттеджей 3 Ремонт нежилых помещений 1 Ремонт кухни 3 Ремонт бытовок 1 Ремонт комнаты 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт крылец 1 Ремонт входных групп 1 Другие параметры Доступные людям с инвалидностью 0 С ежедневной оплатой 0",
       "author": null,
       "area": 19,
       "budget": 4000,
@@ -78,7 +78,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T08:05:41.762Z",
+      "firstSeenAt": "2026-10-03T09:22:01.816Z",
       "status": "new"
     },
     {
@@ -146,7 +146,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:22.247Z",
+      "firstSeenAt": "2026-10-03T09:22:01.815Z",
       "status": "new"
     },
     {
@@ -190,7 +190,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:23.675Z",
+      "firstSeenAt": "2026-10-03T09:22:02.751Z",
       "status": "new"
     },
     {
@@ -211,7 +211,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:23.675Z",
+      "firstSeenAt": "2026-10-03T09:22:02.752Z",
       "status": "new"
     },
     {
@@ -232,7 +232,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:22.191Z",
+      "firstSeenAt": "2026-10-03T09:22:01.815Z",
       "status": "new"
     },
     {
@@ -253,7 +253,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:22.247Z",
+      "firstSeenAt": "2026-10-03T09:22:01.816Z",
       "status": "new"
     },
     {
@@ -274,7 +274,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:22.247Z",
+      "firstSeenAt": "2026-10-03T09:22:01.816Z",
       "status": "new"
     },
     {
@@ -295,7 +295,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:23.675Z",
+      "firstSeenAt": "2026-10-03T09:22:02.751Z",
       "status": "new"
     },
     {
@@ -316,7 +316,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:23.675Z",
+      "firstSeenAt": "2026-10-03T09:22:02.751Z",
       "status": "new"
     },
     {
@@ -337,7 +337,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:23.675Z",
+      "firstSeenAt": "2026-10-03T09:22:02.751Z",
       "status": "new"
     },
     {
@@ -358,7 +358,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:23.675Z",
+      "firstSeenAt": "2026-10-03T09:22:02.752Z",
       "status": "new"
     },
     {
@@ -379,7 +379,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.407Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -401,7 +401,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.407Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -423,7 +423,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -445,7 +445,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -467,7 +467,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -489,7 +489,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -511,7 +511,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -533,7 +533,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -555,7 +555,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -577,7 +577,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:26.408Z",
+      "firstSeenAt": "2026-10-03T09:22:05.739Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -599,7 +599,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:27.176Z",
+      "firstSeenAt": "2026-10-03T09:22:06.615Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -621,7 +621,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:27.176Z",
+      "firstSeenAt": "2026-10-03T09:22:06.615Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -643,7 +643,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:27.176Z",
+      "firstSeenAt": "2026-10-03T09:22:06.615Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -665,7 +665,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:27.176Z",
+      "firstSeenAt": "2026-10-03T09:22:06.615Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -687,7 +687,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:27.176Z",
+      "firstSeenAt": "2026-10-03T09:22:06.615Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -709,7 +709,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:27.176Z",
+      "firstSeenAt": "2026-10-03T09:22:06.616Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -731,7 +731,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -753,7 +753,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -775,7 +775,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -797,7 +797,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -819,7 +819,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -841,7 +841,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -863,7 +863,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -885,7 +885,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -907,7 +907,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -929,7 +929,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -951,7 +951,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -973,7 +973,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -995,7 +995,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1017,7 +1017,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T09:05:28.051Z",
+      "firstSeenAt": "2026-10-03T09:22:07.540Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1524,7 +1524,7 @@
     {
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "found": 6,
+      "found": 7,
       "status": "readable",
       "error": null,
       "type": "marketplace_orders"
