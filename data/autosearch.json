@@ -1,17 +1,40 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-03T04:50:51.392Z",
+  "updatedAt": "2026-10-03T05:03:04.538Z",
   "stats": {
-    "found": 45,
-    "new": 0,
+    "found": 46,
+    "new": 1,
     "duplicates": 4,
-    "high": 2,
-    "hot": 5,
+    "high": 3,
+    "hot": 6,
     "potential": 9,
     "tenders": 30,
     "vk": 0
   },
   "leads": [
+    {
+      "id": "profi-kazan-remont-tdGC0LDQu9C4LCDRgdC-0LPQu9Cw",
+      "source": "Профи.ру · заказы на ремонт квартир в Казани",
+      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
+      "title": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обго",
+      "text": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обговорить детали, согласовать проект, посчитать возможную стоимость и риски. Есть проект отделки Московский 29 сентября 2026 Откликнуться",
+      "author": null,
+      "area": 50,
+      "budget": 500000,
+      "type": "Коммерция",
+      "score": 95,
+      "level": "hot",
+      "reasons": [
+        "клиентский заказ",
+        "Казань",
+        "есть площадь",
+        "есть бюджет"
+      ],
+      "city": true,
+      "publishedAt": null,
+      "firstSeenAt": "2026-10-03T05:02:58.296Z",
+      "status": "new"
+    },
     {
       "id": "profi-kazan-remont-j9Cx0YDRjyAyMDI2INCe0YLQutC7",
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
@@ -32,30 +55,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:46.124Z",
-      "status": "new"
-    },
-    {
-      "id": "profi-kazan-remont-tdGC0LDQu9C4LCDRgdC-0LPQu9Cw",
-      "source": "Профи.ру · заказы на ремонт квартир в Казани",
-      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "title": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обго",
-      "text": "Мастер по ремонту (ремонт квартир) до 500000 ₽ Квартира целиком. Площадь помещения: 50 м². Высота потолков: 3 м. Ремонт под ключ. Есть дизайн-проект. Нужно обговорить детали, согласовать проект, посчитать возможную стоимость и риски. Есть проект отделки Московский 29 сентября 2026 Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 4 Вахитовский 4 Кировский 4 Московский 4 Ново-Савиновский 4 Приволжский 4 Советский 4 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 4 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 2 от 4600 ₽ 2 от 8800 ₽ 2 от 32000 ₽ 2 от 299000 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 4 Комплексный ремонт 3 Частичный ремонт 1 Ремонт коттеджей 3 Ремонт нежилых помещений 1 Ремонт кухни 2 Ремонт бытовок 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт крылец 1 Ремонт входных групп 1 Другие параметры Доступ",
-      "author": null,
-      "area": 50,
-      "budget": 500000,
-      "type": "Коммерция",
-      "score": 95,
-      "level": "hot",
-      "reasons": [
-        "клиентский заказ",
-        "Казань",
-        "есть площадь",
-        "есть бюджет"
-      ],
-      "city": true,
-      "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:46.124Z",
+      "firstSeenAt": "2026-10-03T05:02:58.301Z",
       "status": "new"
     },
     {
@@ -105,6 +105,28 @@
       "status": "new"
     },
     {
+      "id": "profi-kazan-remont-Qu9Cw0YLRjCDQtNC40LfQsNC50L0",
+      "source": "Профи.ру · заказы на ремонт квартир в Казани",
+      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
+      "title": "Мастер по ремонту (ремонт туалета) Туалет, кухня, ванная. Площадь кухни: 10 м². Площадь ванной: 5 м². Площадь туалета: 2 м². Высота потолков: 2.5 м. Ремонт под ",
+      "text": "Мастер по ремонту (ремонт туалета) Туалет, кухня, ванная. Площадь кухни: 10 м². Площадь ванной: 5 м². Площадь туалета: 2 м². Высота потолков: 2.5 м. Ремонт под ключ. Сделать дизайн-проект Советский 21 час назад Откликнуться",
+      "author": null,
+      "area": 10,
+      "budget": null,
+      "type": "Квартира",
+      "score": 90,
+      "level": "hot",
+      "reasons": [
+        "клиентский заказ",
+        "Казань",
+        "есть площадь"
+      ],
+      "city": true,
+      "publishedAt": null,
+      "firstSeenAt": "2026-10-03T05:02:58.301Z",
+      "status": "new"
+    },
+    {
       "id": "profi-kazan-remont-QsNC80LXQvdCwINGN0LvQtdC60YI",
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
@@ -145,7 +167,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:47.048Z",
+      "firstSeenAt": "2026-10-03T05:02:59.279Z",
       "status": "new"
     },
     {
@@ -166,7 +188,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:47.048Z",
+      "firstSeenAt": "2026-10-03T05:02:59.279Z",
       "status": "new"
     },
     {
@@ -187,7 +209,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:46.118Z",
+      "firstSeenAt": "2026-10-03T05:02:58.301Z",
       "status": "new"
     },
     {
@@ -208,7 +230,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:46.124Z",
+      "firstSeenAt": "2026-10-03T05:02:58.301Z",
       "status": "new"
     },
     {
@@ -229,7 +251,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:46.124Z",
+      "firstSeenAt": "2026-10-03T05:02:58.302Z",
       "status": "new"
     },
     {
@@ -250,7 +272,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:47.048Z",
+      "firstSeenAt": "2026-10-03T05:02:59.279Z",
       "status": "new"
     },
     {
@@ -271,7 +293,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:47.048Z",
+      "firstSeenAt": "2026-10-03T05:02:59.279Z",
       "status": "new"
     },
     {
@@ -292,7 +314,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:47.048Z",
+      "firstSeenAt": "2026-10-03T05:02:59.279Z",
       "status": "new"
     },
     {
@@ -313,7 +335,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:47.048Z",
+      "firstSeenAt": "2026-10-03T05:02:59.279Z",
       "status": "new"
     },
     {
@@ -334,7 +356,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.808Z",
+      "firstSeenAt": "2026-10-03T05:03:02.377Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -356,7 +378,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.808Z",
+      "firstSeenAt": "2026-10-03T05:03:02.377Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -378,7 +400,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -400,7 +422,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -422,7 +444,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -444,7 +466,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -466,7 +488,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -488,7 +510,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -510,7 +532,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -532,7 +554,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:49.809Z",
+      "firstSeenAt": "2026-10-03T05:03:02.378Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -554,7 +576,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:50.679Z",
+      "firstSeenAt": "2026-10-03T05:03:03.651Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -576,7 +598,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:50.679Z",
+      "firstSeenAt": "2026-10-03T05:03:03.651Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -598,7 +620,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:50.679Z",
+      "firstSeenAt": "2026-10-03T05:03:03.651Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -620,7 +642,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:50.679Z",
+      "firstSeenAt": "2026-10-03T05:03:03.651Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -642,7 +664,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:50.679Z",
+      "firstSeenAt": "2026-10-03T05:03:03.651Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -664,7 +686,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:50.679Z",
+      "firstSeenAt": "2026-10-03T05:03:03.651Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -686,7 +708,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.537Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -708,7 +730,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -730,7 +752,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -752,7 +774,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -774,7 +796,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -796,7 +818,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -818,7 +840,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -840,7 +862,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -862,7 +884,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -884,7 +906,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -906,7 +928,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -928,7 +950,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -950,7 +972,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -972,7 +994,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T04:50:51.392Z",
+      "firstSeenAt": "2026-10-03T05:03:04.538Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1457,7 +1479,7 @@
     {
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "found": 5,
+      "found": 6,
       "status": "readable",
       "error": null,
       "type": "marketplace_orders"
