@@ -1,9 +1,9 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-03T05:03:04.538Z",
+  "updatedAt": "2026-10-03T05:26:40.298Z",
   "stats": {
     "found": 46,
-    "new": 1,
+    "new": 0,
     "duplicates": 4,
     "high": 3,
     "hot": 6,
@@ -32,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:58.296Z",
+      "firstSeenAt": "2026-10-03T05:26:33.431Z",
       "status": "new"
     },
     {
@@ -55,7 +55,30 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:58.301Z",
+      "firstSeenAt": "2026-10-03T05:26:33.431Z",
+      "status": "new"
+    },
+    {
+      "id": "profi-kazan-remont-Qu9Cw0YLRjCDQtNC40LfQsNC50L0",
+      "source": "Профи.ру · заказы на ремонт квартир в Казани",
+      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
+      "title": "Мастер по ремонту (ремонт туалета) Туалет, кухня, ванная. Площадь кухни: 10 м². Площадь ванной: 5 м². Площадь туалета: 2 м². Высота потолков: 2.5 м. Ремонт под ",
+      "text": "Мастер по ремонту (ремонт туалета) Туалет, кухня, ванная. Площадь кухни: 10 м². Площадь ванной: 5 м². Площадь туалета: 2 м². Высота потолков: 2.5 м. Ремонт под ключ. Сделать дизайн-проект Советский 21 час назад Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 6 Вахитовский 6 Кировский 6 Московский 6 Ново-Савиновский 6 Приволжский 6 Советский 6 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 6 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 2 от 4700 ₽ 2 от 9600 ₽ 2 от 32000 ₽ 2 от 296800 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 2 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 6 Комплексный ремонт 3 Частичный ремонт 1 Ремонт коттеджей 3 Ремонт нежилых помещений 1 Ремонт кухни 3 Ремонт бытовок 1 Ремонт комнаты 1 Ремонт подъездов 1 Ремонт коридора 1 Ремонт крылец 1 Ремонт входных групп 1 Другие параметры Доступные людям с инвалидностью 0 С ежедневной оплатой 0 Нео",
+      "author": null,
+      "area": 10,
+      "budget": 4700,
+      "type": "Коммерция",
+      "score": 95,
+      "level": "hot",
+      "reasons": [
+        "клиентский заказ",
+        "Казань",
+        "есть площадь",
+        "есть бюджет"
+      ],
+      "city": true,
+      "publishedAt": null,
+      "firstSeenAt": "2026-10-03T05:26:33.431Z",
       "status": "new"
     },
     {
@@ -105,28 +128,6 @@
       "status": "new"
     },
     {
-      "id": "profi-kazan-remont-Qu9Cw0YLRjCDQtNC40LfQsNC50L0",
-      "source": "Профи.ру · заказы на ремонт квартир в Казани",
-      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "title": "Мастер по ремонту (ремонт туалета) Туалет, кухня, ванная. Площадь кухни: 10 м². Площадь ванной: 5 м². Площадь туалета: 2 м². Высота потолков: 2.5 м. Ремонт под ",
-      "text": "Мастер по ремонту (ремонт туалета) Туалет, кухня, ванная. Площадь кухни: 10 м². Площадь ванной: 5 м². Площадь туалета: 2 м². Высота потолков: 2.5 м. Ремонт под ключ. Сделать дизайн-проект Советский 21 час назад Откликнуться",
-      "author": null,
-      "area": 10,
-      "budget": null,
-      "type": "Квартира",
-      "score": 90,
-      "level": "hot",
-      "reasons": [
-        "клиентский заказ",
-        "Казань",
-        "есть площадь"
-      ],
-      "city": true,
-      "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:58.301Z",
-      "status": "new"
-    },
-    {
       "id": "profi-kazan-remont-QsNC80LXQvdCwINGN0LvQtdC60YI",
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
@@ -167,7 +168,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:59.279Z",
+      "firstSeenAt": "2026-10-03T05:26:34.652Z",
       "status": "new"
     },
     {
@@ -188,28 +189,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:59.279Z",
-      "status": "new"
-    },
-    {
-      "id": "profi-kazan-remont-XQvtC00LjQvNC-OiAtINCj0LTQsA",
-      "source": "Профи.ру · заказы на ремонт квартир в Казани",
-      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "title": "Мастер по ремонту (ремонт ванной комнаты) Дизайн-проекта нет. Пожелания и особенности: ремонт квартир. Ищу мастера для устранения плесени и последствий под ванн",
-      "text": "Мастер по ремонту (ремонт ванной комнаты) Дизайн-проекта нет. Пожелания и особенности: ремонт квартир. Ищу мастера для устранения плесени и последствий под ванной Необходимо: - Удалить имеющуюся плесень и грибок с поверхностей. -Провести противогрибковую обработку. -Проверить состояние стен, пола и других материалов под ванной. - При наличии повреждённых плесенью или влагой материалов — удалить и заменить их. - просушить помещение и поверхности. - После работ установить ванную, снятую плитку. - Восстановить герметизацию швов и стыков между ванной и стеной. Также после появления плесени в комнате на примыкающей к ванной стене необходимо устранить последствия и восстановить отделку. Необходимо: - удалить поражённые плесенью участки. -провести противогрибковую обработку. -при необходимости просушить стену. -восстановить повреждённую поверхность: шпаклёвка, грунтовка. -поклеить обои на обработанный участок. В отклике пож-та укажите стоимость работ, сроки и когда можете приехать Советский 23 сентября 2026 Откликнуться",
-      "author": null,
-      "area": null,
-      "budget": null,
-      "type": "Коммерция",
-      "score": 78,
-      "level": "potential",
-      "reasons": [
-        "клиентский заказ",
-        "Казань"
-      ],
-      "city": true,
-      "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:58.301Z",
+      "firstSeenAt": "2026-10-03T05:26:34.652Z",
       "status": "new"
     },
     {
@@ -230,7 +210,28 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:58.301Z",
+      "firstSeenAt": "2026-10-03T05:26:33.383Z",
+      "status": "new"
+    },
+    {
+      "id": "profi-kazan-remont-XQvtC00LjQvNC-OiAtINCj0LTQsA",
+      "source": "Профи.ру · заказы на ремонт квартир в Казани",
+      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
+      "title": "Мастер по ремонту (ремонт ванной комнаты) Дизайн-проекта нет. Пожелания и особенности: ремонт квартир. Ищу мастера для устранения плесени и последствий под ванн",
+      "text": "Мастер по ремонту (ремонт ванной комнаты) Дизайн-проекта нет. Пожелания и особенности: ремонт квартир. Ищу мастера для устранения плесени и последствий под ванной Необходимо: - Удалить имеющуюся плесень и грибок с поверхностей. -Провести противогрибковую обработку. -Проверить состояние стен, пола и других материалов под ванной. - При наличии повреждённых плесенью или влагой материалов — удалить и заменить их. - просушить помещение и поверхности. - После работ установить ванную, снятую плитку. - Восстановить герметизацию швов и стыков между ванной и стеной. Также после появления плесени в комнате на примыкающей к ванной стене необходимо устранить последствия и восстановить отделку. Необходимо: - удалить поражённые плесенью участки. -провести противогрибковую обработку. -при необходимости просушить стену. -восстановить повреждённую поверхность: шпаклёвка, грунтовка. -поклеить обои на обработанный участок. В отклике пож-та укажите стоимость работ, сроки и когда можете приехать Советский 23 сентября 2026 Откликнуться",
+      "author": null,
+      "area": null,
+      "budget": null,
+      "type": "Коммерция",
+      "score": 78,
+      "level": "potential",
+      "reasons": [
+        "клиентский заказ",
+        "Казань"
+      ],
+      "city": true,
+      "publishedAt": null,
+      "firstSeenAt": "2026-10-03T05:26:33.431Z",
       "status": "new"
     },
     {
@@ -251,7 +252,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:58.302Z",
+      "firstSeenAt": "2026-10-03T05:26:33.431Z",
       "status": "new"
     },
     {
@@ -272,7 +273,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:59.279Z",
+      "firstSeenAt": "2026-10-03T05:26:34.651Z",
       "status": "new"
     },
     {
@@ -293,7 +294,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:59.279Z",
+      "firstSeenAt": "2026-10-03T05:26:34.652Z",
       "status": "new"
     },
     {
@@ -314,7 +315,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:59.279Z",
+      "firstSeenAt": "2026-10-03T05:26:34.652Z",
       "status": "new"
     },
     {
@@ -335,7 +336,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:02:59.279Z",
+      "firstSeenAt": "2026-10-03T05:26:34.652Z",
       "status": "new"
     },
     {
@@ -356,7 +357,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.377Z",
+      "firstSeenAt": "2026-10-03T05:26:38.406Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -378,7 +379,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.377Z",
+      "firstSeenAt": "2026-10-03T05:26:38.406Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -400,7 +401,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -422,7 +423,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -444,7 +445,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -466,7 +467,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -488,7 +489,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -510,7 +511,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -532,7 +533,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -554,7 +555,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:02.378Z",
+      "firstSeenAt": "2026-10-03T05:26:38.407Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -576,7 +577,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:03.651Z",
+      "firstSeenAt": "2026-10-03T05:26:39.380Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -598,7 +599,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:03.651Z",
+      "firstSeenAt": "2026-10-03T05:26:39.380Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -620,7 +621,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:03.651Z",
+      "firstSeenAt": "2026-10-03T05:26:39.380Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -642,7 +643,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:03.651Z",
+      "firstSeenAt": "2026-10-03T05:26:39.380Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -664,7 +665,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:03.651Z",
+      "firstSeenAt": "2026-10-03T05:26:39.381Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -686,7 +687,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:03.651Z",
+      "firstSeenAt": "2026-10-03T05:26:39.381Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -708,7 +709,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.537Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -730,7 +731,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -752,7 +753,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -774,7 +775,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -796,7 +797,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -818,7 +819,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -840,7 +841,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -862,7 +863,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -884,7 +885,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -906,7 +907,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -928,7 +929,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -950,7 +951,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -972,7 +973,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -994,7 +995,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-03T05:03:04.538Z",
+      "firstSeenAt": "2026-10-03T05:26:40.298Z",
       "status": "new",
       "leadType": "tender"
     },
