@@ -1,6 +1,9 @@
 // РЕМОНТФОРМА — единый движок расчёта.
 // Не содержит Telegram/Bitrix24/UI-кода: один расчёт для сайта, бота и РемонтPRO.
 
+const HIDDEN_MARKUP_PERCENT = 30;
+const HIDDEN_MULTIPLIER = 1 + HIDDEN_MARKUP_PERCENT / 100;
+
 const DEFAULT_RATES = {
   electrical: { partial: 2500, full: 3500 },
   plumbing: { partial: 1000, full: 2500 },
@@ -29,8 +32,20 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
   const main = Math.max(0, floor - bath - balcony);
   const wallsArea = main * 2.8;
   const rows = [];
+  // Клиентская цена рассчитывается с фиксированной внутренней наценкой 30%.
+  // Наценка нигде не показывается и не передаётся как отдельный параметр.
   const add = (name, cost, quantity, unit = 'м²', price = 0) => {
-    if (cost > 0) rows.push({ name, quantity: Math.round(quantity*100)/100, unit, price: Math.round(price*100)/100, cost: Math.round(cost) });
+    if (cost > 0) {
+      const clientCost = Math.round(cost * HIDDEN_MULTIPLIER);
+      const clientPrice = Math.round(price * HIDDEN_MULTIPLIER * 100) / 100;
+      rows.push({
+        name,
+        quantity: Math.round(quantity*100)/100,
+        unit,
+        price: clientPrice,
+        cost: clientCost
+      });
+    }
   };
 
   const electrical = input.electrical || 'none';
@@ -74,11 +89,23 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
 
   for (const w of (input.customWorks||[])) { const q=n(w.quantity); const p=n(w.price); add(String(w.name||'Работа'),q*p,q,w.unit||'м²',p); }
 
-  const subtotal=rows.reduce((s,x)=>s+x.cost,0);
-  const markup=n(input.markup);
-  const markupSum=Math.round(subtotal*markup/100);
-  const total=subtotal+markupSum;
-  return { floor,bath,balcony,mainArea:main,wallsArea:Math.round(wallsArea*100)/100,rows,subtotal,markup,markupSum,total,pricePerM2:floor?Math.round(total/floor*100)/100:0 };
+  // rows уже содержат конечные клиентские цены с внутренней наценкой 30%.
+  // Поэтому дополнительную наценку к subtotal/total не применяем.
+  const subtotal = rows.reduce((s,x)=>s+x.cost,0);
+  const total = subtotal;
+  return {
+    floor,
+    bath,
+    balcony,
+    mainArea:main,
+    wallsArea:Math.round(wallsArea*100)/100,
+    rows,
+    subtotal,
+    markup:HIDDEN_MARKUP_PERCENT,
+    markupSum:Math.max(0, total - Math.round(rows.reduce((s,x)=>s+(x.cost / HIDDEN_MULTIPLIER),0))),
+    total,
+    pricePerM2:floor?Math.round(total/floor*100)/100:0
+  };
 }
 
 module.exports = { calculate, DEFAULT_RATES };
