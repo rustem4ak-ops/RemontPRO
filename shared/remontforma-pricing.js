@@ -101,8 +101,6 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
     wallsArea:Math.round(wallsArea*100)/100,
     rows,
     subtotal,
-    markup:HIDDEN_MARKUP_PERCENT,
-    markupSum:Math.max(0, total - Math.round(rows.reduce((s,x)=>s+(x.cost / HIDDEN_MULTIPLIER),0))),
     total,
     pricePerM2:floor?Math.round(total/floor*100)/100:0
   };
