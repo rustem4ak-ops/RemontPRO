@@ -2,7 +2,7 @@ const https = require('https');
 
 const TOKEN = process.env.MAX_BOT_TOKEN;
 const API = 'https://platform-api2.max.ru';
-const WEBHOOK = 'https://remont-pro-nine.vercel.app/api/max';
+const WEBHOOK = 'https://remont-pro-nine.vercel.app/api/max-entry';
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
 
 // Официальные сертификаты Russian Trusted CA / Минцифры
