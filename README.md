@@ -49,10 +49,10 @@ Calculator API: https://remont-pro-nine.vercel.app/api/calculate
 
 POST /api/lead принимает контакт, параметры объекта, расчёт, выбранные работы и метаданные файлов.
 
-Для автоматической передачи заявки в Telegram и Bitrix24 необходимо добавить в Vercel Environment Variables:
+Для автоматической передачи заявки в Telegram необходимо добавить в Vercel Environment Variables:
 
-- TELEGRAM_BOT_TOKEN — уже используется ботом;
+- TELEGRAM_BOT_TOKEN — токен бота;
 - TELEGRAM_ADMIN_CHAT_ID — chat ID, куда отправлять новые заявки;
-- BITRIX24_WEBHOOK_URL — входящий вебхук Bitrix24 с правом создания CRM-лида.
+- MAX_BOT_TOKEN и MAX_ADMIN_CHAT_ID — используются для дополнительного уведомления в MAX.
 
-Если последние два параметра не заданы, сайт и калькулятор продолжают работать, а Lead API возвращает состояние интеграций.
+Bitrix24 в проекте не используется.
