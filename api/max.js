@@ -484,7 +484,8 @@ async function sendLead(id, message, s, phone) {
       type: objectName(s.objectType),
       floor: s.floor || 0,
       bath: s.bath || 0,
-      balcony: 0
+      balcony: 0,
+      windows: s.windows || 0
     }
   };
 
