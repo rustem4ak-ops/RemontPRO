@@ -1,7 +1,7 @@
 // РЕМОНТФОРМА — приём лидов.
 // Production endpoint: /api/lead -> Telegram + MAX administrator.
 // TELEGRAM_BOT_TOKEN + TELEGRAM_ADMIN_CHAT_ID — Telegram уведомление.
-// MAX_BOT_TOKEN + MAX_ADMIN_CHAT_ID — MAX уведомление.
+// MAX_BOT_TOKEN + MAX_ADMIN_USER_ID (лично) или MAX_ADMIN_CHAT_ID (чат) — MAX уведомление.
 
 function tg(method, body) {
   var token = process.env.TELEGRAM_BOT_TOKEN;
@@ -13,26 +13,37 @@ function tg(method, body) {
   }).then(function(r){ return r.json(); });
 }
 
-function maxSend(text) {
+async function maxSend(text) {
   var token = process.env.MAX_BOT_TOKEN;
-  var chatId = process.env.MAX_ADMIN_CHAT_ID;
-  if (!token || !chatId) return Promise.resolve(null);
+  if (!token) return null;
 
-  return fetch(
-    'https://platform-api2.max.ru/messages?chat_id=' + encodeURIComponent(chatId),
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': token,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({ text: text })
+  var userId = process.env.MAX_ADMIN_USER_ID;
+  var chatId = process.env.MAX_ADMIN_CHAT_ID;
+  var targets = [];
+
+  if (userId) targets.push('/messages?user_id=' + encodeURIComponent(userId));
+  if (chatId) targets.push('/messages?chat_id=' + encodeURIComponent(chatId));
+  if (!targets.length) return null;
+
+  var last = null;
+  for (var i = 0; i < targets.length; i++) {
+    try {
+      var r = await fetch('https://platform-api2.max.ru' + targets[i], {
+        method: 'POST',
+        headers: {
+          'Authorization': token,
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({ text: text })
+      });
+      var data = await r.json().catch(function(){ return {}; });
+      last = { ok: r.ok, data: data };
+      if (r.ok) return last;
+    } catch (e) {
+      last = { ok: false, error: String(e && e.message ? e.message : e) };
     }
-  ).then(function(r){
-    return r.json().then(function(data){
-      return { ok: r.ok, data: data };
-    });
-  });
+  }
+  return last;
 }
 
 function money(n) {
@@ -50,7 +61,7 @@ module.exports = async function handler(req, res) {
       ok: true,
       service: 'РЕМОНТФОРМА Lead API',
       telegram: Boolean(process.env.TELEGRAM_ADMIN_CHAT_ID),
-      max: Boolean(process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID)
+      max: Boolean(process.env.MAX_BOT_TOKEN && (process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID))
     });
   }
   if (req.method !== 'POST') {
@@ -101,7 +112,7 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    if (!b.skipMax && process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID) {
+    if (!b.skipMax && process.env.MAX_BOT_TOKEN && (process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID)) {
       try {
         var m = await maxSend(
           message.replace(/<b>/g, '').replace(/<\/b>/g, '')
