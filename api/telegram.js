@@ -162,7 +162,12 @@ async function result(id, s) {
   }
   lines.push('💵 <b>ИТОГО: ' + money(r.total) + '</b>', '📐 Цена за м²: <b>' + money(r.pricePerM2) + '</b>', '', '⚠️ <i>Расчёт является приблизительным. Более точный расчёт можно сделать после осмотра объекта.</i>', '', '📞 Для консультации отправьте номер телефона.');
   save(id, { ...s, step: 'result', result: r });
-  return tg('sendMessage', { chat_id: id, text: lines.join('\n'), parse_mode: 'HTML', ...keyboard([['📞 Оставить номер телефона'], ['🔄 Рассчитать заново']]) });
+  await tg('sendMessage', { chat_id: id, text: lines.join('\n'), parse_mode: 'HTML', ...keyboard([['📞 Оставить номер телефона'], ['🔄 Рассчитать заново']]) });
+  return tg('sendMessage', {
+    chat_id: id,
+    text: '🌐 Сайт РЕМОНТФОРМА',
+    ...inline([[{ text: '🌐 Открыть сайт РЕМОНТФОРМА', url: 'https://remont-pro-nine.vercel.app' }]])
+  });
 }
 
 async function callback(q) {
