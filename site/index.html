@@ -494,29 +494,29 @@ function render(){
 
   if(S.step===11){
     h='<div class="stepTitle">12. Чистовая электрика</div><div class="choices">'+
-      tog('Да','cleanElectrical')+
-      tog('Нет','cleanElectricalNo')+
+      yesNo('Да','cleanElectrical',true)+
+      yesNo('Нет','cleanElectrical',false)+
       '</div>';
   }
 
   if(S.step===12){
     h='<div class="stepTitle">13. Чистовая сантехника</div><div class="choices">'+
-      tog('Да','cleanPlumbing')+
-      tog('Нет','cleanPlumbingNo')+
+      yesNo('Да','cleanPlumbing',true)+
+      yesNo('Нет','cleanPlumbing',false)+
       '</div>';
   }
 
   if(S.step===13){
     h='<div class="stepTitle">14. Клининг</div><div class="choices">'+
-      tog('Да','cleaning')+
-      tog('Нет','cleaningNo')+
+      yesNo('Да','cleaning',true)+
+      yesNo('Нет','cleaning',false)+
       '</div>';
   }
 
   if(S.step===14){
     h='<div class="stepTitle">15. Вывоз мусора</div><div class="choices">'+
-      tog('Да','trash')+
-      tog('Нет','trashNo')+
+      yesNo('Да','trash',true)+
+      yesNo('Нет','trash',false)+
       '</div>';
   }
 
