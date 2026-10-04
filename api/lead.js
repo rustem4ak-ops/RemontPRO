@@ -101,7 +101,7 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    if (process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID) {
+    if (!b.skipMax && process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID) {
       try {
         var m = await maxSend(
           message.replace(/<b>/g, '').replace(/<\/b>/g, '')
