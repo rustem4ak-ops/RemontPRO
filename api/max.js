@@ -149,11 +149,32 @@ function contact(text) {
 }
 
 async function send(chatId, text, rows = [], extraAttachments = []) {
-  const attachments = [...(extraAttachments || []), ...(rows.length ? buttons(rows) : [])];
-  return maxRequest('/messages?user_id=' + encodeURIComponent(chatId), 'POST', {
-    text,
-    attachments
-  });
+  const url = '/messages?user_id=' + encodeURIComponent(chatId);
+  const keyboard = rows.length ? buttons(rows) : [];
+  const media = extraAttachments || [];
+
+  try {
+    return await maxRequest(url, 'POST', {
+      text,
+      attachments: [...media, ...keyboard]
+    });
+  } catch (error) {
+    // Критически важный fallback: если MAX отклонил медиа-вложение
+    // (например, временно недоступен внешний URL логотипа), сообщение
+    // пользователю всё равно должно уйти вместе с клавиатурой.
+    if (media.length) {
+      console.error('[MAX send media fallback]', {
+        message: error?.message || 'media send failed'
+      });
+
+      return maxRequest(url, 'POST', {
+        text,
+        attachments: keyboard
+      });
+    }
+
+    throw error;
+  }
 }
 
 async function answerCallback(callbackId) {
