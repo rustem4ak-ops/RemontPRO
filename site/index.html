@@ -390,7 +390,7 @@ function render(){
   const n=document.getElementById('nextBtn');
 
   const totalSteps=14;
-  const isResult=S.step===6;
+  const isResult=S.step===14;
   document.getElementById('progressText').textContent=isResult?'Итог':'Шаг '+(S.step+1)+' из '+totalSteps;
   document.getElementById('bar').style.width=(isResult?100:((S.step+1)/totalSteps*100))+'%';
   b.classList.toggle('hidden',S.step===0);
@@ -399,8 +399,7 @@ function render(){
   let h='';
 
   if(S.step===0){
-    h='<div class="stepTitle">1. Тип объекта</div>'+
-      '<div class="choices">'+
+    h='<div class="stepTitle">1. Тип объекта</div><div class="choices">'+
       opt('🏠 Квартира','Квартира','type')+
       opt('🏡 Дом','Дом','type')+
       opt('🏢 Коммерция','Коммерция','type')+
@@ -445,29 +444,29 @@ function render(){
   }
 
   if(S.step===6){
-    h='<div class="stepTitle">8. Плитка — полы (коридор, комнаты)</div>'+
+    h='<div class="stepTitle">7. Плитка — полы (коридор, комнаты)</div>'+
       '<div class="field"><label>Напишите площадь плитки в м²</label>'+
       '<input id="tileArea" type="number" min="0" step="0.1" value="'+(S.tileArea||'')+'" placeholder="Например: 12"></div>'+
       '<div class="hint">Площадь плитки не может быть больше основной площади объекта. Цена автоматически зависит от площади плитки.</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">9. Оставшиеся полы</div><div class="choices">'+
+  if(S.step===7){
+    h='<div class="stepTitle">8. Оставшиеся полы</div><div class="choices">'+
       opt('Кварцвинил','quartz','floorFinish')+
       opt('Ламинат','laminate','floorFinish')+
       '</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">10. Плинтус</div><div class="choices">'+
+  if(S.step===8){
+    h='<div class="stepTitle">9. Плинтус</div><div class="choices">'+
       opt('Нет','none','plinth')+
       opt('Пластиковый','plastic','plinth')+
       opt('Полиуретановый','polyurethane','plinth')+
       '</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">11. Стены</div><div class="choices">'+
+  if(S.step===9){
+    h='<div class="stepTitle">10. Стены</div><div class="choices">'+
       opt('Без отделки','none','walls')+
       opt('Обои','wallpaper','walls')+
       opt('Покраска','paint','walls')+
@@ -475,35 +474,35 @@ function render(){
       '</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">12. Чистовая электрика</div><div class="choices">'+
+  if(S.step===10){
+    h='<div class="stepTitle">11. Чистовая электрика</div><div class="choices">'+
       yesNo('Да','cleanElectrical',true)+
       yesNo('Нет','cleanElectrical',false)+
       '</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">13. Чистовая сантехника</div><div class="choices">'+
+  if(S.step===11){
+    h='<div class="stepTitle">12. Чистовая сантехника</div><div class="choices">'+
       yesNo('Да','cleanPlumbing',true)+
       yesNo('Нет','cleanPlumbing',false)+
       '</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">14. Клининг</div><div class="choices">'+
+  if(S.step===12){
+    h='<div class="stepTitle">13. Клининг</div><div class="choices">'+
       yesNo('Да','cleaning',true)+
       yesNo('Нет','cleaning',false)+
       '</div>';
   }
 
-  if(S.step===6){
-    h='<div class="stepTitle">15. Вывоз мусора</div><div class="choices">'+
+  if(S.step===13){
+    h='<div class="stepTitle">14. Вывоз мусора</div><div class="choices">'+
       yesNo('Да','trash',true)+
       yesNo('Нет','trash',false)+
       '</div>';
   }
 
-  if(S.step===6){
+  if(S.step===14){
     h='<div class="stepTitle">Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
   }
 
@@ -540,7 +539,7 @@ function render(){
     };
   });
 
-  if(S.step===6) loadResult();
+  if(S.step===14) loadResult();
 }
 
 function pick(k,v){
