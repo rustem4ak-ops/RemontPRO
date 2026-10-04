@@ -179,12 +179,41 @@ module.exports = async function handler(req, res) {
       const commands = await setupCommands();
       const result = await setupWebhook();
 
-      return res.status(result.ok && commands.ok ? 200 : 502).json({
-        ok: result.ok && commands.ok,
+      // После POST /subscriptions сразу проверяем фактическую подписку.
+      // Один только success=true не доказывает, что нужный endpoint активен.
+      const subscriptions = await maxRequest('/subscriptions', {
+        method: 'GET'
+      });
+
+      const active = Array.isArray(subscriptions.data?.subscriptions)
+        ? subscriptions.data.subscriptions
+        : [];
+
+      const webhookActive = active.some(item =>
+        item?.url === WEBHOOK &&
+        Array.isArray(item?.update_types) &&
+        item.update_types.includes('message_created')
+      );
+
+      return res.status(
+        result.ok && commands.ok && subscriptions.ok && webhookActive ? 200 : 502
+      ).json({
+        ok: result.ok && commands.ok && subscriptions.ok && webhookActive,
         status: result.status,
         webhook: WEBHOOK,
+        webhookActive,
         commands: { ok: commands.ok, status: commands.status, data: commands.data },
-        subscription: result.data
+        subscription: result.data,
+        subscriptions: {
+          ok: subscriptions.ok,
+          status: subscriptions.status,
+          count: active.length,
+          items: active.map(item => ({
+            url: item?.url || null,
+            update_types: item?.update_types || [],
+            has_secret: !!item?.secret
+          }))
+        }
       });
     }
 
