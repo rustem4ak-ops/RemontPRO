@@ -648,7 +648,12 @@ async function handleMessage(update) {
 
   const text = String(m.body?.text || m.text || '').trim();
 
-  if (/^\/admin$/i.test(text)) {\n    const senderId = m.sender?.user_id || update.user?.user_id || id;\n    return send(id, '🔧 MAX user_id: ' + String(senderId) + '\\n\\nУкажите этот ID в Vercel → Environment Variables → MAX_ADMIN_USER_ID.');\n  }\n\n  if (
+  if (/^\/admin$/i.test(text)) {
+    const senderId = m.sender?.user_id || update.user?.user_id || id;
+    return send(id, '🔧 MAX user_id: ' + String(senderId) + '\\n\\nУкажите этот ID в Vercel → Environment Variables → MAX_ADMIN_USER_ID.');
+  }
+
+  if (
     /^\/start$/i.test(text) ||
     /^Начать$/i.test(text) ||
     /^🏠 Начать$/i.test(text) ||
