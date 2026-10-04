@@ -61,11 +61,8 @@ function money(v) { return new Intl.NumberFormat('ru-RU').format(Math.round(Numb
 
 async function start(id) {
   clear(id);
-  await tg('sendPhoto', {
-    chat_id: id,
-    photo: LOGO_URL,
-    caption: 'РЕМОНТФОРМА — ремонт под ключ в Казани'
-  });
+  // Не отправляем логотип по внешнему URL: Telegram может не получить его
+  // и тогда весь /start завершается ошибкой. Сам расчёт должен работать независимо от картинки.
   return tg('sendMessage', {
     chat_id: id,
     text: 'Рассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
@@ -211,9 +208,10 @@ module.exports = async function handler(req,res) {
           phone,
           source: 'telegram',
           medium: 'telegram_bot',
-          calculator: {
-            total: s.result?.total || 0,
-            pricePerM2: s.result?.pricePerM2 || 0
+          calculator: s.result || {
+            total: 0,
+            pricePerM2: 0,
+            rows: []
           },
           object: {
             type: s.objectType === 'h' ? 'Дом' : 'Квартира',
