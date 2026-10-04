@@ -200,19 +200,15 @@ module.exports = async function handler(req,res) {
       const lastName = String(m.contact.last_name || '').trim();
       const name = [firstName, lastName].filter(Boolean).join(' ') || 'Клиент';
 
-      let crmOk = false;
-      let crmResult = null;
+      let leadOk = false;
+      let leadResult = null;
       try {
         const leadPayload = {
           name,
           phone,
           source: 'telegram',
           medium: 'telegram_bot',
-          calculator: s.result || {
-            total: 0,
-            pricePerM2: 0,
-            rows: []
-          },
+          calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
           object: {
             type: s.objectType === 'h' ? 'Дом' : 'Квартира',
             floor: s.floor || 0,
@@ -221,26 +217,22 @@ module.exports = async function handler(req,res) {
             windows: s.windows || 0
           }
         };
-
         const leadResponse = await fetch('https://remont-pro-nine.vercel.app/api/lead', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(leadPayload)
         });
-        crmResult = await leadResponse.json().catch(() => ({}));
-        crmOk = Boolean(leadResponse.ok && crmResult?.ok && crmResult?.bitrixSent);
+        leadResult = await leadResponse.json().catch(() => ({}));
+        leadOk = Boolean(leadResponse.ok && leadResult?.ok && leadResult?.telegramSent);
       } catch (_) {}
 
       clear(id);
-
-      const status = crmOk
-        ? '✅ Номер получен. Заявка и предварительный расчёт переданы в Bitrix24. Мы свяжемся с вами для обсуждения проекта.'
-        : '✅ Спасибо! Номер получен. Мы свяжемся с вами для обсуждения проекта.';
-
+      const status = leadOk
+        ? '✅ Номер получен. Заявка и полный предварительный расчёт отправлены нам в Telegram. Мы свяжемся с вами для обсуждения проекта.'
+        : '⚠️ Номер получен, но заявку пока не удалось передать. Пожалуйста, попробуйте ещё раз или напишите нам напрямую.';
       await tg('sendMessage',{chat_id:id,text:status,...keyboard([['🔄 Рассчитать заново']])});
-      return res.status(200).json({ok:true,crmOk,bitrixId:crmResult?.bitrixId||null});
+      return res.status(200).json({ok:true,leadOk});
     }
-
     if (text==='🏢 Коммерция') {
       clear(id);
       await tg('sendMessage',{chat_id:id,text:commercialText,...keyboard([['📞 Оставить номер телефона'],['🔄 Рассчитать заново']])});
