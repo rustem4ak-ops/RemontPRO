@@ -510,9 +510,10 @@ async function sendLead(id, message, s, phone) {
     phone,
     source: 'max',
     medium: 'max_bot',
-    calculator: {
-      total: s.result?.total || 0,
-      pricePerM2: s.result?.pricePerM2 || 0
+    calculator: s.result || {
+      total: 0,
+      pricePerM2: 0,
+      rows: []
     },
     object: {
       type: objectName(s.objectType),
