@@ -5,7 +5,7 @@ const { analyze, score, level, area, budget, classify } = require('../shared/aut
 const TOKEN = process.env.MAX_BOT_TOKEN;
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
 const API = 'https://platform-api2.max.ru';
-const LOGO_URL = 'https://remont-pro-nine.vercel.app/remontforma-logo.jpg';
+const LOGO_URL = 'https://remont-pro-nine.vercel.app/remontforma-logo-final.jpg';
 
 const ROOT_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_root_ca_pem.crt';
 const SUB_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_sub_ca_pem.crt';
@@ -714,7 +714,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.6.0',
+      version: '4.7.0',
       configured: !!TOKEN
     });
   }
