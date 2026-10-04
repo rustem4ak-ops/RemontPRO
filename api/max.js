@@ -597,34 +597,38 @@ async function sendLead(id, message, s, phone) {
 
   if (!maxSent) console.error('[MAX lead delivery failed]', { adminId: adminId || null, error: maxError });
 
-  // Telegram сохраняем через общий Lead API, но запрещаем ему повторно
-  // отправлять эту же заявку в MAX.
-  try {
-    await fetch('https://remont-pro-nine.vercel.app/api/lead', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        phone,
-        source: 'max',
-        medium: 'max_bot',
-        calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
-        object: {
-          type: objectName(s.objectType),
-          floor: s.floor || 0,
-          bath: s.bath || 0,
-          balcony: 0,
-          windows: s.windows || 0
-        },
-        skipMax: true
-      })
-    });
-  } catch (_) {}
+  // Если прямая доставка в MAX не сработала, даём Lead API
+  // ещё одну попытку: он отправит заявку в Telegram и/или MAX.
+  if (!maxSent) {
+    try {
+      const fallback = await fetch('https://remont-pro-nine.vercel.app/api/lead', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          phone,
+          source: 'max',
+          medium: 'max_bot',
+          calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
+          object: {
+            type: objectName(s.objectType),
+            floor: s.floor || 0,
+            bath: s.bath || 0,
+            balcony: 0,
+            windows: s.windows || 0
+          }
+        })
+      });
+      if (fallback.ok) maxSent = true;
+    } catch (_) {}
+  }
 
   clear(id);
 
   return send(id,
-    (maxSent ? '✅ Заявка отправлена.' : '⚠️ Заявка сохранена, но уведомление администратору MAX не отправилось.') +
+    (maxSent
+      ? '✅ Заявка отправлена администратору.'
+      : '⚠️ Заявка сохранена, но уведомление администратору MAX не отправилось.') +
     '\\n\\n📞 ' + phone + '\\n\\nМы свяжемся с вами для обсуждения проекта.',
     [[{ type: 'message', text: '🔄 Рассчитать заново' }]]
   );
