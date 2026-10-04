@@ -257,6 +257,16 @@ body{
   .section:after{width:320px;height:320px;left:-180px}
   .trustItem{margin:6px 0}
 }
+
+/* Project albums */
+.albumGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.albumCard{position:relative;min-height:300px;border-radius:22px;overflow:hidden;background:#dfe2e6;cursor:pointer;box-shadow:0 14px 35px rgba(20,24,28,.09);border:1px solid #e1e4e7}
+.albumCard img{width:100%;height:100%;min-height:300px;object-fit:cover;display:block;transition:transform .5s ease}
+.albumCard:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(0,0,0,.82) 100%)}
+.albumCard:hover img{transform:scale(1.045)}
+.albumInfo{position:absolute;left:18px;right:18px;bottom:17px;color:#fff;z-index:2}
+.albumInfo b{display:block;font-size:21px;margin-bottom:5px}.albumInfo span{font-size:12px;opacity:.88}
+@media(max-width:800px){.albumGrid{grid-template-columns:1fr 1fr;gap:10px}.albumCard,.albumCard img{min-height:220px}.albumInfo{left:13px;right:13px;bottom:12px}.albumInfo b{font-size:16px}}
 </style>
 <style>
 .contactModal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,10,12,.72);backdrop-filter:blur(10px)}
@@ -280,8 +290,8 @@ body{
 <text x="50" y="60" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="900" fill="#fff">РФ</text>
 <text x="50" y="78" text-anchor="middle" font-family="Arial,sans-serif" font-size="7" font-weight="800" fill="#fff">РЕМОНТФОРМА</text>
 <text x="50" y="88" text-anchor="middle" font-family="Arial,sans-serif" font-size="4.8" font-weight="700" fill="#fff">РЕМОНТ ПОД КЛЮЧ</text>
-</svg><span>РЕМОНТФОРМА</span></a><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div><div class="mobileContactIcons"><a class="mobileContactIcon" href="https://t.me/RemontFormaBot" aria-label="Telegram">✈</a><a class="mobileContactIcon" href="#contacts" aria-label="Контакты">☎</a></div></nav>
-<div class="heroGrid"><div><div class="eyebrow">Казань · ремонт под ключ</div><h1>Ремонт, который начинается с точного расчёта.</h1><p class="lead">Квартиры, дома и коммерческие помещения. Замер, смета, организация работ и контроль ремонта — в одном месте.</p><div class="buttons"><button class="btn primary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/RemontFormaBot">Написать в Telegram</a></div></div>
+</svg><span>РЕМОНТФОРМА</span></a><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div><div class="mobileContactIcons"><a class="mobileContactIcon" href="https://t.me/+79172433455" aria-label="Telegram">✈</a><a class="mobileContactIcon" href="#contacts" aria-label="Контакты">☎</a></div></nav>
+<div class="heroGrid"><div><div class="eyebrow">Казань · ремонт под ключ</div><h1>Ремонт, который начинается с точного расчёта.</h1><p class="lead">Квартиры, дома и коммерческие помещения. Замер, смета, организация работ и контроль ремонта — в одном месте.</p><div class="buttons"><button class="btn primary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/+79172433455">Написать в Telegram</a></div></div>
 <div><div class="teaser">🧮 <b>Онлайн-расчёт</b><br><span>Ответьте на вопросы, получите предварительную стоимость и при желании оставьте контакты для точной сметы.</span></div><button class="btn primary" style="width:100%;margin-top:12px" onclick="openCalc()">Рассчитать ремонт</button></div></div></div></header>
 
 <div class="trust"><div class="wrap"><div class="trustGrid"><div class="trustItem"><b>Под ключ</b><span>Организация всех основных этапов ремонта</span></div><div class="trustItem"><b>Прозрачный расчёт</b><span>Предварительная стоимость до замера</span></div><div class="trustItem"><b>Казань</b><span>Работаем с квартирами, домами и коммерцией</span></div><div class="trustItem"><b>Один подрядчик</b><span>Единая точка связи по ремонту</span></div></div></div></div>
@@ -300,13 +310,13 @@ body{
     </div>
     <div class="portfolioActions">
       <button class="btn primary" onclick="openCalc()">Рассчитать мой ремонт</button>
-      <a class="btn secondary" style="background:#fff;color:#17191c;border-color:#dfe2e6" href="https://t.me/RemontFormaBot">Обсудить проект</a>
+      <a class="btn secondary" style="background:#fff;color:#17191c;border-color:#dfe2e6" href="https://t.me/+79172433455">Обсудить проект</a>
     </div>
   </div>
   <div id="portfolioFeatured" class="portfolioFeatured"><div class="portfolioLoading">Отбираем лучшие фотографии…</div></div>
-  <div class="portfolioSectionTitle"><div><h3>Реальные работы</h3><p>Сначала — самые показательные интерьеры. Ниже — детали отделки и санузлов.</p></div></div>
+  <div class="portfolioSectionTitle"><div><h3>Реальные объекты</h3><p>Один адрес — один альбом. Откройте объект, чтобы посмотреть все фотографии ремонта.</p></div></div>
   <div id="portfolioFolders" class="portfolioFolders"></div>
-  <div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем фотографии…</div></div>
+  <div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем объекты…</div></div>
   <div class="portfolioMoreWrap"><button id="portfolioMore" class="btn" onclick="showMorePortfolio()" style="background:#17191c;color:#fff;display:none">Показать ещё фото</button></div>
   <div class="portfolioCta"><div><h3>Хотите такой же результат?</h3><p>Оставьте параметры объекта — <strong>предварительный расчёт</strong> получите за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
 </div></section>
@@ -315,27 +325,27 @@ body{
 <section class="section reviewsSection"><div class="wrap">
   <div class="center">
     <div class="eyebrow">Отзывы</div>
-    <h2>Что особенно ценят в работе</h2>
-    <p class="muted">10 живых заготовок в стиле реальных отзывов. Перед публикацией как отзывы клиентов замените подписи на данные реальных заказчиков и согласуйте текст с ними.</p>
+    <h2>Что говорят о работе</h2>
+    <p class="muted">Ниже — демонстрационные примеры оформления отзывов. Перед публикацией замените их на отзывы реальных клиентов с их согласия.</p>
   </div>
   <div class="reviews">
-    <div class="review"><b>Пример отзыва · квартира</b><p>«Рустем, спасибо за ремонт. Больше всего понравилось, что не пришлось постоянно контролировать каждый этап. По ходу работ всё объясняли, показывали и предупреждали, если нужно было принять решение.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · новостройка</b><p>«Делали ремонт в новой квартире практически с нуля. Получилось именно то, что хотели: аккуратно, современно и без ощущения, что деньги ушли непонятно куда. Отдельное спасибо за порядок на объекте.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · санузел</b><p>«Особенно переживали за санузел и плитку, потому что там очень много нюансов. В итоге всё получилось ровно, аккуратно, швы чистые. Результатом довольны, пользоваться приятно каждый день.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review reviewHidden" data-review-hidden><b>Пример отзыва · дом</b><p>«В доме всегда сложнее организовать ремонт, чем в квартире, но здесь понравился именно подход к организации. Работы шли последовательно, вопросы решались быстро, а по итогу получили готовый результат без бесконечной стройки.»</p><span class="muted">Заготовка · имя клиента добавить посл<div class="review reviewHidden" data-review-hidden>></div>
-    <div class="review"><b>Пример отзыва · кухня и гостиная</b><p>«Очень понравилось, как в итоге получилось пространство кухни и гостиной. На этапе ремонта были сомнения по некоторым решениям, но всё обсудили и нашли нормальный вариант. Сейчас смотрим на результат и понимаем, что сделали правильно.»</p><span class="muted">Загот<div class="review reviewHidden" data-review-hidden>обавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · капитальный ремонт</b><p>«Ремонт был большой, поэтому главным для нас была организация. Не ожидали, что можно настолько спокойно пройти весь процесс. По срокам и этапам держали в курсе, недочёты исправлялись без долгих разговоро<div class="review reviewHidden" data-review-hidden>muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · отделка</b><p>«Хорошо, когда подрядчик не просто делает по списку, а думает о результате. Несколько раз подсказали решения, которые мы сами бы не учли. В итоге получилось аккуратно и намного<div class="review reviewHidden" data-review-hidden>ляли в начале.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · первый ремонт</b><p>«Это был наш первый серьёзный ремонт, поэтому сначала было страшновато. Здесь понравилось, что всё объясняли простым языком: что сейчас делаем, зачем и что <div class="review reviewHidden" data-review-hidden>ом. Для нас это сильно упростило весь процесс.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · результат</b><p>«После окончания ремонта прошлись по квартире и реально искали, к чему придраться. В итоге мелкие моменты быстро поправили, а основным ре<div class="review reviewHidden" data-review-hidden>чень довольны. Квартира наконец выглядит именно как готовый дом, а не стройка.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-    <div class="review"><b>Пример отзыва · рекомендация</b><p>«Спасибо за работу. Для меня главный показатель — когда после ремонта не хочется ещё месяц что-то переделывать. Здесь именно так: всё закончили, убрали, показали результат. Если понадобится следующий объект, обращусь снова.»</p><span class="muted">Заготовка · имя клиента добавить после согласования</span></div>
-
-  <div class="reviewsMoreWrap"><button id="reviewsMore" class="btn" onclick="showMoreReviews()" style="background:#17191c;color:#fff">Показать ещё отзывы</button></div>  </div>
+    <div class="review"><b>Анна · квартира</b><p>«Очень понравилось, что не пришлось постоянно контролировать каждый этап. По ходу ремонта всё объясняли, показывали и заранее предупреждали, если нужно было принять решение.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review"><b>Дмитрий · новостройка</b><p>«Делали ремонт в новой квартире практически с нуля. Получилось аккуратно, современно и без лишних переделок. Отдельное спасибо за порядок на объекте.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review"><b>Елена · санузел</b><p>«Особенно переживали за санузел и плитку. В итоге всё получилось ровно и аккуратно, швы чистые. Результатом очень довольны.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Алексей · дом</b><p>«Понравился именно подход к организации ремонта. Работы шли последовательно, вопросы решались быстро, а по итогу получили готовый результат без бесконечной стройки.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Мария · кухня и гостиная</b><p>«На этапе ремонта были сомнения по некоторым решениям, но всё обсудили и нашли хороший вариант. Сейчас смотрим на результат и понимаем, что сделали правильно.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Сергей · капитальный ремонт</b><p>«Главным для нас была организация. Не ожидали, что можно настолько спокойно пройти весь процесс. По срокам и этапам держали в курсе, недочёты исправлялись без долгих разговоров.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Ольга · отделка</b><p>«Хорошо, когда подрядчик не просто делает по списку, а думает о результате. Несколько раз подсказали решения, которые мы сами бы не учли.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Иван · первый ремонт</b><p>«Это был наш первый серьёзный ремонт, поэтому сначала было страшновато. Здесь всё объясняли простым языком: что сейчас делаем, зачем и что будет дальше.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Наталья · результат</b><p>«После окончания ремонта прошлись по квартире и внимательно проверили результат. Мелкие моменты быстро поправили. В итоге остались очень довольны.»</p><span class="muted">Пример отзыва</span></div>
+    <div class="review reviewHidden" data-review-hidden><b>Максим · рекомендация</b><p>«Для меня главный показатель — когда после ремонта не хочется ещё месяц что-то переделывать. Здесь всё закончили, убрали и показали готовый результат.»</p><span class="muted">Пример отзыва</span></div>
+  </div>
+  <div class="reviewsMoreWrap"><button id="reviewsMore" class="btn" onclick="showMoreReviews()" style="background:#17191c;color:#fff">Показать ещё отзывы</button></div>
 </div></section>
 
 <section class="section" id="steps" style="background:#eceef0"><div class="wrap"><div class="eyebrow">Процесс</div><h2>Как мы работаем</h2><div class="steps"><div class="step"><b>01. Заявка</b><p class="muted">Параметры объекта и задачи.</p></div><div class="step"><b>02. Замер</b><p class="muted">Уточняем объёмы и особенности.</p></div><div class="step"><b>03. Смета</b><p class="muted">Формируем понятный расчёт.</p></div><div class="step"><b>04. Ремонт</b><p class="muted">Организуем и контролируем работы.</p></div></div></div></section>
 
-<section class="cta" id="contacts"><div class="wrap"><h2>Хотите узнать стоимость ремонта?</h2><p>Начните с предварительного расчёта или напишите нам.</p><div class="buttons"><button class="btn" style="background:#15171a;color:#fff" onclick="openCalc()">Рассчитать стоимость</button><a class="btn" style="background:#fff" href="https://t.me/RemontFormaBot">Telegram</a></div></div></section>
+<section class="cta" id="contacts"><div class="wrap"><h2>Хотите узнать стоимость ремонта?</h2><p>Начните с предварительного расчёта или напишите нам.</p><div class="buttons"><button class="btn" style="background:#15171a;color:#fff" onclick="openCalc()">Рассчитать стоимость</button><a class="btn" style="background:#fff" href="https://t.me/+79172433455">Telegram</a></div></div></section>
 <footer class="footer"><div class="wrap"><strong>РЕМОНТФОРМА</strong> · Ремонт квартир, домов и коммерческих помещений под ключ · Казань</div></footer>
 
 <script>
@@ -795,7 +805,7 @@ async function submitLead(){
         '<h3>✅ Заявка отправлена</h3>'+
         '<p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p>'+
         '<div class="buttons">'+
-          '<a class="btn primary" href="https://t.me/RemontFormaBot">Открыть Telegram</a>'+
+          '<a class="btn primary" href="https://t.me/+79172433455">Открыть Telegram</a>'+
           '<button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button>'+
         '</div>'+
       '</div>';
@@ -832,7 +842,7 @@ function printEstimate(){
 
   window.print();
 }
-let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все',portfolioVisibleCount=8,reviewVisibleCount=3;
+let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все',portfolioVisibleCount=9,reviewVisibleCount=3;
 
 const FEATURED_NAMES=[
   '20231223_114527.jpg',
@@ -843,20 +853,12 @@ const FEATURED_NAMES=[
 ];
 
 function portfolioScore(x){
-  const n=(x.name||'').toLowerCase();
   if(FEATURED_NAMES.includes(x.name)) return 1000-(FEATURED_NAMES.indexOf(x.name)*10);
   if(x.featured) return 900-(Number(x.order)||0);
-  if(/сануз|ванн|кух|гостин|спаль|прихож/.test((x.folder||'').toLowerCase())) return 100;
   return 10;
 }
 function portfolioLabel(x){
   if(x.label)return x.label;
-  const s=((x.name||'')+' '+(x.folder||'')).toLowerCase();
-  if(/кух/.test(s))return 'Кухня';
-  if(/гостин/.test(s))return 'Гостиная';
-  if(/спаль/.test(s))return 'Спальня';
-  if(/сануз|ванн/.test(s))return 'Санузел';
-  if(/прихож|коридор/.test(s))return 'Прихожая';
   return 'Реализованный объект';
 }
 function portfolioTitle(x){
@@ -869,7 +871,7 @@ async function loadPortfolio(){
   const folders=document.getElementById('portfolioFolders');
   const featured=document.getElementById('portfolioFeatured');
   if(!box)return;
-  box.innerHTML='<div class="portfolioLoading">Загружаем реальные работы…</div>';
+  box.innerHTML='<div class="portfolioLoading">Загружаем реальные объекты…</div>';
   try{
     const a=await fetch('/api/portfolio?ts='+Date.now(),{cache:'no-store'});
     const j=await a.json();
@@ -878,92 +880,84 @@ async function loadPortfolio(){
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     portfolioImages.sort(portfolioSort);
 
-    // Подставляем реальные фотографии из портфолио в карточки «Квартиры / Дома / Коммерция».
-    // Берём уже найденные Yandex-пути, поэтому не зависим от того, в какой папке лежит фото.
-    const serviceCards=[
-      ['apartment','Гостиная','Квартиры'],
-      ['house','Кухня','Дома'],
-      ['commercial','Спальня','Коммерция']
-    ];
-    serviceCards.forEach(([key,label,fallback],i)=>{
+    const serviceCards=[['apartment','Гостиная'],['house','Кухня']];
+    serviceCards.forEach(([key,label],i)=>{
       const card=document.querySelector('#services .service[data-service="'+key+'"]');
       if(!card)return;
-      const item=portfolioImages.find(x=>(x.label||'').toLowerCase()===label.toLowerCase()) || portfolioImages[i];
-      if(item && item.path){
+      const item=portfolioImages.find(x=>(x.label||'').toLowerCase()===label.toLowerCase())||portfolioImages[i];
+      if(item&&item.path){
         const src='/api/portfolio-image?path='+encodeURIComponent(item.path);
         card.style.backgroundImage="url('"+src.replace(/'/g,"\\'")+"')";
       }
     });
 
-    const featuredItems=FEATURED_NAMES
-      .map(name=>portfolioImages.find(x=>x.name===name))
-      .filter(Boolean);
-
+    const featuredItems=FEATURED_NAMES.map(name=>portfolioImages.find(x=>x.name===name)).filter(Boolean);
     featured.innerHTML=(featuredItems.length?featuredItems:portfolioImages.slice(0,5)).map((x,i)=>{
-      const idx=portfolioImages.indexOf(x);
-      const src=x.preview||x.url;
-      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')">'+
-        '<img loading="eager" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'">'+
-        '<div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span>'+
-        '<b>'+escapeHtml(portfolioTitle(x))+'</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
+      const idx=portfolioImages.indexOf(x),src=x.preview||x.url;
+      return '<div class="featuredPhoto" onclick="openFeatured('+idx+')"><img loading="eager" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'"><div class="featuredInfo"><span class="featuredTag">'+escapeHtml(portfolioLabel(x))+'</span><b>'+escapeHtml(portfolioTitle(x))+'</b><span>РЕМОНТФОРМА · Казань</span></div></div>';
     }).join('');
 
-    const names=['Все',...new Set(portfolioImages.map(x=>x.folder).filter(Boolean))];
-    folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x==='Все'?'Все работы':x.replace(/^.*\//,''))+'</button>').join('');
+    const names=['Все',...new Set(portfolioImages.map(x=>x.album||x.folder).filter(Boolean))];
+    folders.innerHTML=names.map((x,i)=>'<button class="portfolioFolder '+(i===0?'active':'')+'" onclick="filterPortfolio('+JSON.stringify(x)+',this)">'+escapeHtml(x==='Все'?'Все объекты':x)+'</button>').join('');
     renderPortfolio('Все');
   }catch(e){
     featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span></div>';
     box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
   }
 }
-function showMorePortfolio(){
-  portfolioVisibleCount+=8;
-  renderPortfolio(portfolioFolder);
-}
+function showMorePortfolio(){portfolioVisibleCount+=9;renderPortfolio(portfolioFolder)}
 function filterPortfolio(folder,btn){
-  portfolioFolder=folder;
-  portfolioVisibleCount=8;
+  portfolioFolder=folder;portfolioVisibleCount=9;
   document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('active');
-  renderPortfolio(folder);
+  btn.classList.add('active');renderPortfolio(folder);
 }
 function renderPortfolio(folder){
-  const box=document.getElementById('portfolioGallery');
-  const more=document.getElementById('portfolioMore');
-  portfolioFiltered=(folder==='Все'?[...portfolioImages]:portfolioImages.filter(x=>x.folder===folder)).sort(portfolioSort);
-  const visible=portfolioFiltered.slice(0,portfolioVisibleCount);
-  box.innerHTML=visible.map((x,i)=>{
-    const src=x.preview||x.url||'';
-    return '<div class="portfolioPhoto" onclick="openPortfolio('+i+')">'+
-      '<img loading="lazy" src="'+src+'" alt="'+escapeHtml(portfolioLabel(x))+'">'+
-      '<div class="photoTag">'+escapeHtml(portfolioLabel(x))+'</div></div>';
-  }).join('')||'<div class="portfolioEmpty">В этом разделе пока нет фотографий.</div>';
+  const box=document.getElementById('portfolioGallery'),more=document.getElementById('portfolioMore');
+  const albums=[...new Map((folder==='Все'?portfolioImages:portfolioImages.filter(x=>(x.album||x.folder)===folder)).map(x=>[(x.album||x.folder),x])).values()];
+  const visible=albums.slice(0,portfolioVisibleCount);
+  box.className='albumGrid';
+  box.innerHTML=visible.map(x=>{
+    const album=x.album||x.folder||'Реализованный объект';
+    const count=portfolioImages.filter(y=>(y.album||y.folder)===album).length;
+    return '<div class="albumCard" onclick="openAlbum('+JSON.stringify(album).replace(/'/g,"&#39;")+')"><img loading="lazy" src="'+(x.preview||x.url)+'" alt="'+escapeHtml(album)+'"><div class="albumInfo"><b>'+escapeHtml(album)+'</b><span>'+count+' фото · Открыть альбом →</span></div></div>';
+  }).join('')||'<div class="portfolioEmpty">Объекты пока не найдены.</div>';
   if(more){
-    const left=Math.max(0,portfolioFiltered.length-portfolioVisibleCount);
+    const left=Math.max(0,albums.length-portfolioVisibleCount);
     more.style.display=left?'inline-block':'none';
-    more.textContent=left?'Показать ещё фото ('+left+')':'';
+    more.textContent=left?'Показать ещё объекты ('+left+')':'';
   }
+}
+function openAlbum(album){
+  portfolioFiltered=portfolioImages.filter(x=>(x.album||x.folder)===album).sort(portfolioSort);
+  portfolioIndex=0;
+  if(portfolioFiltered.length)showPortfolioImage(portfolioFiltered[0]);
+}
+function openFeatured(i){
+  const x=portfolioImages[i];if(!x)return;
+  const album=x.album||x.folder;
+  portfolioFiltered=portfolioImages.filter(y=>(y.album||y.folder)===album).sort(portfolioSort);
+  portfolioIndex=Math.max(0,portfolioFiltered.indexOf(x));
+  showPortfolioImage(x);
+}
+function showPortfolioImage(x){
+  document.getElementById('portfolioLarge').src=x.preview||x.url||'';
+  document.getElementById('portfolioCaption').textContent=(x.album||x.folder||'Реализованный объект')+' · '+portfolioLabel(x)+' · РЕМОНТФОРМА';
+  document.getElementById('portfolioLightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePortfolio(){document.getElementById('portfolioLightbox').classList.remove('open');document.body.style.overflow=''}
+function portfolioMove(d){
+  if(!portfolioFiltered.length)return;
+  portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;
+  showPortfolioImage(portfolioFiltered[portfolioIndex]);
 }
 function showMoreReviews(){
-  const hidden=[...document.querySelectorAll('[data-review-hidden]')];
-  const next=hidden.slice(0,3);
-  next.forEach(x=>x.classList.add('reviewVisible'));
-  reviewVisibleCount+=next.length;
+  const hidden=[...document.querySelectorAll('[data-review-hidden]')].filter(x=>!x.classList.contains('reviewVisible'));
+  hidden.slice(0,3).forEach(x=>x.classList.add('reviewVisible'));
   const btn=document.getElementById('reviewsMore');
-  const left=hidden.filter(x=>!x.classList.contains('reviewVisible')).length;
-  if(btn){
-    btn.style.display=left?'inline-block':'none';
-    if(left)btn.textContent='Показать ещё отзывы ('+left+')';
-  }
+  const left=[...document.querySelectorAll('[data-review-hidden]')].filter(x=>!x.classList.contains('reviewVisible')).length;
+  if(btn){btn.style.display=left?'inline-block':'none';if(left)btn.textContent='Показать ещё отзывы ('+left+')'}
 }
-function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-function openFeatured(i){const x=portfolioImages[i];if(!x)return;portfolioFiltered=[...portfolioImages].sort(portfolioSort);portfolioIndex=portfolioFiltered.indexOf(x);showPortfolioImage(x)}
-function openPortfolio(i){portfolioIndex=i;const x=portfolioFiltered[i];if(!x)return;showPortfolioImage(x)}
-function showPortfolioImage(x){document.getElementById('portfolioLarge').src=x.preview||x.url||'';document.getElementById('portfolioCaption').textContent=portfolioTitle(x)+' · '+portfolioLabel(x)+' · РЕМОНТФОРМА · Казань';document.getElementById('portfolioLightbox').classList.add('open');document.body.style.overflow='hidden'}
-function closePortfolio(){document.getElementById('portfolioLightbox').classList.remove('open');document.body.style.overflow=''}
-function portfolioMove(d){if(!portfolioFiltered.length)return;portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;showPortfolioImage(portfolioFiltered[portfolioIndex])}
-document.addEventListener('keydown',e=>{if(!document.getElementById('portfolioLightbox').classList.contains('open'))return;if(e.key==='Escape')closePortfolio();if(e.key==='ArrowLeft')portfolioMove(-1);if(e.key==='ArrowRight')portfolioMove(1)});
-
 function openContactModal(){
   const m=document.getElementById('contactModal');
   if(!m)return;
@@ -1016,5 +1010,5 @@ try{loadPortfolio()}catch(e){console.error('Portfolio start error',e)}
     <div id="quickContactStatus" class="contactStatus"></div>
   </div>
 </div>
-<div class="floatingCta"><button class="btn primary" onclick="openContactModal()">📞 Оставить контакт</button><button class="btn secondary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/RemontFormaBot">Telegram</a></div>
+<div class="floatingCta"><button class="btn primary" onclick="openContactModal()">📞 Оставить контакт</button><button class="btn secondary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/+79172433455">Telegram</a></div>
 </body></html>
