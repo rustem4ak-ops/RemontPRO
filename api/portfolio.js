@@ -56,7 +56,7 @@ async function getDownloadUrl(path) {
   }
 }
 
-async function collect(path, folderName, out, depth = 0) {
+async function collect(path, albumName, out, depth = 0) {
   if (depth > 6) return;
   const data = await getFolder(path);
   const items = data && data._embedded && data._embedded.items || [];
@@ -67,7 +67,7 @@ async function collect(path, folderName, out, depth = 0) {
 
     if (item.type === 'dir') {
       try {
-        await collect(itemPath, item.name || folderName, out, depth + 1);
+        await collect(itemPath, albumName, out, depth + 1);
       } catch (_) {}
       return;
     }
@@ -83,7 +83,8 @@ async function collect(path, folderName, out, depth = 0) {
       out.push({
         name: item.name,
         path: itemPath,
-        folder: folderName || 'Реализованные ремонты',
+        folder: albumName || 'Реализованные ремонты',
+        album: albumName || 'Реализованные ремонты',
         preview: url,
         url,
         size: Number(item.size || 0),
@@ -116,7 +117,7 @@ module.exports = async (req, res) => {
         if (url) {
           const featured = FEATURED[item.name];
           images.push({
-            name:item.name,path:itemPath,folder:'Реализованные ремонты',
+            name:item.name,path:itemPath,folder:'Реализованные ремонты',album:'Реализованные ремонты',
             preview:url,url,size:Number(item.size||0),
             label:featured ? featured.label : null,
             title:featured ? featured.title : 'Реализованный ремонт',
