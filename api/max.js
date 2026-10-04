@@ -217,7 +217,7 @@ function input(s) {
     windows: s.windows || 0,
     electrical: s.electrical || 'none',
     plumbing: s.plumbing || 'none',
-    bathroom: s.bathroom || 'none',
+    bathroom: 'classic',
     tile: 'manual',
     tileArea: s.tileArea || 0,
     laminate: true,
@@ -305,12 +305,6 @@ async function nextPlumbing(id, s) {
   ], s);
 }
 
-async function nextBathroom(id, s) {
-  return choose(id, 'bathroom', '🚿 Санузел', [
-    [cb('Нет', 'B0')],
-    [cb('Классический санузел', 'B1')]
-  ], s);
-}
 
 async function nextTileArea(id, s) {
   return ask(id, 'tileArea', '🧱 Плитка полы (коридор, комнаты)\n\nНапишите площадь плитки в м², например: 12', s);
@@ -422,13 +416,6 @@ async function handleCallback(update) {
     case 'P1':
     case 'P2':
       s.plumbing = payload === 'P0' ? 'none' : payload === 'P1' ? 'partial' : 'full';
-      return nextBathroom(id, s);
-
-    case 'B0':
-      s.bathroom = 'none';
-      return nextTileArea(id, s);
-
-    case 'B1':
       s.bathroom = 'classic';
       return nextTileArea(id, s);
 
