@@ -367,8 +367,8 @@ const S={
 
 const money=x=>Math.round(Number(x)||0).toLocaleString('ru-RU')+' ₽';
 
-const opt=(text,val,key,extra='') =>
-  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'"><span>'+text+'</span><small>'+extra+'</small></button>';
+const opt=(text,val,key) =>
+  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'"><span>'+text+'</span></button>';
 
 const yesNo=(text,key,value) =>
   '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'"><span>'+text+'</span></button>';
@@ -441,23 +441,23 @@ function render(){
   if(S.step===4){
     h='<div class="stepTitle">5. Электрика</div><div class="choices">'+
       opt('Нет','none','electrical')+
-      opt('Частичный монтаж','partial','electrical','2 500 ₽/м²')+
-      opt('Полный монтаж','full','electrical','3 500 ₽/м²')+
+      opt('Частичный монтаж','partial','electrical')+
+      opt('Полный монтаж','full','electrical')+
       '</div>';
   }
 
   if(S.step===5){
     h='<div class="stepTitle">6. Сантехника</div><div class="choices">'+
       opt('Нет','none','plumbing')+
-      opt('Частичный монтаж','partial','plumbing','1 000 ₽/м²')+
-      opt('Полный монтаж','full','plumbing','2 500 ₽/м²')+
+      opt('Частичный монтаж','partial','plumbing')+
+      opt('Полный монтаж','full','plumbing')+
       '</div>';
   }
 
   if(S.step===6){
     h='<div class="stepTitle">7. Санузел</div><div class="choices">'+
       opt('Нет','none','bathroom')+
-      opt('Классический санузел','classic','bathroom','50 000 ₽/м²')+
+      opt('Классический санузел','classic','bathroom')+
       '</div>';
   }
 
@@ -478,17 +478,17 @@ function render(){
   if(S.step===9){
     h='<div class="stepTitle">10. Плинтус</div><div class="choices">'+
       opt('Нет','none','plinth')+
-      opt('Пластиковый','plastic','plinth','400 ₽/м²')+
-      opt('Полиуретановый','polyurethane','plinth','1 300 ₽/м²')+
+      opt('Пластиковый','plastic','plinth')+
+      opt('Полиуретановый','polyurethane','plinth')+
       '</div>';
   }
 
   if(S.step===10){
     h='<div class="stepTitle">11. Стены</div><div class="choices">'+
       opt('Без отделки','none','walls')+
-      opt('Обои','wallpaper','walls','1 500 ₽/м²')+
-      opt('Покраска','paint','walls','4 000 ₽/м²')+
-      opt('Декоративка','decorative','walls','2 500 ₽/м²')+
+      opt('Обои','wallpaper','walls')+
+      opt('Покраска','paint','walls')+
+      opt('Декоративка','decorative','walls')+
       '</div>';
   }
 
@@ -658,8 +658,7 @@ function stageHtml(title,matcher,rows){
 
   return '<div class="resultStage">'+
     '<b>'+title+'</b>'+
-    items.map(x=>'<div>'+escapeHtml(x.name)+' — '+money(x.cost)+'</div>').join('')+
-    '<strong>Итого: '+money(sum)+'</strong>'+
+    '<strong>'+money(sum)+'</strong>'+
     '</div>';
 }
 
