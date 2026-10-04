@@ -257,7 +257,7 @@ async function showResult(id, s) {
 
   return send(id, lines.join('\n'), [
     [contact('📞 Оставить номер телефона')],
-    [cb('🔄 Рассчитать заново', 'RESTART')],
+    [{ type: 'message', text: '🔄 Рассчитать заново' }],
     [link('🌐 Открыть сайт РЕМОНТФОРМА', 'https://remont-pro-nine.vercel.app')]
   ]);
 }
@@ -269,7 +269,7 @@ async function commercial(id) {
     '🏢 Ремонт в коммерции зависит от проекта и объёмов работ.\n\nПоэтому отправьте номер телефона, чтобы обсудить подробности.',
     [
       [contact('📞 Оставить номер телефона')],
-      [cb('🔄 Рассчитать заново', 'RESTART')]
+      [{ type: 'message', text: '🔄 Рассчитать заново' }]
     ]
   );
 }
@@ -511,7 +511,7 @@ async function sendLead(id, message, s, phone) {
 
   return send(id,
     '✅ Спасибо! Номер получен.\n\n📞 ' + phone + '\n\nМы свяжемся с вами для обсуждения проекта.',
-    [[cb('🔄 Рассчитать заново', 'RESTART')]]
+    [[{ type: 'message', text: '🔄 Рассчитать заново' }]]
   );
 }
 
@@ -589,7 +589,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.3.0',
+      version: '4.4.0',
       configured: !!TOKEN
     });
   }
