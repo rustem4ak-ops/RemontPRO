@@ -353,13 +353,19 @@ async function handleCallback(update) {
   const id =
     update.chat_id ||
     c.chat_id ||
+    c.user?.user_id ||
+    update.callback?.user?.user_id ||
     c.message?.recipient?.chat_id ||
     c.message?.recipient?.user_id ||
     update.message?.recipient?.chat_id ||
     update.message?.recipient?.user_id;
 
+  // MAX присылает message_callback отдельным событием. Для личного
+  // диалога ID пользователя находится в callback.user.user_id или
+  // message.recipient.user_id; для группового — в recipient.chat_id.
   if (!id) return;
 
+  // Подтверждаем нажатие сразу, затем запускаем сценарий.
   await answerCallback(callbackId);
 
   const s = get(id) || {};
@@ -513,7 +519,12 @@ async function handleMessage(update) {
 
   const text = String(m.body?.text || m.text || '').trim();
 
-  if (/^\/start$/i.test(text) || /^Начать$/i.test(text) || /^🏠 Начать$/i.test(text)) {
+  if (
+    /^\/start$/i.test(text) ||
+    /^Начать$/i.test(text) ||
+    /^🏠 Начать$/i.test(text) ||
+    /^🔄?\s*Рассчитать заново$/i.test(text)
+  ) {
     return start(id);
   }
 
@@ -592,7 +603,9 @@ module.exports = async function handler(req, res) {
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
 
-    if (update.update_type === 'message_created') {
+    if (update.update_type === 'message_callback') {
+      await handleCallback(update);
+    } else if (update.update_type === 'message_created') {
       const recipient = update.message?.recipient || {};
       const isGroupOrChannel = Boolean(
         recipient.title ||
@@ -607,8 +620,6 @@ module.exports = async function handler(req, res) {
       }
 
       await handleMessage(update);
-    } else if (update.update_type === 'message_callback') {
-      await handleCallback(update);
     } else if (update.update_type === 'bot_added') {
       // MAX присылает chat_id в событии; сам факт подключения фиксируем логикой webhook.
     } else if (update.update_type === 'bot_removed') {
