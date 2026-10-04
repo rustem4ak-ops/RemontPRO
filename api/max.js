@@ -505,38 +505,119 @@ function contactFromMessage(message) {
   return '';
 }
 
-async function sendLead(id, message, s, phone) {
-  const lead = {
-    name: message?.sender?.name || 'Клиент',
-    phone,
-    source: 'max',
-    medium: 'max_bot',
-    calculator: s.result || {
-      total: 0,
-      pricePerM2: 0,
-      rows: []
-    },
-    object: {
-      type: objectName(s.objectType),
-      floor: s.floor || 0,
-      bath: s.bath || 0,
-      balcony: 0,
-      windows: s.windows || 0
-    }
+function buildLeadMessage(name, phone, s) {
+  const q = s.result || {};
+  const rows = Array.isArray(q.rows) ? q.rows : [];
+
+  const esc = value => String(value == null ? '' : value)
+    .replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+  const stage = (title, matcher) => {
+    const items = rows.filter(matcher);
+    if (!items.length) return null;
+
+    const sum = items.reduce((total, item) => total + (Number(item.cost) || 0), 0);
+    const out = ['<b>' + title + '</b>'];
+
+    items.forEach(item => {
+      out.push('• ' + esc(item.name) + ' — ' + money(item.cost));
+    });
+
+    out.push('<b>Итого: ' + money(sum) + '</b>');
+    return out.join('\\n');
   };
 
+  const stages = [
+    stage('1️⃣ Черновая электрика + черновая сантехника', x => /Электрика|Сантехника/.test(x.name)),
+    stage('2️⃣ Плиточные работы', x => /Классический санузел|Плитка/.test(x.name)),
+    stage('3️⃣ Напольные работы', x => /Ламинат \/ кварцвинил|Плинтус/.test(x.name)),
+    stage('4️⃣ Стены', x => /Окна|Подготовка под обои \+ обои|Подготовка под покраску \+ покраска|Подготовка под декоративку \+ декоративка/.test(x.name)),
+    stage('5️⃣ Чистовая электрика / сантехника', x => /Чистовая/.test(x.name)),
+    stage('6️⃣ Завершающие работы', x => /Клининг|Вывоз мусора/.test(x.name))
+  ].filter(Boolean);
+
+  const lines = [
+    '🆕 <b>Новая заявка</b>',
+    '',
+    '👤 Имя: <b>' + esc(name || 'Не указано') + '</b>',
+    '📞 Номер телефона: <b>' + esc(phone) + '</b>',
+    '📍 Источник: <b>max</b>',
+    ''
+  ];
+
+  if (stages.length) {
+    lines.push(...stages, '');
+    lines.push('<b>ИТОГО: ' + money(q.total) + '</b>');
+    lines.push('<b>Цена за м² по полу: ' + money(q.pricePerM2) + '</b>');
+  } else {
+    lines.push('💰 Предварительный расчёт: <b>' + money(q.total) + '</b>');
+    lines.push('📏 Цена за м² по полу: <b>' + money(q.pricePerM2) + '</b>');
+  }
+
+  return lines.join('\\n');
+}
+
+async function sendLead(id, message, s, phone) {
+  const name = message?.sender?.name || 'Клиент';
+  const leadMessage = buildLeadMessage(name, phone, s);
+
+  let maxSent = false;
+
+  // В личном MAX-диалоге администратор — это user_id.
+  // Сначала пробуем MAX_ADMIN_USER_ID, затем совместимое MAX_ADMIN_CHAT_ID.
+  const adminId = process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID;
+
+  if (TOKEN && adminId) {
+    try {
+      const result = await maxRequest(
+        '/messages?user_id=' + encodeURIComponent(adminId),
+        'POST',
+        { text: leadMessage, format: 'html' }
+      );
+      maxSent = Boolean(result && result.message);
+    } catch (error) {
+      // Для обратной совместимости с ранее настроенным chat_id:
+      // если администратор задан как ID группового чата, отправляем туда.
+      try {
+        const result = await maxRequest(
+          '/messages?chat_id=' + encodeURIComponent(adminId),
+          'POST',
+          { text: leadMessage, format: 'html' }
+        );
+        maxSent = Boolean(result && result.message);
+      } catch (_) {}
+    }
+  }
+
+  // Telegram сохраняем через общий Lead API, но запрещаем ему повторно
+  // отправлять эту же заявку в MAX.
   try {
     await fetch('https://remont-pro-nine.vercel.app/api/lead', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(lead)
+      body: JSON.stringify({
+        name,
+        phone,
+        source: 'max',
+        medium: 'max_bot',
+        calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
+        object: {
+          type: objectName(s.objectType),
+          floor: s.floor || 0,
+          bath: s.bath || 0,
+          balcony: 0,
+          windows: s.windows || 0
+        },
+        skipMax: true
+      })
     });
   } catch (_) {}
 
   clear(id);
 
   return send(id,
-    '✅ Спасибо! Номер получен.\n\n📞 ' + phone + '\n\nМы свяжемся с вами для обсуждения проекта.',
+    (maxSent ? '✅ Заявка отправлена.' : '⚠️ Заявка сохранена, но уведомление администратору MAX не отправилось.') +
+    '\\n\\n📞 ' + phone + '\\n\\nМы свяжемся с вами для обсуждения проекта.',
     [[{ type: 'message', text: '🔄 Рассчитать заново' }]]
   );
 }
