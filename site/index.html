@@ -340,7 +340,7 @@ const S={
   windows:0,
   electrical:'none',
   plumbing:'none',
-  bathroom:'none',
+  bathroom:'classic',
   tileArea:0,
   floorFinish:'quartz',
   plinth:'none',
@@ -389,8 +389,8 @@ function render(){
   const b=document.getElementById('backBtn');
   const n=document.getElementById('nextBtn');
 
-  const totalSteps=15;
-  const isResult=S.step===15;
+  const totalSteps=14;
+  const isResult=S.step===6;
   document.getElementById('progressText').textContent=isResult?'Итог':'Шаг '+(S.step+1)+' из '+totalSteps;
   document.getElementById('bar').style.width=(isResult?100:((S.step+1)/totalSteps*100))+'%';
   b.classList.toggle('hidden',S.step===0);
@@ -445,27 +445,20 @@ function render(){
   }
 
   if(S.step===6){
-    h='<div class="stepTitle">7. Санузел</div><div class="choices">'+
-      opt('Нет','none','bathroom')+
-      opt('Классический санузел','classic','bathroom')+
-      '</div>';
-  }
-
-  if(S.step===7){
     h='<div class="stepTitle">8. Плитка — полы (коридор, комнаты)</div>'+
       '<div class="field"><label>Напишите площадь плитки в м²</label>'+
       '<input id="tileArea" type="number" min="0" step="0.1" value="'+(S.tileArea||'')+'" placeholder="Например: 12"></div>'+
       '<div class="hint">Площадь плитки не может быть больше основной площади объекта. Цена автоматически зависит от площади плитки.</div>';
   }
 
-  if(S.step===8){
+  if(S.step===6){
     h='<div class="stepTitle">9. Оставшиеся полы</div><div class="choices">'+
       opt('Кварцвинил','quartz','floorFinish')+
       opt('Ламинат','laminate','floorFinish')+
       '</div>';
   }
 
-  if(S.step===9){
+  if(S.step===6){
     h='<div class="stepTitle">10. Плинтус</div><div class="choices">'+
       opt('Нет','none','plinth')+
       opt('Пластиковый','plastic','plinth')+
@@ -473,7 +466,7 @@ function render(){
       '</div>';
   }
 
-  if(S.step===10){
+  if(S.step===6){
     h='<div class="stepTitle">11. Стены</div><div class="choices">'+
       opt('Без отделки','none','walls')+
       opt('Обои','wallpaper','walls')+
@@ -482,35 +475,35 @@ function render(){
       '</div>';
   }
 
-  if(S.step===11){
+  if(S.step===6){
     h='<div class="stepTitle">12. Чистовая электрика</div><div class="choices">'+
       yesNo('Да','cleanElectrical',true)+
       yesNo('Нет','cleanElectrical',false)+
       '</div>';
   }
 
-  if(S.step===12){
+  if(S.step===6){
     h='<div class="stepTitle">13. Чистовая сантехника</div><div class="choices">'+
       yesNo('Да','cleanPlumbing',true)+
       yesNo('Нет','cleanPlumbing',false)+
       '</div>';
   }
 
-  if(S.step===13){
+  if(S.step===6){
     h='<div class="stepTitle">14. Клининг</div><div class="choices">'+
       yesNo('Да','cleaning',true)+
       yesNo('Нет','cleaning',false)+
       '</div>';
   }
 
-  if(S.step===14){
+  if(S.step===6){
     h='<div class="stepTitle">15. Вывоз мусора</div><div class="choices">'+
       yesNo('Да','trash',true)+
       yesNo('Нет','trash',false)+
       '</div>';
   }
 
-  if(S.step===15){
+  if(S.step===6){
     h='<div class="stepTitle">Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
   }
 
@@ -534,7 +527,7 @@ function render(){
     el.oninput=e=>S.windows=Number(e.target.value)||0;
   }
 
-  if(S.step===7){
+  if(S.step===6){
     const el=document.getElementById('tileArea');
     el.oninput=e=>S.tileArea=Number(e.target.value)||0;
   }
@@ -547,7 +540,7 @@ function render(){
     };
   });
 
-  if(S.step===15) loadResult();
+  if(S.step===6) loadResult();
 }
 
 function pick(k,v){
@@ -583,7 +576,7 @@ function validateCurrentStep(){
     return false;
   }
 
-  if(S.step===7){
+  if(S.step===6){
     if(S.tileArea<0){
       alert('Введите площадь плитки');
       return false;
@@ -604,7 +597,7 @@ async function nextStep(){
     return;
   }
 
-  if(S.step<15){
+  if(S.step<14){
     S.step++;
     render();
   }else{
@@ -627,7 +620,7 @@ function buildCalculatorBody(){
     windows:S.windows,
     electrical:S.electrical,
     plumbing:S.plumbing,
-    bathroom:S.bathroom,
+    bathroom:'classic',
     tile:'manual',
     tileArea:S.tileArea,
     laminate:true,
