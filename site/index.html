@@ -341,48 +341,510 @@ body{
 <script>
 const API='/api/calculate', LEAD='/api/lead';
 const UTM=new URLSearchParams(location.search);
-const S={step:0,medium:'',campaign:'',type:'Квартира',floor:0,bath:0,rooms:'',state:'',finish:'',windows:0,balcony:0,electrical:'none',plumbing:'none',bathroom:'none',tile:'none',tileArea:0,floorFinish:'none',plinth:'none',walls:{},cleanElectrical:false,cleanPlumbing:false,cleaning:false,trash:false,photos:[],plan:null,result:null,source:''};
-const labels={wallpaper:'Обои',paint:'Покраска',decorative:'Декоративная штукатурка'};
+
+const S={
+  step:0,
+  type:'Квартира',
+  floor:0,
+  bath:0,
+  windows:0,
+  electrical:'none',
+  plumbing:'none',
+  bathroom:'none',
+  tileArea:0,
+  floorFinish:'quartz',
+  plinth:'none',
+  walls:'none',
+  cleanElectrical:false,
+  cleanPlumbing:false,
+  cleaning:false,
+  trash:false,
+  result:null,
+  source:'',
+  medium:'',
+  campaign:''
+};
+
 const money=x=>Math.round(Number(x)||0).toLocaleString('ru-RU')+' ₽';
-const opt=(text,val,key,extra='')=>'<button type="button" class="choice '+((key==='wallChoice'?!!S.walls[val]:S[key]===val)?'active':'')+'" data-key="'+key+'" data-value="'+val+'"><span>'+text+'</span><small>'+extra+'</small></button>';
-const tog=(text,key,extra)=>'<button type="button" class="choice '+(S[key]?'active':'')+'" data-toggle="'+key+'"><span>'+text+'</span><small>'+(S[key]?'✓ Выбрано':extra)+'</small></button>';
-function openCalc(){document.getElementById('calcModal').classList.add('open');document.body.style.overflow='hidden';S.step=0;S.result=null;S.source=UTM.get('utm_source')||UTM.get('source')||'site';S.medium=UTM.get('utm_medium')||'';S.campaign=UTM.get('utm_campaign')||'';render()}
-function closeCalc(){document.getElementById('calcModal').classList.remove('open');document.body.style.overflow=''}
-function val(id){const e=document.getElementById(id);return e?e.value:''}
-function saveFields(){S.floor=+val('floor')||S.floor;S.bath=+val('bath')||S.bath;S.rooms=val('rooms');S.state=val('state');S.finish=val('finish');S.windows=+val('windows')||0;S.balcony=+val('balcony')||0;if(document.getElementById('tileArea'))S.tileArea=+val('tileArea')||0;document.querySelectorAll('.wa').forEach(e=>{if(S.walls[e.dataset.k])S.walls[e.dataset.k].area=+e.value||0})}
-function render(){
- const z=document.getElementById('wizard'),b=document.getElementById('backBtn'),n=document.getElementById('nextBtn');
- const totalSteps=12;document.getElementById('progressText').textContent=S.step===11?'Итог':'Шаг '+(S.step+1)+' из '+totalSteps;document.getElementById('bar').style.width=((S.step+1)/totalSteps*100)+'%';b.classList.toggle('hidden',S.step===0);
- let h='';
- if(S.step===0)h='<div class="stepTitle">1. Объект</div><div class="choices">'+opt('🏠 Квартира','Квартира','type')+opt('🏡 Дом','Дом','type')+opt('🏢 Коммерция','Коммерция','type')+'</div><div class="field"><label>Общая площадь, м² *</label><input id="floor" type="number" min="1" value="'+(S.floor||'')+'" placeholder="Например, 80"></div><div class="field"><label>Площадь санузла, м²</label><input id="bath" type="number" min="0" value="'+S.bath+'"></div><div class="field"><label>Площадь балкона, м²</label><input id="balcony" type="number" min="0" value="'+S.balcony+'"></div>';
- if(S.step===1)h='<div class="stepTitle">2. Параметры объекта</div><div class="field"><label>Количество комнат</label><select id="rooms"><option value="">Не указано</option><option>1</option><option>2</option><option>3</option><option>4+</option></select></div><div class="field"><label>Состояние</label><select id="state"><option value="">Не указано</option><option>Новостройка без отделки</option><option>Вторичное жильё</option><option>С отделкой</option></select></div><div class="field"><label>Желаемый результат</label><select id="finish"><option value="">Не указано</option><option>Черновой + чистовой</option><option>Только чистовой</option><option>Косметический ремонт</option><option>Полный ремонт под ключ</option></select></div><div class="field"><label>Количество окон / откосов</label><input id="windows" type="number" min="0" value="'+S.windows+'"></div>';
- if(S.step===2)h='<div class="stepTitle">3. Электрика</div><div class="choices">'+opt('Нет','none','electrical')+opt('Частичный монтаж','partial','electrical','2 500 ₽/м²')+opt('Полный монтаж','full','electrical','3 500 ₽/м²')+'</div>';
- if(S.step===3)h='<div class="stepTitle">4. Сантехника</div><div class="choices">'+opt('Нет','none','plumbing')+opt('Частичный монтаж','partial','plumbing','1 000 ₽/м²')+opt('Полный монтаж','full','plumbing','2 500 ₽/м²')+'</div>';
- if(S.step===4)h='<div class="stepTitle">5. Санузел</div><div class="choices">'+opt('Нет','none','bathroom')+opt('Классический санузел','classic','bathroom','50 000 ₽/м²')+'</div>';
- if(S.step===5)h='<div class="stepTitle">6. Пол — плитка</div><div class="choices">'+opt('Без плитки','none','tile')+opt('Плитка на всей основной площади','fixed','tile','10 000 ₽/м²')+opt('Указать площадь','manual','tile')+'</div>'+(S.tile==='manual'?'<div class="field"><label>Площадь плитки, м²</label><input id="tileArea" type="number" min="0" value="'+S.tileArea+'"></div>':'');
- if(S.step===6)h='<div class="stepTitle">7. Оставшиеся полы</div><div class="choices">'+opt('Не делать','none','floorFinish')+opt('Кварцвинил','quartz','floorFinish','1 000 ₽/м²')+opt('Ламинат','laminate','floorFinish','1 000 ₽/м²')+'</div>';
- if(S.step===7)h='<div class="stepTitle">8. Стены</div><div class="choices">'+opt('Обои','wallpaper','wallChoice','1 500 ₽/м²')+opt('Покраска','paint','wallChoice','4 000 ₽/м²')+opt('Декоративная штукатурка','decorative','wallChoice','2 500 ₽/м²')+'</div><div class="hint">Можно выбрать несколько вариантов. Если площадь не указать, применяется автоматическая площадь стен.</div><div>'+Object.keys(S.walls).map(k=>'<div class="field"><label>'+labels[k]+' — площадь, м²</label><input class="wa" data-k="'+k+'" type="number" min="0" value="'+(S.walls[k].area||'')+'" placeholder="Автоматически"></div>').join('')+'</div>';
- if(S.step===8)h='<div class="stepTitle">9. Плинтусы</div><div class="choices">'+opt('Нет','none','plinth')+opt('Пластиковый','plastic','plinth','400 ₽/м²')+opt('Полиуретановый','polyurethane','plinth','1 300 ₽/м²')+'</div>';
- if(S.step===9)h='<div class="stepTitle">10. Завершение</div><div class="choices">'+tog('Чистовая электрика','cleanElectrical','По площади объекта')+tog('Чистовая сантехника','cleanPlumbing','По площади санузла')+tog('Клининг','cleaning','400 ₽/м²')+tog('Вывоз мусора','trash','По площади объекта')+'</div>';
- if(S.step===10)h='<div class="stepTitle">11. Фото и планировка</div><div class="field"><label>Фото объекта</label><input id="photos" type="file" accept="image/*" multiple><div class="hint" id="photoHint">'+S.photos.length+' фото выбрано</div></div><div class="field"><label>Планировка / проект</label><input id="plan" type="file" accept="image/*,.pdf"><div class="hint" id="planHint">'+(S.plan?'Файл выбран':'Файл не выбран')+'</div></div><div class="hint">Файлы используются как дополнительные данные заявки. Они не влияют на предварительный расчёт.</div>';
- if(S.step===11)h='<div class="stepTitle">12. Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
- z.innerHTML=h;n.textContent=S.step===11?'Получить точную смету':'Далее →';
- if(S.step===0){document.getElementById('floor').oninput=e=>S.floor=+e.target.value||0;document.getElementById('bath').oninput=e=>S.bath=+e.target.value||0;document.getElementById('balcony').oninput=e=>S.balcony=+e.target.value||0}
- if(S.step===1){document.getElementById('rooms').value=S.rooms;document.getElementById('state').value=S.state;document.getElementById('finish').value=S.finish}
- if(S.step===5&&S.tile==='manual')document.getElementById('tileArea').oninput=e=>S.tileArea=+e.target.value||0;
- document.querySelectorAll('.wa').forEach(e=>e.oninput=x=>S.walls[e.dataset.k].area=+x.target.value||0);
- const ph=document.getElementById('photos');if(ph)ph.onchange=e=>{S.photos=[...e.target.files].map(f=>({name:f.name,size:f.size,type:f.type}));document.getElementById('photoHint').textContent=S.photos.length+' фото выбрано'};
- const pl=document.getElementById('plan');if(pl)pl.onchange=e=>{S.plan=e.target.files[0]?{name:e.target.files[0].name,size:e.target.files[0].size,type:e.target.files[0].type}:null;document.getElementById('planHint').textContent=S.plan?'Файл выбран: '+S.plan.name:'Файл не выбран'};
- document.querySelectorAll('[data-toggle]').forEach(e=>e.onclick=()=>{S[e.dataset.toggle]=!S[e.dataset.toggle];render()});
- if(S.step===11)loadResult();
+
+const opt=(text,val,key,extra='') =>
+  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'"><span>'+text+'</span><small>'+extra+'</small></button>';
+
+const tog=(text,key) =>
+  '<button type="button" class="choice '+(S[key]?'active':'')+'" data-toggle="'+key+'"><span>'+text+'</span><small>'+(S[key]?'✓ Выбрано':'Нажмите для выбора')+'</small></button>';
+
+function openCalc(){
+  document.getElementById('calcModal').classList.add('open');
+  document.body.style.overflow='hidden';
+  S.step=0;
+  S.result=null;
+  S.source=UTM.get('utm_source')||UTM.get('source')||'site';
+  S.medium=UTM.get('utm_medium')||'';
+  S.campaign=UTM.get('utm_campaign')||'';
+  render();
 }
-function pick(k,v){if(k==='wallChoice'){if(S.walls[v])delete S.walls[v];else S.walls[v]={area:0}}else S[k]=v;render()}
-document.addEventListener('click',e=>{const el=e.target.closest('.choice[data-key]');if(el){e.preventDefault();pick(el.dataset.key,el.dataset.value)}});
-async function nextStep(){saveFields();if(S.step===0&&(!S.floor||S.floor<=0)){alert('Введите площадь объекта');return}if(S.step===5&&S.tile==='manual')S.tileArea=+val('tileArea')||0;if(S.step<11){S.step++;render()}else{openLead()}}
-function prevStep(){saveFields();if(S.step){S.step--;render()}}
-async function loadResult(){const r=document.getElementById('finalResult');const body={floor:S.floor,bath:S.bath,balcony:S.balcony,electrical:S.electrical,plumbing:S.plumbing,bathroom:S.bathroom,tile:S.tile,tileArea:S.tileArea,laminate:S.floorFinish==='quartz'||S.floorFinish==='laminate',plinth:S.plinth,walls:S.walls,cleanElectrical:S.cleanElectrical,cleanPlumbing:S.cleanPlumbing,cleaning:S.cleaning,trash:S.trash};try{const a=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),j=await a.json();if(!j.ok)throw new Error();S.result=j.result;const q=j.result,rows=q.rows||[];const stage=(title,fn)=>{const it=rows.filter(fn),sum=it.reduce((a,x)=>a+x.cost,0);return sum?'<div class="resultStage"><b>'+title+'</b>'+it.map(x=>'<div>'+x.name+' — '+money(x.cost)+'</div>').join('')+'<strong>Итого: '+money(sum)+'</strong></div>':''};r.innerHTML='<div class="muted">Объект: '+S.type+' · '+q.floor+' м² · основная площадь '+q.mainArea+' м²</div>'+stage('1️⃣ Черновая электрика + черновая сантехника',x=>/Электрика|Сантехника/.test(x.name))+stage('2️⃣ Плиточные работы',x=>/Классический санузел|Плитка/.test(x.name))+stage('3️⃣ Напольные работы',x=>/Ламинат \/ кварцвинил|Плинтус/.test(x.name))+stage('4️⃣ Стены',x=>/Окна|Подготовка под обои \+ обои|Подготовка под покраску \+ покраска|Подготовка под декоративку \+ декоративка/.test(x.name))+stage('5️⃣ Чистовая электрика / сантехника',x=>/Чистовая/.test(x.name))+stage('6️⃣ Завершающие работы',x=>/Клининг|Вывоз мусора/.test(x.name))+'<div class="resultTotal"><span>ИТОГО</span><span>'+money(q.total)+'</span></div><div class="resultTotal" style="font-size:15px"><span>Цена за м² по полу</span><span>'+money(q.pricePerM2)+'</span></div><div class="hint">Предварительный расчёт. Точная смета формируется после замера и согласования состава работ.</div>'}catch(e){r.innerHTML='Не удалось получить расчёт. Попробуйте ещё раз.'}}
-function openLead(){saveFields();if(!S.result){alert('Сначала дождитесь расчёта');return}document.getElementById('wizard').innerHTML='<div class="stepTitle">Получить точную смету</div><p class="muted">Оставьте номер телефона. Мы свяжемся с вами, уточним объект и договоримся о замере.</p><div class="leadBox"><div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div><div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div><div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div></div>';document.getElementById('progressText').textContent='Заявка';document.getElementById('bar').style.width='100%';document.getElementById('backBtn').classList.remove('hidden');document.getElementById('nextBtn').textContent='Отправить заявку';document.getElementById('nextBtn').onclick=submitLead}
-async function submitLead(){const phone=val('leadPhone').trim();if(!phone){alert('Введите телефон');return}const payload={name:val('leadName').trim(),phone,comment:val('leadComment').trim(),source:S.source||'site',medium:S.medium||'',campaign:S.campaign||'',referrer:document.referrer||'',object:{type:S.type,floor:S.floor,bath:S.bath,balcony:S.balcony,rooms:S.rooms,state:S.state,finish:S.finish,windows:S.windows},calculator:S.result,selection:{electrical:S.electrical,plumbing:S.plumbing,bathroom:S.bathroom,tile:S.tile,tileArea:S.tileArea,floorFinish:S.floorFinish,plinth:S.plinth,walls:S.walls,cleanElectrical:S.cleanElectrical,cleanPlumbing:S.cleanPlumbing,cleaning:S.cleaning,trash:S.trash},files:{photos:S.photos,plan:S.plan}};document.getElementById('nextBtn').disabled=true;try{const a=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),j=await a.json();if(!j.ok)throw new Error(j.error||'Ошибка');document.getElementById('wizard').innerHTML='<div class="success"><h3>✅ Заявка отправлена</h3><p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p><div class="buttons"><a class="btn primary" href="https://t.me/RemontFormaBot">Открыть Telegram</a><button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button></div></div>';document.getElementById('backBtn').classList.add('hidden');document.getElementById('nextBtn').style.display='none'}catch(e){alert('Не удалось отправить заявку. Попробуйте связаться с нами в Telegram.')}finally{document.getElementById('nextBtn').disabled=false}}
+
+function closeCalc(){
+  document.getElementById('calcModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function val(id){
+  const e=document.getElementById(id);
+  return e?e.value:'';
+}
+
+function render(){
+  const z=document.getElementById('wizard');
+  const b=document.getElementById('backBtn');
+  const n=document.getElementById('nextBtn');
+
+  const totalSteps=15;
+  const isResult=S.step===15;
+  document.getElementById('progressText').textContent=isResult?'Итог':'Шаг '+(S.step+1)+' из '+totalSteps;
+  document.getElementById('bar').style.width=(isResult?100:((S.step+1)/totalSteps*100))+'%';
+  b.classList.toggle('hidden',S.step===0);
+  b.onclick=prevStep;
+
+  let h='';
+
+  if(S.step===0){
+    h='<div class="stepTitle">1. Тип объекта</div>'+
+      '<div class="choices">'+
+      opt('🏠 Квартира','Квартира','type')+
+      opt('🏡 Дом','Дом','type')+
+      opt('🏢 Коммерция','Коммерция','type')+
+      '</div>';
+  }
+
+  if(S.step===1){
+    h='<div class="stepTitle">2. Общая площадь</div>'+
+      '<div class="field"><label>Напишите общую площадь объекта в м²</label>'+
+      '<input id="floor" type="number" min="1" step="0.1" value="'+(S.floor||'')+'" placeholder="Например: 80"></div>'+
+      '<div class="hint">Например: 80</div>';
+  }
+
+  if(S.step===2){
+    h='<div class="stepTitle">3. Площадь санузла</div>'+
+      '<div class="field"><label>Напишите площадь пола санузла в м²</label>'+
+      '<input id="bath" type="number" min="0" step="0.1" value="'+(S.bath||'')+'" placeholder="Если санузла нет — 0"></div>'+
+      '<div class="hint">Если санузла нет — укажите 0.</div>';
+  }
+
+  if(S.step===3){
+    h='<div class="stepTitle">4. Окна</div>'+
+      '<div class="field"><label>Сколько окон?</label>'+
+      '<input id="windows" type="number" min="0" step="1" value="'+(S.windows||'')+'" placeholder="Например: 5"></div>'+
+      '<div class="hint">Количество окон рассчитывается по 20 000 ₽ за окно.</div>';
+  }
+
+  if(S.step===4){
+    h='<div class="stepTitle">5. Электрика</div><div class="choices">'+
+      opt('Нет','none','electrical')+
+      opt('Частичный монтаж','partial','electrical','2 500 ₽/м²')+
+      opt('Полный монтаж','full','electrical','3 500 ₽/м²')+
+      '</div>';
+  }
+
+  if(S.step===5){
+    h='<div class="stepTitle">6. Сантехника</div><div class="choices">'+
+      opt('Нет','none','plumbing')+
+      opt('Частичный монтаж','partial','plumbing','1 000 ₽/м²')+
+      opt('Полный монтаж','full','plumbing','2 500 ₽/м²')+
+      '</div>';
+  }
+
+  if(S.step===6){
+    h='<div class="stepTitle">7. Санузел</div><div class="choices">'+
+      opt('Нет','none','bathroom')+
+      opt('Классический санузел','classic','bathroom','50 000 ₽/м²')+
+      '</div>';
+  }
+
+  if(S.step===7){
+    h='<div class="stepTitle">8. Плитка — полы (коридор, комнаты)</div>'+
+      '<div class="field"><label>Напишите площадь плитки в м²</label>'+
+      '<input id="tileArea" type="number" min="0" step="0.1" value="'+(S.tileArea||'')+'" placeholder="Например: 12"></div>'+
+      '<div class="hint">Площадь плитки не может быть больше основной площади объекта. Цена автоматически зависит от площади плитки.</div>';
+  }
+
+  if(S.step===8){
+    h='<div class="stepTitle">9. Оставшиеся полы</div><div class="choices">'+
+      opt('Кварцвинил','quartz','floorFinish')+
+      opt('Ламинат','laminate','floorFinish')+
+      '</div>';
+  }
+
+  if(S.step===9){
+    h='<div class="stepTitle">10. Плинтус</div><div class="choices">'+
+      opt('Нет','none','plinth')+
+      opt('Пластиковый','plastic','plinth','400 ₽/м²')+
+      opt('Полиуретановый','polyurethane','plinth','1 300 ₽/м²')+
+      '</div>';
+  }
+
+  if(S.step===10){
+    h='<div class="stepTitle">11. Стены</div><div class="choices">'+
+      opt('Без отделки','none','walls')+
+      opt('Обои','wallpaper','walls','1 500 ₽/м²')+
+      opt('Покраска','paint','walls','4 000 ₽/м²')+
+      opt('Декоративка','decorative','walls','2 500 ₽/м²')+
+      '</div>';
+  }
+
+  if(S.step===11){
+    h='<div class="stepTitle">12. Чистовая электрика</div><div class="choices">'+
+      tog('Да','cleanElectrical')+
+      tog('Нет','cleanElectricalNo')+
+      '</div>';
+  }
+
+  if(S.step===12){
+    h='<div class="stepTitle">13. Чистовая сантехника</div><div class="choices">'+
+      tog('Да','cleanPlumbing')+
+      tog('Нет','cleanPlumbingNo')+
+      '</div>';
+  }
+
+  if(S.step===13){
+    h='<div class="stepTitle">14. Клининг</div><div class="choices">'+
+      tog('Да','cleaning')+
+      tog('Нет','cleaningNo')+
+      '</div>';
+  }
+
+  if(S.step===14){
+    h='<div class="stepTitle">15. Вывоз мусора</div><div class="choices">'+
+      tog('Да','trash')+
+      tog('Нет','trashNo')+
+      '</div>';
+  }
+
+  if(S.step===15){
+    h='<div class="stepTitle">Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
+  }
+
+  z.innerHTML=h;
+
+  n.textContent=isResult?'Получить точную смету':'Далее →';
+  n.onclick=nextStep;
+
+  if(S.step===1){
+    const el=document.getElementById('floor');
+    el.oninput=e=>S.floor=Number(e.target.value)||0;
+  }
+
+  if(S.step===2){
+    const el=document.getElementById('bath');
+    el.oninput=e=>S.bath=Number(e.target.value)||0;
+  }
+
+  if(S.step===3){
+    const el=document.getElementById('windows');
+    el.oninput=e=>S.windows=Number(e.target.value)||0;
+  }
+
+  if(S.step===7){
+    const el=document.getElementById('tileArea');
+    el.oninput=e=>S.tileArea=Number(e.target.value)||0;
+  }
+
+  document.querySelectorAll('[data-toggle]').forEach(el=>{
+    el.onclick=()=>{
+      const key=el.dataset.toggle;
+
+      if(key==='cleanElectricalNo'){
+        S.cleanElectrical=false;
+      }else if(key==='cleanPlumbingNo'){
+        S.cleanPlumbing=false;
+      }else if(key==='cleaningNo'){
+        S.cleaning=false;
+      }else if(key==='trashNo'){
+        S.trash=false;
+      }else{
+        S[key]=true;
+      }
+
+      render();
+    };
+  });
+
+  if(S.step===15) loadResult();
+}
+
+function pick(k,v){
+  if(k==='type'){
+    S.type=v;
+  }else{
+    S[k]=v;
+  }
+  render();
+}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('.choice[data-key]');
+  if(el){
+    e.preventDefault();
+    pick(el.dataset.key,el.dataset.value);
+  }
+});
+
+function validateCurrentStep(){
+  if(S.step===1 && (!S.floor || S.floor<=0)){
+    alert('Введите площадь объекта');
+    return false;
+  }
+
+  if(S.step===2 && S.bath<0){
+    alert('Введите площадь санузла');
+    return false;
+  }
+
+  if(S.step===3 && (!Number.isInteger(S.windows) || S.windows<0)){
+    alert('Введите количество окон целым числом');
+    return false;
+  }
+
+  if(S.step===7){
+    if(S.tileArea<0){
+      alert('Введите площадь плитки');
+      return false;
+    }
+
+    const main=Math.max(0,S.floor-S.bath);
+    if(S.tileArea>main) S.tileArea=main;
+  }
+
+  return true;
+}
+
+async function nextStep(){
+  if(!validateCurrentStep()) return;
+
+  if(S.step===0 && S.type==='Коммерция'){
+    openCommercialLead();
+    return;
+  }
+
+  if(S.step<15){
+    S.step++;
+    render();
+  }else{
+    openLead();
+  }
+}
+
+function prevStep(){
+  if(S.step>0){
+    S.step--;
+    render();
+  }
+}
+
+function buildCalculatorBody(){
+  return {
+    floor:S.floor,
+    bath:S.bath,
+    balcony:0,
+    windows:S.windows,
+    electrical:S.electrical,
+    plumbing:S.plumbing,
+    bathroom:S.bathroom,
+    tile:'manual',
+    tileArea:S.tileArea,
+    laminate:true,
+    plinth:S.plinth,
+    walls:S.walls==='none'?{}:{[S.walls]:{area:0}},
+    cleanElectrical:S.cleanElectrical,
+    cleanPlumbing:S.cleanPlumbing,
+    cleaning:S.cleaning,
+    trash:S.trash
+  };
+}
+
+function stageHtml(title,matcher,rows){
+  const items=rows.filter(matcher);
+  if(!items.length) return '';
+
+  const sum=items.reduce((a,x)=>a+(Number(x.cost)||0),0);
+
+  return '<div class="resultStage">'+
+    '<b>'+title+'</b>'+
+    items.map(x=>'<div>'+escapeHtml(x.name)+' — '+money(x.cost)+'</div>').join('')+
+    '<strong>Итого: '+money(sum)+'</strong>'+
+    '</div>';
+}
+
+async function loadResult(){
+  const r=document.getElementById('finalResult');
+
+  try{
+    const response=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(buildCalculatorBody())
+    });
+
+    const j=await response.json();
+
+    if(!j.ok) throw new Error(j.error||'Ошибка расчёта');
+
+    S.result=j.result;
+
+    const q=j.result;
+    const rows=q.rows||[];
+
+    r.innerHTML=
+      '<div class="muted">Объект: '+escapeHtml(S.type)+' · '+q.floor+' м² · основная площадь '+q.mainArea+' м²</div>'+
+      stageHtml('1️⃣ Черновая электрика + черновая сантехника',x=>/Электрика|Сантехника/.test(x.name),rows)+
+      stageHtml('2️⃣ Плиточные работы',x=>/Классический санузел|Плитка/.test(x.name),rows)+
+      stageHtml('3️⃣ Напольные работы',x=>/Ламинат \/ кварцвинил|Плинтус/.test(x.name),rows)+
+      stageHtml('4️⃣ Стены',x=>/Окна|Подготовка под обои \+ обои|Подготовка под покраску \+ покраска|Подготовка под декоративку \+ декоративка/.test(x.name),rows)+
+      stageHtml('5️⃣ Чистовая электрика \/ сантехника',x=>/Чистовая/.test(x.name),rows)+
+      stageHtml('6️⃣ Завершающие работы',x=>/Клининг|Вывоз мусора/.test(x.name),rows)+
+      '<div class="resultTotal"><span>ИТОГО</span><span>'+money(q.total)+'</span></div>'+
+      '<div class="resultTotal" style="font-size:15px"><span>Цена за м² по полу</span><span>'+money(q.pricePerM2)+'</span></div>'+
+      '<div class="hint">Предварительный расчёт. Точная смета формируется после замера и согласования состава работ.</div>';
+  }catch(e){
+    r.innerHTML='<div class="hint">Не удалось получить расчёт. Попробуйте ещё раз.</div>';
+  }
+}
+
+function openCommercialLead(){
+  document.getElementById('wizard').innerHTML=
+    '<div class="stepTitle">Ремонт коммерческого помещения</div>'+
+    '<p class="muted">Ремонт в коммерции зависит от проекта и объёмов работ. Оставьте номер телефона, чтобы обсудить подробности.</p>'+
+    '<div class="leadBox">'+
+      '<div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div>'+
+      '<div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div>'+
+      '<div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div>'+
+    '</div>';
+
+  document.getElementById('progressText').textContent='Заявка';
+  document.getElementById('bar').style.width='100%';
+  document.getElementById('backBtn').classList.add('hidden');
+  document.getElementById('nextBtn').textContent='Отправить заявку';
+  document.getElementById('nextBtn').onclick=submitLead;
+  S.result={total:0,pricePerM2:0,rows:[],floor:0,mainArea:0};
+}
+
+function openLead(){
+  if(!S.result){
+    alert('Сначала дождитесь расчёта');
+    return;
+  }
+
+  document.getElementById('wizard').innerHTML=
+    '<div class="stepTitle">Получить точную смету</div>'+
+    '<p class="muted">Оставьте номер телефона. Мы свяжемся с вами, уточним объект и договоримся о замере.</p>'+
+    '<div class="leadBox">'+
+      '<div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div>'+
+      '<div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div>'+
+      '<div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div>'+
+    '</div>';
+
+  document.getElementById('progressText').textContent='Заявка';
+  document.getElementById('bar').style.width='100%';
+  document.getElementById('backBtn').classList.add('hidden');
+  document.getElementById('nextBtn').textContent='Отправить заявку';
+  document.getElementById('nextBtn').onclick=submitLead;
+}
+
+async function submitLead(){
+  const phone=val('leadPhone').trim();
+
+  if(!phone){
+    alert('Введите телефон');
+    return;
+  }
+
+  const payload={
+    name:val('leadName').trim(),
+    phone,
+    comment:val('leadComment').trim(),
+    source:S.source||'site',
+    medium:S.medium||'',
+    campaign:S.campaign||'',
+    referrer:document.referrer||'',
+    object:{
+      type:S.type,
+      floor:S.floor,
+      bath:S.bath,
+      balcony:0,
+      windows:S.windows
+    },
+    calculator:S.result,
+    selection:{
+      electrical:S.electrical,
+      plumbing:S.plumbing,
+      bathroom:S.bathroom,
+      tile:'manual',
+      tileArea:S.tileArea,
+      floorFinish:S.floorFinish,
+      plinth:S.plinth,
+      walls:S.walls,
+      cleanElectrical:S.cleanElectrical,
+      cleanPlumbing:S.cleanPlumbing,
+      cleaning:S.cleaning,
+      trash:S.trash
+    }
+  };
+
+  document.getElementById('nextBtn').disabled=true;
+
+  try{
+    const a=await fetch(LEAD,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+
+    const j=await a.json();
+
+    if(!j.ok) throw new Error(j.error||'Ошибка');
+
+    document.getElementById('wizard').innerHTML=
+      '<div class="success">'+
+        '<h3>✅ Заявка отправлена</h3>'+
+        '<p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p>'+
+        '<div class="buttons">'+
+          '<a class="btn primary" href="https://t.me/RemontFormaBot">Открыть Telegram</a>'+
+          '<button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button>'+
+        '</div>'+
+      '</div>';
+
+    document.getElementById('backBtn').classList.add('hidden');
+    document.getElementById('nextBtn').style.display='none';
+  }catch(e){
+    alert('Не удалось отправить заявку. Попробуйте связаться с нами в Telegram.');
+  }finally{
+    document.getElementById('nextBtn').disabled=false;
+  }
+}
+
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"]/g,m=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;'
+  }[m]));
+}
+
+function printEstimate(){
+  const q=S.result||{};
+  document.getElementById('pdfArea').innerHTML=
+    '<h1>РЕМОНТФОРМА</h1>'+
+    '<h2>Предварительный расчёт ремонта</h2>'+
+    '<p>Объект: '+escapeHtml(S.type)+'</p>'+
+    '<p>Площадь: '+q.floor+' м² · Санузел: '+q.bath+' м²</p>'+
+    (q.rows||[]).map(x=>'<p>'+escapeHtml(x.name)+' — '+x.quantity+' '+escapeHtml(x.unit)+' × '+money(x.price)+' = <b>'+money(x.cost)+'</b></p>').join('')+
+    '<hr><h2>Итого: '+money(q.total)+'</h2>'+
+    '<p>Цена за м² по полу: '+money(q.pricePerM2)+'</p>'+
+    '<p>Предварительный расчёт. Точная смета после замера.</p>';
+
+  window.print();
+}
 let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все',portfolioVisibleCount=8,reviewVisibleCount=3;
 
 const FEATURED_NAMES=[
