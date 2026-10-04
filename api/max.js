@@ -517,7 +517,17 @@ async function sendLead(id, message, s, phone) {
 
 async function handleMessage(update) {
   const m = update.message || {};
-  const id = update.chat_id || m.recipient?.chat_id || m.recipient?.user_id;
+  const recipient = m.recipient || {};
+
+  // В личном диалоге recipient.user_id — это ID БОТА, а не клиента.
+  // Для dialog берём ID отправителя. Для групп/каналов — chat_id получателя.
+  const isGroupOrChannel =
+    recipient.chat_type === 'chat' ||
+    recipient.chat_type === 'channel';
+
+  const id = isGroupOrChannel
+    ? (update.chat_id || recipient.chat_id)
+    : (update.chat_id || m.sender?.user_id || update.user?.user_id);
 
   if (!id) return;
 
@@ -589,7 +599,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.4.0',
+      version: '4.5.0',
       configured: !!TOKEN
     });
   }
@@ -611,12 +621,9 @@ module.exports = async function handler(req, res) {
       await handleCallback(update);
     } else if (update.update_type === 'message_created') {
       const recipient = update.message?.recipient || {};
-      const isGroupOrChannel = Boolean(
-        recipient.title ||
+      const isGroupOrChannel =
         recipient.chat_type === 'chat' ||
-        recipient.chat_type === 'channel' ||
-        update.message?.recipient?.title
-      );
+        recipient.chat_type === 'channel';
 
       if (isGroupOrChannel) {
         await monitorMaxGroupMessage(update);
