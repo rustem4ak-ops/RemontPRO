@@ -5,10 +5,8 @@ const API = 'https://platform-api2.max.ru';
 const WEBHOOK = 'https://remont-pro-nine.vercel.app/api/max';
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
 
-// Официальные сертификаты Russian Trusted CA / Минцифры
 const ROOT_CA_URL =
   'https://gu-st.ru/content/lending/russian_trusted_root_ca_pem.crt';
-
 const SUB_CA_URL =
   'https://gu-st.ru/content/lending/russian_trusted_sub_ca_pem.crt';
 
@@ -19,37 +17,24 @@ function download(url) {
   return new Promise((resolve, reject) => {
     const request = https.get(url, {
       timeout: 10000,
-      headers: {
-        'User-Agent': 'RemontPRO-MAX/1.0'
-      }
+      headers: { 'User-Agent': 'RemontPRO-MAX/1.0' }
     }, response => {
       if (response.statusCode < 200 || response.statusCode >= 300) {
         response.resume();
-        return reject(
-          new Error(`Certificate download failed: HTTP ${response.statusCode}`)
-        );
+        return reject(new Error(`Certificate download failed: HTTP ${response.statusCode}`));
       }
 
       const chunks = [];
-
       response.on('data', chunk => chunks.push(chunk));
-
-      response.on('end', () => {
-        resolve(Buffer.concat(chunks).toString('utf8'));
-      });
+      response.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     });
 
-    request.on('timeout', () => {
-      request.destroy(new Error('Certificate download timeout'));
-    });
-
+    request.on('timeout', () => request.destroy(new Error('Certificate download timeout')));
     request.on('error', reject);
   });
 }
 
 async function getAgent() {
-  // Кэшируем сертификаты на время жизни serverless instance.
-  // Повторно скачивать их на каждый запрос не будем.
   if (cachedAgent && Date.now() - cachedAt < 6 * 60 * 60 * 1000) {
     return cachedAgent;
   }
@@ -66,7 +51,6 @@ async function getAgent() {
   });
 
   cachedAt = Date.now();
-
   return cachedAgent;
 }
 
@@ -74,12 +58,8 @@ function maxRequest(path, options = {}) {
   return new Promise(async (resolve, reject) => {
     try {
       const agent = await getAgent();
-
       const url = new URL(path, API);
-
-      const body = options.body
-        ? JSON.stringify(options.body)
-        : null;
+      const body = options.body ? JSON.stringify(options.body) : null;
 
       const request = https.request(url, {
         method: options.method || 'GET',
@@ -87,19 +67,14 @@ function maxRequest(path, options = {}) {
         headers: {
           Authorization: TOKEN,
           'Content-Type': 'application/json',
-          ...(body ? {
-            'Content-Length': Buffer.byteLength(body)
-          } : {})
+          ...(body ? { 'Content-Length': Buffer.byteLength(body) } : {})
         },
         timeout: 20000
       }, response => {
         const chunks = [];
-
         response.on('data', chunk => chunks.push(chunk));
-
         response.on('end', () => {
           const text = Buffer.concat(chunks).toString('utf8');
-
           let data = {};
 
           try {
@@ -109,26 +84,18 @@ function maxRequest(path, options = {}) {
           }
 
           resolve({
-            ok: response.statusCode >= 200 &&
-                response.statusCode < 300,
+            ok: response.statusCode >= 200 && response.statusCode < 300,
             status: response.statusCode,
             data
           });
         });
       });
 
-      request.on('timeout', () => {
-        request.destroy(new Error('MAX API request timeout'));
-      });
-
+      request.on('timeout', () => request.destroy(new Error('MAX API request timeout')));
       request.on('error', reject);
 
-      if (body) {
-        request.write(body);
-      }
-
+      if (body) request.write(body);
       request.end();
-
     } catch (error) {
       reject(error);
     }
@@ -141,7 +108,8 @@ async function setupCommands() {
     body: {
       commands: [
         { name: 'start', description: 'Начать расчёт ремонта' },
-        { name: 'calculator', description: 'Рассчитать стоимость ремонта' },\n        { name: 'admin', description: 'Показать MAX user_id для настройки уведомлений' }
+        { name: 'calculator', description: 'Рассчитать стоимость ремонта' },
+        { name: 'admin', description: 'Показать MAX user_id для настройки уведомлений' }
       ]
     }
   });
@@ -152,18 +120,17 @@ async function setupWebhook() {
     method: 'POST',
     body: {
       url: WEBHOOK,
-      update_types: [
-        'bot_started',
-        'message_created',
-        'message_callback'
-      ],
+      update_types: ['bot_started', 'message_created', 'message_callback'],
       secret: SECRET
     }
   });
 }
 
-module.exports = async function handler(req, res) {
+async function getSubscriptions() {
+  return maxRequest('/subscriptions');
+}
 
+module.exports = async function handler(req, res) {
   if (!TOKEN) {
     return res.status(500).json({
       ok: false,
@@ -172,32 +139,51 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-
-    // GET — удобная проверка из браузера.
     if (req.method === 'GET') {
-
       const commands = await setupCommands();
-      const result = await setupWebhook();
+      const setup = await setupWebhook();
+      const subscriptions = await getSubscriptions();
 
-      return res.status(result.ok && commands.ok ? 200 : 502).json({
-        ok: result.ok && commands.ok,
-        status: result.status,
+      const ok = commands.ok && setup.ok && subscriptions.ok;
+
+      return res.status(ok ? 200 : 502).json({
+        ok,
         webhook: WEBHOOK,
-        commands: { ok: commands.ok, status: commands.status, data: commands.data },
-        subscription: result.data
+        commands: {
+          ok: commands.ok,
+          status: commands.status,
+          data: commands.data
+        },
+        setup: {
+          ok: setup.ok,
+          status: setup.status,
+          data: setup.data
+        },
+        subscriptions: {
+          ok: subscriptions.ok,
+          status: subscriptions.status,
+          data: subscriptions.data
+        }
       });
     }
 
-    // POST — также позволяет запускать настройку программно.
     if (req.method === 'POST') {
+      const setup = await setupWebhook();
+      const subscriptions = await getSubscriptions();
 
-      const result = await setupWebhook();
-
-      return res.status(result.ok ? 200 : 502).json({
-        ok: result.ok,
-        status: result.status,
+      return res.status(setup.ok && subscriptions.ok ? 200 : 502).json({
+        ok: setup.ok && subscriptions.ok,
         webhook: WEBHOOK,
-        subscription: result.data
+        setup: {
+          ok: setup.ok,
+          status: setup.status,
+          data: setup.data
+        },
+        subscriptions: {
+          ok: subscriptions.ok,
+          status: subscriptions.status,
+          data: subscriptions.data
+        }
       });
     }
 
@@ -205,9 +191,7 @@ module.exports = async function handler(req, res) {
       ok: false,
       error: 'Method not allowed'
     });
-
   } catch (error) {
-
     return res.status(500).json({
       ok: false,
       error: error.message || 'MAX setup error',
