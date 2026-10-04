@@ -58,7 +58,7 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
   if (plumbing === 'full') add('Сантехника — полная замена', floor*rates.plumbing.full, floor, 'м²', rates.plumbing.full);
   if (plumbing === 'manual') { const p=n(input.plumbingRate); add('Сантехника — ручная цена', floor*p, floor, 'м²', p); }
 
-  const bathroom = input.bathroom || 'none';
+  const bathroom = 'classic';
   if (bathroom === 'classic') add('Классический санузел', bath*rates.bathroom, bath, 'м²', rates.bathroom);
   if (bathroom === 'manual') { const q=n(input.bathroomArea); add('Санузел — ручная площадь', q*rates.bathroom, q, 'м²', rates.bathroom); }
 
