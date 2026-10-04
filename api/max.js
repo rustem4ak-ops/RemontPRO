@@ -562,6 +562,7 @@ async function sendLead(id, message, s, phone) {
   const leadMessage = buildLeadMessage(name, phone, s);
 
   let maxSent = false;
+  let maxError = '';
 
   // В личном MAX-диалоге администратор — это user_id.
   // Сначала пробуем MAX_ADMIN_USER_ID, затем совместимое MAX_ADMIN_CHAT_ID.
@@ -576,6 +577,7 @@ async function sendLead(id, message, s, phone) {
       );
       maxSent = Boolean(result && result.message);
     } catch (error) {
+      maxError = error?.message || 'MAX send failed';
       // Для обратной совместимости с ранее настроенным chat_id:
       // если администратор задан как ID группового чата, отправляем туда.
       try {
@@ -585,9 +587,15 @@ async function sendLead(id, message, s, phone) {
           { text: leadMessage, format: 'html' }
         );
         maxSent = Boolean(result && result.message);
-      } catch (_) {}
+      } catch (fallbackError) {
+        maxError = fallbackError?.message || maxError;
+      }
     }
+  } else {
+    maxError = 'MAX_ADMIN_USER_ID/MAX_ADMIN_CHAT_ID не задан';
   }
+
+  if (!maxSent) console.error('[MAX lead delivery failed]', { adminId: adminId || null, error: maxError });
 
   // Telegram сохраняем через общий Lead API, но запрещаем ему повторно
   // отправлять эту же заявку в MAX.
@@ -640,7 +648,7 @@ async function handleMessage(update) {
 
   const text = String(m.body?.text || m.text || '').trim();
 
-  if (
+  if (/^\/admin$/i.test(text)) {\n    const senderId = m.sender?.user_id || update.user?.user_id || id;\n    return send(id, '🔧 MAX user_id: ' + String(senderId) + '\\n\\nУкажите этот ID в Vercel → Environment Variables → MAX_ADMIN_USER_ID.');\n  }\n\n  if (
     /^\/start$/i.test(text) ||
     /^Начать$/i.test(text) ||
     /^🏠 Начать$/i.test(text) ||
@@ -706,7 +714,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.5.0',
+      version: '4.6.0',
       configured: !!TOKEN
     });
   }
