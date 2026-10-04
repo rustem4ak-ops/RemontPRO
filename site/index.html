@@ -858,16 +858,20 @@ async function loadPortfolio(){
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     portfolioImages.sort(portfolioSort);
 
-    const serviceCards=[['apartment','Гостиная'],['house','Кухня']];
-    serviceCards.forEach(([key,label],i)=>{
-      const card=document.querySelector('#services .service[data-service="'+key+'"]');
-      if(!card)return;
-      const item=portfolioImages.find(x=>(x.label||'').toLowerCase()===label.toLowerCase())||portfolioImages[i];
-      if(item&&item.path){
-        const src='/api/portfolio-image?path='+encodeURIComponent(item.path);
-        card.style.backgroundImage="url('"+src.replace(/'/g,"\\'")+"')";
+    const apartmentCard=document.querySelector('#services .service[data-service="apartment"]');
+    const houseCard=document.querySelector('#services .service[data-service="house"]');
+    const commercialCard=document.querySelector('#services .service[data-service="commercial"]');
+    const houseItem=portfolioImages.find(x=>(x.label||'').toLowerCase()==='кухня')||portfolioImages[1];
+    if(houseItem&&houseItem.path){
+      const src='/api/portfolio-image?path='+encodeURIComponent(houseItem.path);
+      if(commercialCard) commercialCard.style.backgroundImage="url('"+src.replace(/'/g,"\\'")+"')";
+    }
+    if(commercialCard){
+      const commercialInline=getComputedStyle(commercialCard).backgroundImage;
+      if(houseCard && commercialInline && commercialInline!=='none'){
+        houseCard.style.backgroundImage=commercialInline;
       }
-    });
+    }
 
     if(!needGallery) return;
 
