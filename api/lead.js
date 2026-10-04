@@ -69,30 +69,7 @@ module.exports = async function handler(req, res) {
     var files = b.files || {};
     var photos = Array.isArray(files.photos) ? files.photos : [];
 
-    var lines = [
-      '🆕 <b>Новая заявка РЕМОНТФОРМА</b>',
-      '',
-      '👤 ' + esc(b.name || 'Не указано'),
-      '📞 <b>' + esc(phone) + '</b>',
-      '📍 Источник: <b>' + esc(b.source || 'site') + '</b>',
-      '📊 Канал: ' + esc(b.medium || '—') + ' | Кампания: ' + esc(b.campaign || '—'),
-      '🏠 Объект: ' + esc(o.type || 'Не указан'),
-      '📐 Площадь: ' + esc(o.floor || 0) + ' м²',
-      '🚿 Санузел: ' + esc(o.bath || 0) + ' м²',
-      '🌿 Балкон: ' + esc(o.balcony || 0) + ' м²',
-      '🚪 Комнат: ' + esc(o.rooms || '—'),
-      '🏗 Состояние: ' + esc(o.state || '—'),
-      '🎯 Задача: ' + esc(o.finish || '—'),
-      '🪟 Окон/откосов: ' + esc(o.windows || 0),
-      '',
-      '💰 Предварительный расчёт: <b>' + money(q.total) + '</b>',
-      '📏 Цена за м²: <b>' + money(q.pricePerM2) + '</b>',
-      '📎 Фото: ' + photos.length,
-      '📄 Планировка: ' + (files.plan && files.plan.name ? files.plan.name : 'нет')
-    ];
-    if (b.comment) lines.push('💬 ' + esc(b.comment));
-
-    var message = lines.join('\n');
+    // Формат уведомления повторяет блок «Предварительный расчёт» на сайте.\n    // Сначала идут только данные лида, затем полный расчёт по 6 этапам.\n    var rows = Array.isArray(q.rows) ? q.rows : [];\n    var stage = function(title, matcher) {\n      var items = rows.filter(matcher);\n      if (!items.length) return null;\n      var sum = items.reduce(function(total, item) { return total + (Number(item.cost) || 0); }, 0);\n      var out = ['<b>' + title + '</b>'];\n      items.forEach(function(item) {\n        out.push('• ' + esc(item.name) + ' — ' + money(item.cost));\n      });\n      out.push('<b>Итого: ' + money(sum) + '</b>');\n      return out.join('\\n');\n    };\n\n    var stages = [\n      stage('1️⃣ Черновая электрика + черновая сантехника', function(x) { return /Электрика|Сантехника/.test(x.name); }),\n      stage('2️⃣ Плиточные работы', function(x) { return /Классический санузел|Плитка/.test(x.name); }),\n      stage('3️⃣ Напольные работы', function(x) { return /Ламинат \\/ кварцвинил|Плинтус/.test(x.name); }),\n      stage('4️⃣ Стены', function(x) { return /Окна|Подготовка под обои \\+ обои|Подготовка под покраску \\+ покраска|Подготовка под декоративку \\+ декоративка/.test(x.name); }),\n      stage('5️⃣ Чистовая электрика / сантехника', function(x) { return /Чистовая/.test(x.name); }),\n      stage('6️⃣ Завершающие работы', function(x) { return /Клининг|Вывоз мусора/.test(x.name); })\n    ].filter(Boolean);\n\n    var lines = [\n      '🆕 <b>Новая заявка</b>',\n      '',\n      '👤 Имя: <b>' + esc(b.name || 'Не указано') + '</b>',\n      '📞 Номер телефона: <b>' + esc(phone) + '</b>',\n      '📍 Источник: <b>' + esc(b.source || 'site') + '</b>',\n      ''\n    ];\n\n    if (stages.length) {\n      lines = lines.concat(stages);\n      lines.push('');\n      lines.push('<div>ИТОГО: <b>' + money(q.total) + '</b></div>');\n      lines.push('<div>Цена за м² по полу: <b>' + money(q.pricePerM2) + '</b></div>');\n    } else {\n      lines.push('💰 Предварительный расчёт: <b>' + money(q.total) + '</b>');\n      lines.push('📏 Цена за м² по полу: <b>' + money(q.pricePerM2) + '</b>');\n    }\n\n    if (b.comment) lines.push('', '💬 ' + esc(b.comment));\n\n    var message = lines.join('\n');
     var telegramSent = false;
     var maxSent = false;
 
