@@ -5,6 +5,7 @@ const { analyze, score, level, area, budget, classify } = require('../shared/aut
 const TOKEN = process.env.MAX_BOT_TOKEN;
 const SECRET = process.env.MAX_WEBHOOK_SECRET || 'rf-max-2026-webhook';
 const API = 'https://platform-api2.max.ru';
+const LOGO_URL = 'https://remont-pro-nine.vercel.app/remontforma-logo.jpg';
 
 const ROOT_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_root_ca_pem.crt';
 const SUB_CA_URL = 'https://gu-st.ru/content/lending/russian_trusted_sub_ca_pem.crt';
@@ -147,8 +148,8 @@ function contact(text) {
   return { type: 'request_contact', text };
 }
 
-async function send(chatId, text, rows = []) {
-  const attachments = rows.length ? buttons(rows) : [];
+async function send(chatId, text, rows = [], extraAttachments = []) {
+  const attachments = [...(extraAttachments || []), ...(rows.length ? buttons(rows) : [])];
   return maxRequest('/messages?chat_id=' + encodeURIComponent(chatId), 'POST', {
     text,
     attachments
@@ -171,7 +172,8 @@ async function start(id) {
       [cb('🏠 Квартира', 'OBJ:a')],
       [cb('🏡 Дом', 'OBJ:h')],
       [cb('🏢 Коммерция', 'OBJ:commercial')]
-    ]
+    ],
+    [{ type: 'image', payload: { url: LOGO_URL } }]
   );
 }
 
@@ -190,6 +192,7 @@ function input(s) {
     floor: s.floor,
     bath: s.bath || 0,
     balcony: 0,
+    windows: s.windows || 0,
     electrical: s.electrical || 'none',
     plumbing: s.plumbing || 'none',
     bathroom: s.bathroom || 'none',
@@ -538,7 +541,13 @@ async function handleMessage(update) {
     if (v === null) return send(id, '⚠️ Введите площадь санузла числом, например 5');
 
     s.bath = v;
+    return ask(id, 'windows', '🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5', s);
+  }
 
+  if (s.step === 'windows') {
+    const v = num(text);
+    if (v === null || !Number.isInteger(v)) return send(id, '⚠️ Введите количество окон целым числом, например 5');
+    s.windows = v;
     return choose(id, 'electrical', '⚡ Электрика', [
       [cb('Нет', 'E0')],
       [cb('Частичный монтаж', 'E1')],
@@ -564,7 +573,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.0.0',
+      version: '4.1.0',
       configured: !!TOKEN
     });
   }
@@ -582,15 +591,23 @@ module.exports = async function handler(req, res) {
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
 
-    if (update.update_type === 'message_created' && update.message?.recipient?.chat_id) {
-      await monitorMaxGroupMessage(update);
-      return res.status(200).json({ ok: true, mode: 'group-monitor' });
-    }
+    if (update.update_type === 'message_created') {
+      const recipient = update.message?.recipient || {};
+      const isGroupOrChannel = Boolean(
+        recipient.title ||
+        recipient.chat_type === 'chat' ||
+        recipient.chat_type === 'channel' ||
+        update.message?.recipient?.title
+      );
 
-    if (update.update_type === 'message_callback') {
-      await handleCallback(update);
-    } else if (update.update_type === 'message_created') {
+      if (isGroupOrChannel) {
+        await monitorMaxGroupMessage(update);
+        return res.status(200).json({ ok: true, mode: 'group-monitor' });
+      }
+
       await handleMessage(update);
+    } else if (update.update_type === 'message_callback') {
+      await handleCallback(update);
     } else if (update.update_type === 'bot_added') {
       // MAX присылает chat_id в событии; сам факт подключения фиксируем логикой webhook.
     } else if (update.update_type === 'bot_removed') {
