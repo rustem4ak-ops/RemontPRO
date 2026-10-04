@@ -645,7 +645,13 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({ ok: true });
   } catch (e) {
-    return res.status(200).json({
+    console.error('[MAX webhook error]', {
+      message: e?.message || 'MAX bot error',
+      name: e?.name || null,
+      code: e?.code || null
+    });
+
+    return res.status(500).json({
       ok: false,
       error: e.message || 'MAX bot error'
     });
