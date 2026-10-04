@@ -2,7 +2,6 @@
 // Production endpoint: /api/lead -> Telegram + MAX administrator.
 // TELEGRAM_BOT_TOKEN + TELEGRAM_ADMIN_CHAT_ID — Telegram уведомление.
 // MAX_BOT_TOKEN + MAX_ADMIN_CHAT_ID — MAX уведомление.
-// BITRIX24_WEBHOOK_URL — необязательная интеграция Bitrix24.
 
 function tg(method, body) {
   var token = process.env.TELEGRAM_BOT_TOKEN;
@@ -51,8 +50,7 @@ module.exports = async function handler(req, res) {
       ok: true,
       service: 'РЕМОНТФОРМА Lead API',
       telegram: Boolean(process.env.TELEGRAM_ADMIN_CHAT_ID),
-      max: Boolean(process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID),
-      bitrix: Boolean(process.env.BITRIX24_WEBHOOK_URL)
+      max: Boolean(process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID)
     });
   }
   if (req.method !== 'POST') {
@@ -123,8 +121,6 @@ module.exports = async function handler(req, res) {
       ok:true,
       telegramSent:telegramSent,
       maxSent:maxSent,
-      bitrixSent:false,
-      bitrixId:null
     });
   } catch (e) {
     return res.status(500).json({ok:false,error:String(e && e.message ? e.message : e)});
