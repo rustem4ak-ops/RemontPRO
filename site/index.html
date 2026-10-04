@@ -304,6 +304,28 @@ body{
 
 </div>
 
+<section class="section" id="portfolio" style="background:#eceef0"><div class="wrap">
+  <div class="portfolioHero">
+    <div class="portfolioIntro">
+      <div class="eyebrow">Портфолио РЕМОНТФОРМА</div>
+      <h2>Сначала покажем то, за что выбирают подрядчика.</h2>
+      <p>Не просто лента фотографий. В начале — отобранные кадры готовых интерьеров: кухня, гостиная, спальня, санузел и детали отделки. Ниже — остальные реализованные работы.</p>
+      <div class="portfolioProof"><span>✓ Реальные реализованные объекты</span><span>✓ Готовые интерьеры</span><span>✓ Ремонт под ключ в Казани</span></div>
+    </div>
+    <div class="portfolioActions">
+      <button class="btn primary" onclick="openCalc()">Рассчитать мой ремонт</button>
+      <a class="btn secondary" style="background:#fff;color:#17191c;border-color:#dfe2e6" href="https://t.me/+79172433455">Обсудить проект</a>
+    </div>
+  </div>
+  <div id="portfolioFeatured" class="portfolioFeatured"><div class="portfolioLoading">Отбираем лучшие фотографии…</div></div>
+  <div class="portfolioSectionTitle"><div><h3>Реальные объекты</h3><p>Один адрес — один альбом. Откройте объект, чтобы посмотреть все фотографии ремонта.</p></div></div>
+  <div id="portfolioFolders" class="portfolioFolders"></div>
+  <div id="portfolioGallery" class="portfolioGallery"><div class="portfolioLoading">Загружаем объекты…</div></div>
+  <div class="portfolioMoreWrap"><button id="portfolioMore" class="btn" onclick="showMorePortfolio()" style="background:#17191c;color:#fff;display:none">Показать ещё фото</button></div>
+  <div class="portfolioCta"><div><h3>Хотите такой же результат?</h3><p>Оставьте параметры объекта — <strong>предварительный расчёт</strong> получите за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
+</div></section>
+<div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt="Реализованный ремонт"><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
+
 <section class="section reviewsSection"><div class="wrap">
   <div class="center">
     <div class="eyebrow">Отзывы</div>
