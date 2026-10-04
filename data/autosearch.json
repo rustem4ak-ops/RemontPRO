@@ -1,14 +1,14 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-04T22:48:12.337Z",
+  "updatedAt": "2026-10-04T22:56:50.077Z",
   "stats": {
-    "found": 47,
+    "found": 12,
     "new": 0,
-    "duplicates": 4,
-    "high": 5,
+    "duplicates": 0,
+    "high": 4,
     "hot": 9,
     "potential": 9,
-    "tenders": 30,
+    "tenders": 0,
     "vk": 0
   },
   "leads": [
@@ -32,7 +32,30 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:05.994Z",
+      "firstSeenAt": "2026-10-04T22:56:46.279Z",
+      "status": "new"
+    },
+    {
+      "id": "profi-kazan-remont-QviDQmtC-0LzRgdC-0LzQvtC70Yw",
+      "source": "Профи.ру · заказы на ремонт квартир в Казани",
+      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
+      "title": "Мастер по ремонту (ремонт квартир) Квартира целиком. Площадь помещения: 73 м². Высота потолков: 2.5 м. Ремонт под ключ. Дизайн-проекта нет. Пока хочу узнать цен",
+      "text": "Мастер по ремонту (ремонт квартир) Квартира целиком. Площадь помещения: 73 м². Высота потолков: 2.5 м. Ремонт под ключ. Дизайн-проекта нет. Пока хочу узнать цену примерно Комсомольский вчера Откликнуться Сортировка По соответствию По убыванию оплаты По возрастанию оплаты По дате Дата создания заказа За сутки За три дня За неделю За месяц За все время Район Авиастроительный 5 Автозаводский 1 Вахитовский 5 Кировский 5 Комсомольский 1 Московский 5 Ново-Савиновский 5 Приволжский 5 Советский 5 Центральный 1 Дата выполнения заказа Срочный заказ Выбрать даты Форма занятости Не важно 6 На дому 0 Дистанционно 0 Стоимость заказа C указанной стоимостью 1 от 4000 ₽ 1 от 8000 ₽ 1 от 25500 ₽ 1 от 160000 ₽ 1 Тип занятости Полная 0 Проектная 0 Гибкая 1 Удаленная 0 Формат работы Разовое задание 0 Повторяющееся 0 Специализации Текущая услуга 6 Комплексный ремонт 3 Частичный ремонт 1 Ремонт коттеджей 3 Ремонт нежилых помещений 2 Ремонт кухни 4 Ремонт бытовок 1 Ремонт комнаты 2 Ремонт подъездов 1 Ремонт коридора 2 Ремонт крылец 1 Ремонт входных групп 1 Другие параметры Доступные людям с инвалидностью 0",
+      "author": null,
+      "area": 73,
+      "budget": 4000,
+      "type": "Коммерция",
+      "score": 95,
+      "level": "hot",
+      "reasons": [
+        "клиентский заказ",
+        "Казань",
+        "есть площадь",
+        "есть бюджет"
+      ],
+      "city": true,
+      "publishedAt": null,
+      "firstSeenAt": "2026-10-04T22:56:46.284Z",
       "status": "new"
     },
     {
@@ -146,29 +169,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:05.994Z",
-      "status": "new"
-    },
-    {
-      "id": "profi-kazan-remont-QviDQmtC-0LzRgdC-0LzQvtC70Yw",
-      "source": "Профи.ру · заказы на ремонт квартир в Казани",
-      "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "title": "Мастер по ремонту (ремонт квартир) Квартира целиком. Площадь помещения: 73 м². Высота потолков: 2.5 м. Ремонт под ключ. Дизайн-проекта нет. Пока хочу узнать цен",
-      "text": "Мастер по ремонту (ремонт квартир) Квартира целиком. Площадь помещения: 73 м². Высота потолков: 2.5 м. Ремонт под ключ. Дизайн-проекта нет. Пока хочу узнать цену примерно Комсомольский вчера Откликнуться",
-      "author": null,
-      "area": 73,
-      "budget": null,
-      "type": "Коммерция",
-      "score": 90,
-      "level": "hot",
-      "reasons": [
-        "клиентский заказ",
-        "Казань",
-        "есть площадь"
-      ],
-      "city": true,
-      "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:05.994Z",
+      "firstSeenAt": "2026-10-04T22:56:46.284Z",
       "status": "new"
     },
     {
@@ -211,7 +212,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:05.994Z",
+      "firstSeenAt": "2026-10-04T22:56:46.284Z",
       "status": "new"
     },
     {
@@ -233,7 +234,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:07.114Z",
+      "firstSeenAt": "2026-10-04T22:56:47.205Z",
       "status": "new"
     },
     {
@@ -254,7 +255,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:07.115Z",
+      "firstSeenAt": "2026-10-04T22:56:47.205Z",
       "status": "new"
     },
     {
@@ -275,7 +276,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:05.989Z",
+      "firstSeenAt": "2026-10-04T22:56:46.284Z",
       "status": "new"
     },
     {
@@ -296,7 +297,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:05.994Z",
+      "firstSeenAt": "2026-10-04T22:56:46.284Z",
       "status": "new"
     },
     {
@@ -338,7 +339,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:07.114Z",
+      "firstSeenAt": "2026-10-04T22:56:47.205Z",
       "status": "new"
     },
     {
@@ -359,7 +360,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:07.114Z",
+      "firstSeenAt": "2026-10-04T22:56:47.205Z",
       "status": "new"
     },
     {
@@ -380,7 +381,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:07.114Z",
+      "firstSeenAt": "2026-10-04T22:56:47.205Z",
       "status": "new"
     },
     {
@@ -401,7 +402,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-04T22:48:07.115Z",
+      "firstSeenAt": "2026-10-04T22:56:47.205Z",
       "status": "new"
     },
     {
@@ -1589,7 +1590,7 @@
     {
       "source": "Профи.ру · заказы на ремонт квартир в Казани",
       "url": "https://profi.ru/geo-kzn/rabota/remont/zakazy-na-remont-kvartir/",
-      "found": 7,
+      "found": 6,
       "status": "readable",
       "error": null,
       "type": "marketplace_orders"
@@ -1605,26 +1606,23 @@
     {
       "source": "B2B-Center · ремонт квартир Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-kvartir/",
-      "found": 14,
-      "status": "readable",
-      "error": null,
-      "type": "tender"
+      "found": 0,
+      "status": "unavailable",
+      "error": "HTTP 403"
     },
     {
       "source": "B2B-Center · ремонт зданий Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/remont-zdanij-i-sooruzhenij/",
-      "found": 6,
-      "status": "readable",
-      "error": null,
-      "type": "tender"
+      "found": 0,
+      "status": "unavailable",
+      "error": "HTTP 403"
     },
     {
       "source": "B2B-Center · текущий ремонт Татарстан",
       "url": "https://www.b2b-center.ru/search/respublika-tatarstan/tekushhij-remont/",
-      "found": 14,
-      "status": "readable",
-      "error": null,
-      "type": "tender"
+      "found": 0,
+      "status": "unavailable",
+      "error": "HTTP 403"
     }
   ],
   "access": {
