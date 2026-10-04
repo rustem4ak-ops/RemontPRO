@@ -135,6 +135,18 @@ function maxRequest(path, options = {}) {
   });
 }
 
+async function setupCommands() {
+  return maxRequest('/me/commands', {
+    method: 'PATCH',
+    body: {
+      commands: [
+        { name: 'start', description: 'Начать расчёт ремонта' },
+        { name: 'calculator', description: 'Рассчитать стоимость ремонта' }
+      ]
+    }
+  });
+}
+
 async function setupWebhook() {
   return maxRequest('/subscriptions', {
     method: 'POST',
@@ -164,12 +176,14 @@ module.exports = async function handler(req, res) {
     // GET — удобная проверка из браузера.
     if (req.method === 'GET') {
 
+      const commands = await setupCommands();
       const result = await setupWebhook();
 
-      return res.status(result.ok ? 200 : 502).json({
-        ok: result.ok,
+      return res.status(result.ok && commands.ok ? 200 : 502).json({
+        ok: result.ok && commands.ok,
         status: result.status,
         webhook: WEBHOOK,
+        commands: { ok: commands.ok, status: commands.status, data: commands.data },
         subscription: result.data
       });
     }
