@@ -109,7 +109,8 @@ async function setupCommands() {
       commands: [
         { name: 'start', description: 'Начать расчёт ремонта' },
         { name: 'calculator', description: 'Рассчитать стоимость ремонта' },
-        { name: 'admin', description: 'Показать MAX user_id для настройки уведомлений' }
+        { name: 'admin', description: 'Показать MAX user_id для настройки уведомлений' },
+        { name: 'admin_test', description: 'Проверить доставку заявок администратору' }
       ]
     }
   });
