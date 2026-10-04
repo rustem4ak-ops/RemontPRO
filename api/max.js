@@ -69,7 +69,8 @@ function maxRequest(path, method = 'GET', body) {
           try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
 
           if (response.statusCode < 200 || response.statusCode >= 300) {
-            reject(new Error(data.message || data.error || ('MAX API error HTTP ' + response.statusCode)));
+            const detail = data.message || data.error || data.description || ('HTTP ' + response.statusCode);
+            reject(new Error('MAX API ' + response.statusCode + ': ' + detail));
             return;
           }
           resolve(data);
@@ -105,7 +106,7 @@ async function monitorMaxGroupMessage(update){
   liveLeadSeen.add(dedup);
   if(liveLeadSeen.size>3000){ const first=liveLeadSeen.values().next().value; liveLeadSeen.delete(first); }
   const title=m.recipient?.title||'группа MAX';
-  const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД ИЗ MAX\\n\\n'+text+'\\n\\n🏢 '+title+'\\n📍 '+classify(text)+(area(text)?' · '+area(text)+' м²':'')+'\\n🎯 '+sc+'%\\n🔎 '+info.reasons.join(' · ');
+  const msg='🔥 НОВЫЙ ГОРЯЧИЙ ЛИД ИЗ MAX\n\n'+text+'\n\n🏢 '+title+'\n📍 '+classify(text)+(area(text)?' · '+area(text)+' м²':'')+'\n🎯 '+sc+'%\n🔎 '+info.reasons.join(' · ');
   if(process.env.TELEGRAM_BOT_TOKEN&&process.env.TELEGRAM_ADMIN_CHAT_ID){
     try{await fetch('https://api.telegram.org/bot'+process.env.TELEGRAM_BOT_TOKEN+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:process.env.TELEGRAM_ADMIN_CHAT_ID,text:msg})});}catch(_){}
   }
@@ -524,7 +525,7 @@ function buildLeadMessage(name, phone, s) {
     });
 
     out.push('<b>Итого: ' + money(sum) + '</b>');
-    return out.join('\\n');
+    return out.join('\n');
   };
 
   const stages = [
@@ -554,7 +555,53 @@ function buildLeadMessage(name, phone, s) {
     lines.push('📏 Цена за м² по полу: <b>' + money(q.pricePerM2) + '</b>');
   }
 
-  return lines.join('\\n');
+  return lines.join('\n');
+}
+
+async function testAdminDelivery(id) {
+  const userId = process.env.MAX_ADMIN_USER_ID;
+  const chatId = process.env.MAX_ADMIN_CHAT_ID;
+
+  if (!TOKEN) {
+    return send(id, '⚠️ MAX_BOT_TOKEN не настроен в Vercel.');
+  }
+
+  if (!userId && !chatId) {
+    return send(id,
+      '⚠️ Не указан получатель заявок.\n\n' +
+      'Добавьте MAX_ADMIN_USER_ID в Vercel → Environment Variables.\n' +
+      'Ваш ID можно узнать командой /admin.'
+    );
+  }
+
+  const attempts = [];
+  if (userId) attempts.push({ type: 'user_id', value: userId, path: '/messages?user_id=' + encodeURIComponent(userId) });
+  if (chatId) attempts.push({ type: 'chat_id', value: chatId, path: '/messages?chat_id=' + encodeURIComponent(chatId) });
+
+  const errors = [];
+  for (const target of attempts) {
+    try {
+      const result = await maxRequest(target.path, 'POST', {
+        text: '✅ Тест MAX: доставка заявок РЕМОНТФОРМА работает.'
+      });
+      if (result && result.message) {
+        return send(id,
+          '✅ Тестовая заявка успешно отправлена в MAX администратору.\n\n' +
+          'Тип получателя: ' + target.type + '\n' +
+          'ID: ' + target.value
+        );
+      }
+      errors.push(target.type + ': MAX вернул ответ без message');
+    } catch (error) {
+      errors.push(target.type + ': ' + (error?.message || 'неизвестная ошибка'));
+    }
+  }
+
+  return send(id,
+    '❌ MAX не принял тестовую заявку.\n\n' +
+    errors.join('\n') +
+    '\n\nПроверьте MAX_ADMIN_USER_ID: это должен быть именно ваш MAX user_id, а не ID бота.'
+  );
 }
 
 async function sendLead(id, message, s, phone) {
@@ -619,7 +666,10 @@ async function sendLead(id, message, s, phone) {
           }
         })
       });
-      if (fallback.ok) maxSent = true;
+      if (fallback.ok) {
+        const data = await fallback.json().catch(() => ({}));
+        maxSent = Boolean(data && data.maxSent);
+      }
     } catch (_) {}
   }
 
@@ -629,7 +679,7 @@ async function sendLead(id, message, s, phone) {
     (maxSent
       ? '✅ Заявка отправлена администратору.'
       : '⚠️ Заявка сохранена, но уведомление администратору MAX не отправилось.') +
-    '\\n\\n📞 ' + phone + '\\n\\nМы свяжемся с вами для обсуждения проекта.',
+    '\n\n📞 ' + phone + '\n\nМы свяжемся с вами для обсуждения проекта.',
     [[{ type: 'message', text: '🔄 Рассчитать заново' }]]
   );
 }
@@ -654,7 +704,17 @@ async function handleMessage(update) {
 
   if (/^\/admin$/i.test(text)) {
     const senderId = m.sender?.user_id || update.user?.user_id || id;
-    return send(id, '🔧 MAX user_id: ' + String(senderId) + '\\n\\nУкажите этот ID в Vercel → Environment Variables → MAX_ADMIN_USER_ID.');
+    return send(id,
+      '🔧 MAX user_id: ' + String(senderId) + '\n\n' +
+      'MAX_ADMIN_USER_ID: ' + (process.env.MAX_ADMIN_USER_ID ? 'настроен' : 'НЕ НАСТРОЕН') + '\n' +
+      'MAX_ADMIN_CHAT_ID: ' + (process.env.MAX_ADMIN_CHAT_ID ? 'настроен' : 'не настроен') + '\n\n' +
+      'Если MAX_ADMIN_USER_ID ещё не задан, укажите этот ID в Vercel → Environment Variables → MAX_ADMIN_USER_ID.\n\n' +
+      'После сохранения выполните /admin_test.'
+    );
+  }
+
+  if (/^\/admin_test$/i.test(text)) {
+    return testAdminDelivery(id);
   }
 
   if (
