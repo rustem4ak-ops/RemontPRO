@@ -527,7 +527,7 @@ async function handleMessage(update) {
 
   const id = isGroupOrChannel
     ? (update.chat_id || recipient.chat_id)
-    : (update.chat_id || m.sender?.user_id || update.user?.user_id);
+    : (m.sender?.user_id || update.user?.user_id || update.chat_id || recipient.user_id);
 
   if (!id) return;
 
