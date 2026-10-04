@@ -354,6 +354,7 @@ async function handleCallback(update) {
     update.chat_id ||
     c.chat_id ||
     c.user?.user_id ||
+    update.user?.user_id ||
     update.callback?.user?.user_id ||
     c.message?.recipient?.chat_id ||
     c.message?.recipient?.user_id ||
@@ -588,7 +589,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.2.0',
+      version: '4.3.0',
       configured: !!TOKEN
     });
   }
