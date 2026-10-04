@@ -21,7 +21,7 @@ async function tg(method, body) {
 const keyboard = rows => ({ reply_markup: { keyboard: rows, resize_keyboard: true, one_time_keyboard: false } });
 const commercialText = 'Ремонт в коммерции стоит дешевле и зависит от проекта и объемов работ.\n\nПоэтому пришлите номер телефона, чтобы обсудить все подробности.';
 const inline = rows => ({ reply_markup: { inline_keyboard: rows } });
-const force = { reply_markup: { force_reply: true, selective: true } };
+// Для текстовых вопросов не используем ForceReply: он оставляет в Telegram визуальный блок «В ответ ...».
 const liveLeadSeen = globalThis.__RF_LIVE_LEADS || (globalThis.__RF_LIVE_LEADS = new Set());
 const processedUpdates = globalThis.__RF_TG_PROCESSED_UPDATES || (globalThis.__RF_TG_PROCESSED_UPDATES = new Set());
 const processedCallbacks = globalThis.__RF_TG_PROCESSED_CALLBACKS || (globalThis.__RF_TG_PROCESSED_CALLBACKS = new Set());
@@ -112,7 +112,7 @@ async function start(id) {
 }
 async function ask(id, step, text, s) {
   save(id, { ...s, step });
-  return tg('sendMessage', { chat_id: id, text, ...force });
+  return tg('sendMessage', { chat_id: id, text });
 }
 async function buttons(id, step, text, rows, s) {
   save(id, { ...s, step });
@@ -322,7 +322,7 @@ module.exports = async function handler(req,res) {
       s.step='windows';
       s.windowQuestionSent=true;
       save(id,s);
-      await tg('sendMessage',{chat_id:id,text:'🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5',...force});
+      await tg('sendMessage',{chat_id:id,text:'🪟 Окна\n\nСколько окон? Напишите количество цифрой, например: 5'});
       return res.status(200).json({ok:true});
     }
     if (s && s.step==='windows') {
