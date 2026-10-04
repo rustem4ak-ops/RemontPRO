@@ -365,8 +365,11 @@ async function handleCallback(update) {
   // message.recipient.user_id; для группового — в recipient.chat_id.
   if (!id) return;
 
-  // Подтверждаем нажатие сразу, затем запускаем сценарий.
-  await answerCallback(callbackId);
+  // Не блокируем основной сценарий ожиданием /answers: если API ответа
+  // временно тормозит, кнопка всё равно должна запустить новый расчёт.
+  if (callbackId) {
+    answerCallback(callbackId).catch(() => {});
+  }
 
   const s = get(id) || {};
 
@@ -585,7 +588,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.1.0',
+      version: '4.2.0',
       configured: !!TOKEN
     });
   }
