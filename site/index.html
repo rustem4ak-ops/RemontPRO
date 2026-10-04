@@ -862,15 +862,9 @@ async function loadPortfolio(){
     const houseCard=document.querySelector('#services .service[data-service="house"]');
     const commercialCard=document.querySelector('#services .service[data-service="commercial"]');
     const houseItem=portfolioImages.find(x=>(x.label||'').toLowerCase()==='кухня')||portfolioImages[1];
-    if(houseItem&&houseItem.path){
+    if(houseItem&&houseItem.path&&commercialCard){
       const src='/api/portfolio-image?path='+encodeURIComponent(houseItem.path);
-      if(commercialCard) commercialCard.style.backgroundImage="url('"+src.replace(/'/g,"\\'")+"')";
-    }
-    if(commercialCard){
-      const commercialInline=getComputedStyle(commercialCard).backgroundImage;
-      if(houseCard && commercialInline && commercialInline!=='none'){
-        houseCard.style.backgroundImage=commercialInline;
-      }
+      commercialCard.style.backgroundImage="url('"+src.replace(/'/g,"\\'")+"')";
     }
 
     if(!needGallery) return;
