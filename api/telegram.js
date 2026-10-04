@@ -59,6 +59,47 @@ function num(v) {
 }
 function money(v) { return new Intl.NumberFormat('ru-RU').format(Math.round(Number(v) || 0)) + ' ₽'; }
 
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/[&<>]/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];
+  });
+}
+
+function buildLeadMessage(name, phone, s) {
+  const r = s.result || {};
+  const rows = Array.isArray(r.rows) ? r.rows : [];
+  const groups = [
+    ['1️⃣ Черновая электрика + черновая сантехника', function(x){ return /Электрика|Сантехника/.test(x.name); }],
+    ['2️⃣ Плиточные работы', function(x){ return /Классический санузел|Плитка/.test(x.name); }],
+    ['3️⃣ Напольные работы', function(x){ return /Ламинат \/ кварцвинил|Плинтус/.test(x.name); }],
+    ['4️⃣ Стены', function(x){ return /Окна|Подготовка под обои \\+ обои|Подготовка под покраску \\+ покраска|Подготовка под декоративку \\+ декоративка/.test(x.name); }],
+    ['5️⃣ Чистовая электрика / сантехника', function(x){ return /Чистовая/.test(x.name); }],
+    ['6️⃣ Завершающие работы', function(x){ return /Клининг|Вывоз мусора/.test(x.name); }]
+  ];
+  const lines = [
+    '🆕 <b>Новая заявка из Telegram</b>',
+    '',
+    '👤 Имя: <b>' + escHtml(name) + '</b>',
+    '📞 Телефон: <b>' + escHtml(phone) + '</b>',
+    '🏠 Объект: <b>' + (s.objectType === 'h' ? 'Дом' : 'Квартира') + '</b>',
+    '📐 Площадь: <b>' + money(r.floor) + ' м²</b>',
+    '🚿 Санузел: <b>' + money(r.bath) + ' м²</b>',
+    '🪟 Окон: <b>' + Number(s.windows || 0) + '</b>',
+    ''
+  ];
+  groups.forEach(function(g) {
+    const items = rows.filter(g[1]);
+    if (!items.length) return;
+    const sum = items.reduce(function(a,x){ return a + Number(x.cost || 0); }, 0);
+    lines.push('<b>' + g[0] + '</b>');
+    items.forEach(function(x){ lines.push('• ' + escHtml(x.name) + ' — ' + money(x.cost)); });
+    lines.push('<b>Итого: ' + money(sum) + '</b>', '');
+  });
+  lines.push('<b>ИТОГО: ' + money(r.total) + '</b>');
+  lines.push('<b>Цена за м² по полу: ' + money(r.pricePerM2) + '</b>');
+  return lines.join('\n');
+}
+
 async function start(id) {
   clear(id);
   // Не отправляем логотип по внешнему URL: Telegram может не получить его
@@ -200,37 +241,61 @@ module.exports = async function handler(req,res) {
       const lastName = String(m.contact.last_name || '').trim();
       const name = [firstName, lastName].filter(Boolean).join(' ') || 'Клиент';
 
+      const leadMessage = buildLeadMessage(name, phone, s);
       let leadOk = false;
-      let leadResult = null;
-      try {
-        const leadPayload = {
-          name,
-          phone,
-          source: 'telegram',
-          medium: 'telegram_bot',
-          calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
-          object: {
-            type: s.objectType === 'h' ? 'Дом' : 'Квартира',
-            floor: s.floor || 0,
-            bath: s.bath || 0,
-            balcony: 0,
-            windows: s.windows || 0
-          }
-        };
-        const leadResponse = await fetch('https://remont-pro-nine.vercel.app/api/lead', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(leadPayload)
-        });
-        leadResult = await leadResponse.json().catch(() => ({}));
-        leadOk = Boolean(leadResponse.ok && leadResult?.ok && leadResult?.telegramSent);
-      } catch (_) {}
+
+      // Сначала отправляем заявку напрямую администратору Telegram.
+      // Это исключает внутренний запрос Telegram -> Vercel -> /api/lead.
+      if (process.env.TELEGRAM_ADMIN_CHAT_ID) {
+        try {
+          await tg('sendMessage', {
+            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+            text: leadMessage,
+            parse_mode: 'HTML'
+          });
+          leadOk = true;
+        } catch (_) {
+          try {
+            await tg('sendMessage', {
+              chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+              text: leadMessage.replace(/<[^>]+>/g, '')
+            });
+            leadOk = true;
+          } catch (_) {}
+        }
+      }
+
+      // Если прямое сообщение не прошло, оставляем резерв через /api/lead.
+      if (!leadOk) {
+        try {
+          const leadResponse = await fetch('https://remont-pro-nine.vercel.app/api/lead', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              name,
+              phone,
+              source: 'telegram',
+              medium: 'telegram_bot',
+              calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
+              object: {
+                type: s.objectType === 'h' ? 'Дом' : 'Квартира',
+                floor: s.floor || 0,
+                bath: s.bath || 0,
+                balcony: 0,
+                windows: s.windows || 0
+              }
+            })
+          });
+          const leadResult = await leadResponse.json().catch(() => ({}));
+          leadOk = Boolean(leadResponse.ok && leadResult && leadResult.ok && leadResult.telegramSent);
+        } catch (_) {}
+      }
 
       clear(id);
       const status = leadOk
         ? '✅ Номер получен. Заявка и полный предварительный расчёт отправлены нам в Telegram. Мы свяжемся с вами для обсуждения проекта.'
         : '⚠️ Номер получен, но заявку пока не удалось передать. Пожалуйста, попробуйте ещё раз или напишите нам напрямую.';
-      await tg('sendMessage',{chat_id:id,text:status,...keyboard([['🔄 Рассчитать заново']])});
+      await tg('sendMessage', {chat_id:id, text:status, ...keyboard([['🔄 Рассчитать заново']])});
       return res.status(200).json({ok:true,leadOk});
     }
     if (text==='🏢 Коммерция') {
