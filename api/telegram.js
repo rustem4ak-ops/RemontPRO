@@ -3,6 +3,7 @@ const { analyze, score, level, area, budget, classify } = require('../shared/aut
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const API = 'https://api.telegram.org/bot';
+const LOGO_URL = 'https://remont-pro-nine.vercel.app/remontforma-logo.jpg';
 const sessions = globalThis.__RF_SESSIONS || (globalThis.__RF_SESSIONS = new Map());
 
 async function tg(method, body) {
@@ -60,6 +61,11 @@ function money(v) { return new Intl.NumberFormat('ru-RU').format(Math.round(Numb
 
 async function start(id) {
   clear(id);
+  await tg('sendPhoto', {
+    chat_id: id,
+    photo: LOGO_URL,
+    caption: 'РЕМОНТФОРМА — ремонт под ключ в Казани'
+  });
   return tg('sendMessage', {
     chat_id: id,
     text: 'Рассчитаем предварительную стоимость ремонта. Выберите тип объекта:',
