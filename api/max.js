@@ -150,7 +150,7 @@ function contact(text) {
 
 async function send(chatId, text, rows = [], extraAttachments = []) {
   const attachments = [...(extraAttachments || []), ...(rows.length ? buttons(rows) : [])];
-  return maxRequest('/messages?chat_id=' + encodeURIComponent(chatId), 'POST', {
+  return maxRequest('/messages?user_id=' + encodeURIComponent(chatId), 'POST', {
     text,
     attachments
   });
@@ -350,16 +350,19 @@ async function handleCallback(update) {
   const payload = String(c.payload || c.callback_data || c.data || '');
   const callbackId = c.callback_id || update.callback_id || '';
 
-  const id =
-    update.chat_id ||
-    c.chat_id ||
-    c.user?.user_id ||
-    update.user?.user_id ||
-    update.callback?.user?.user_id ||
-    c.message?.recipient?.chat_id ||
-    c.message?.recipient?.user_id ||
-    update.message?.recipient?.chat_id ||
-    update.message?.recipient?.user_id;
+  const callbackMessage = c.message || update.message || {};
+  const callbackRecipient = callbackMessage.recipient || {};
+  const callbackIsGroupOrChannel =
+    callbackRecipient.chat_type === 'chat' ||
+    callbackRecipient.chat_type === 'channel';
+
+  const id = callbackIsGroupOrChannel
+    ? (update.chat_id || callbackRecipient.chat_id)
+    : (c.user?.user_id ||
+       update.user?.user_id ||
+       callbackMessage.sender?.user_id ||
+       update.chat_id ||
+       callbackRecipient.user_id);
 
   // MAX присылает message_callback отдельным событием. Для личного
   // диалога ID пользователя находится в callback.user.user_id или
@@ -636,7 +639,7 @@ module.exports = async function handler(req, res) {
     } else if (update.update_type === 'bot_removed') {
       // После удаления бота новые сообщения из этого чата больше не обрабатываются.
     } else if (update.update_type === 'bot_started') {
-      const id = update.chat_id || update.user?.user_id;
+      const id = update.user?.user_id || update.chat_id;
       if (id) await start(id);
     }
 
