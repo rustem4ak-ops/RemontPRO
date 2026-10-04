@@ -73,20 +73,43 @@ module.exports = async function handler(req, res) {
     var telegramSent = false;
     var maxSent = false;
 
+    // Telegram должен получать заявку даже если один из каналов временно ошибся.
+    // При проблеме с HTML повторяем отправку без parse_mode.
     if (process.env.TELEGRAM_ADMIN_CHAT_ID) {
-      var t = await tg('sendMessage', {
-        chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-      });
-      telegramSent = Boolean(t && t.ok);
+      try {
+        var t = await tg('sendMessage', {
+          chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+          text: message,
+          parse_mode: 'HTML'
+        });
+        telegramSent = Boolean(t && t.ok);
+        if (!telegramSent) {
+          var plain = message.replace(/<[^>]+>/g, '');
+          var t2 = await tg('sendMessage', {
+            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+            text: plain
+          });
+          telegramSent = Boolean(t2 && t2.ok);
+        }
+      } catch (telegramError) {
+        try {
+          var plainFallback = message.replace(/<[^>]+>/g, '');
+          var t3 = await tg('sendMessage', {
+            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+            text: plainFallback
+          });
+          telegramSent = Boolean(t3 && t3.ok);
+        } catch (_) {}
+      }
     }
 
     if (process.env.MAX_BOT_TOKEN && process.env.MAX_ADMIN_CHAT_ID) {
-      var m = await maxSend(
-        message.replace(/<b>/g, '').replace(/<\/b>/g, '')
-      );
-      maxSent = Boolean(m && m.ok);
+      try {
+        var m = await maxSend(
+          message.replace(/<b>/g, '').replace(/<\/b>/g, '')
+        );
+        maxSent = Boolean(m && m.ok);
+      } catch (_) {}
     }
 
     if (!telegramSent && !maxSent) {
