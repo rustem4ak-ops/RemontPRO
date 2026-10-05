@@ -887,9 +887,16 @@ async function loadPortfolio(){
       const jj=await a.json();
       if(a.ok&&jj.ok&&Array.isArray(jj.images)&&jj.images.length) j=jj;
     }catch(_){}
+    if(!j){
+      try{
+        const s=await fetch('./assets/portfolio/portfolio.json',{cache:'no-store'});
+        const sj=await s.json();
+        if(s.ok&&sj.ok&&Array.isArray(sj.images)&&sj.images.length) j=sj;
+      }catch(_){}
+    }
     if(!j) j=await loadFromYandex();
 
-    portfolioImages=j.images.filter(x=>x&&(x.preview||x.url)).map(x=>({...x,preview:x.preview||x.url,url:x.url||x.preview}));
+    portfolioImages=j.images.filter(x=>(x&&(x.preview||x.url))).map(x=>({...x,preview:x.preview||x.url,url:x.url||x.preview}));
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     portfolioImages.sort(portfolioSort);
 
