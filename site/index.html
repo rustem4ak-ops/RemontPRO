@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#17191c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="РЕМОНТФОРМА"><meta name="format-detection" content="telephone=yes"><link rel="manifest" href="/manifest.json">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#17191c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="РЕМОНТФОРМА"><meta name="format-detection" content="telephone=yes"><base href="/RemontPRO/"><link rel="manifest" href="./manifest.json">
 <title>РЕМОНТФОРМА — ремонт под ключ в Казани</title>
-<link rel="icon" type="image/jpeg" href="/remontforma-logo-header.png"><meta property="og:image" content="/remontforma-logo-header.png"><meta name="theme-color" content="#17191c"><meta name="description" content="РЕМОНТФОРМА — ремонт квартир, домов и коммерческих помещений под ключ в Казани. Онлайн-расчёт, замер и смета.">
+<link rel="icon" type="image/jpeg" href="./remontforma-logo-header.png"><meta property="og:image" content="./remontforma-logo-header.png"><meta name="theme-color" content="#17191c"><meta name="description" content="РЕМОНТФОРМА — ремонт квартир, домов и коммерческих помещений под ключ в Казани. Онлайн-расчёт, замер и смета.">
 <style>
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f6f8;color:#17191c}a{text-decoration:none;color:inherit}.wrap{max-width:1160px;margin:auto;padding:0 20px}
 .hero{background:radial-gradient(circle at 82% 18%,#3a414a 0,#20242a 30%,#15171a 62%);color:#fff;padding:18px 0 88px;position:relative;overflow:hidden}.hero:after{content:'';position:absolute;pointer-events:none;right:-180px;top:120px;width:520px;height:520px;border:1px solid #ffffff18;border-radius:50%;box-shadow:0 0 0 70px #ffffff05,0 0 0 140px #ffffff03}.nav{display:flex;justify-content:space-between;align-items:center;position:fixed;top:0;left:0;right:0;width:100%;min-height:58px;padding:5px max(20px,calc((100% - 1160px)/2));border-bottom:1px solid #ffffff18;background:rgba(21,23,26,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 30px #0003;z-index:500}.logo{display:flex;align-items:center;gap:0;font-size:23px;font-weight:950;letter-spacing:.4px}.logoMark{width:46px;height:46px;display:block;flex:none}.logo span{white-space:nowrap;display:block}.navlinks{display:flex;gap:24px;color:#c7cad0;font-size:14px}
@@ -287,7 +287,7 @@ body{
 </style>
 </head>
 <body>
-<header class="hero"><div class="wrap"><nav class="nav"><a class="logo" href="/" aria-label="РЕМОНТФОРМА">
+<header class="hero"><div class="wrap"><nav class="nav"><a class="logo" href="./" aria-label="РЕМОНТФОРМА">
 <svg class="logoMark" viewBox="0 0 100 100" aria-hidden="true">
 <circle cx="50" cy="50" r="47" fill="#17191c" stroke="#ff9800" stroke-width="4"/>
 <path d="M18 45 L50 18 L82 45 L76 45 L76 67 L24 67 L24 45 Z" fill="#ff9800"/>
@@ -356,7 +356,7 @@ body{
 <footer class="footer"><div class="wrap"><strong>РЕМОНТФОРМА</strong> · Ремонт квартир, домов и коммерческих помещений под ключ · Казань</div></footer>
 
 <script>
-const API='/api/calculate', LEAD='/api/lead';
+const API='https://remont-pro-nine.vercel.app/api/calculate', LEAD='https://remont-pro-nine.vercel.app/api/lead';
 const UTM=new URLSearchParams(location.search);
 
 const S={
@@ -844,7 +844,7 @@ async function loadPortfolio(){
   const needGallery=Boolean(box&&featured&&folders);
   if(needGallery) box.innerHTML='<div class="portfolioLoading">Загружаем реальные объекты…</div>';
   try{
-    const a=await fetch('/api/portfolio',{cache:'force-cache'});
+    const a=await fetch('https://remont-pro-nine.vercel.app/api/portfolio',{cache:'force-cache'});
     const j=await a.json();
     if(!a.ok||!j.ok||!Array.isArray(j.images)||!j.images.length)throw new Error(j.error||'Портфолио пока недоступно');
     portfolioImages=j.images.filter(x=>x&&(x.preview||x.url)).map(x=>({...x,preview:'/api/portfolio-image?path='+encodeURIComponent(x.path),url:'/api/portfolio-image?path='+encodeURIComponent(x.path)}));
@@ -942,7 +942,7 @@ async function submitQuickContact(){
   if(!phone){status.textContent='Введите номер телефона';return}
   btn.disabled=true;status.textContent='Отправляем…';
   try{
-    const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch('https://remont-pro-nine.vercel.app/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,comment,source:'site-contact',referrer:document.referrer||'',url:location.href
     })});
     const j=await r.json().catch(()=>({}));
@@ -1010,3 +1010,5 @@ try{
 <div class="floatingCta"><button class="btn primary" onclick="openContactModal()">💬 Написать нам</button><button class="btn secondary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/+79172433455">Telegram</a><a class="btn secondary" href="https://max.ru/u/f9LHodD0cOJnwEpVcaNYK7hFgRS8GHnjXG636yKji5vyYq0QMTgChsecLCw" target="_blank" rel="noopener">MAX</a></div>
 </body></html>
 <!-- deploy-recovery: restore known working site build -->
+
+<!-- github-pages-fallback: frontend can run independently of Vercel hosting -->
