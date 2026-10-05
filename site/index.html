@@ -416,8 +416,8 @@ function render(){
   const b=document.getElementById('backBtn');
   const n=document.getElementById('nextBtn');
 
-  const totalSteps=14;
-  const isResult=S.step===14;
+  const totalSteps=10;
+  const isResult=S.step===10;
   document.getElementById('progressText').textContent=isResult?'Итог':'Шаг '+(S.step+1)+' из '+totalSteps;
   document.getElementById('bar').style.width=(isResult?100:((S.step+1)/totalSteps*100))+'%';
   b.classList.toggle('hidden',S.step===0);
@@ -502,34 +502,6 @@ function render(){
   }
 
   if(S.step===10){
-    h='<div class="stepTitle">11. Чистовая электрика</div><div class="choices">'+
-      yesNo('Да','cleanElectrical',true)+
-      yesNo('Нет','cleanElectrical',false)+
-      '</div>';
-  }
-
-  if(S.step===11){
-    h='<div class="stepTitle">12. Чистовая сантехника</div><div class="choices">'+
-      yesNo('Да','cleanPlumbing',true)+
-      yesNo('Нет','cleanPlumbing',false)+
-      '</div>';
-  }
-
-  if(S.step===12){
-    h='<div class="stepTitle">13. Клининг</div><div class="choices">'+
-      yesNo('Да','cleaning',true)+
-      yesNo('Нет','cleaning',false)+
-      '</div>';
-  }
-
-  if(S.step===13){
-    h='<div class="stepTitle">14. Вывоз мусора</div><div class="choices">'+
-      yesNo('Да','trash',true)+
-      yesNo('Нет','trash',false)+
-      '</div>';
-  }
-
-  if(S.step===14){
     h='<div class="stepTitle">Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
   }
 
@@ -566,7 +538,7 @@ function render(){
     };
   });
 
-  if(S.step===14) loadResult();
+  if(S.step===10) loadResult();
 }
 
 function pick(k,v){
@@ -623,7 +595,7 @@ async function nextStep(){
     return;
   }
 
-  if(S.step<14){
+  if(S.step<10){
     S.step++;
     render();
   }else{
@@ -652,10 +624,10 @@ function buildCalculatorBody(){
     laminate:true,
     plinth:S.plinth,
     walls:S.walls==='none'?{}:{[S.walls]:{area:0}},
-    cleanElectrical:S.cleanElectrical,
-    cleanPlumbing:S.cleanPlumbing,
-    cleaning:S.cleaning,
-    trash:S.trash
+    cleanElectrical:true,
+    cleanPlumbing:true,
+    cleaning:true,
+    trash:true
   };
 }
 
