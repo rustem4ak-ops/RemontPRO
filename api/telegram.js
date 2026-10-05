@@ -205,7 +205,7 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'4.11.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'4.12.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
@@ -236,6 +236,16 @@ module.exports = async function handler(req,res) {
     }
     if (m.contact && m.contact.phone_number) {
       const s = get(id) || {};
+      // Не отправляем заявку с нулевым расчётом, если клиент ещё не закончил калькулятор.
+      // Исключение — коммерция: для неё действует отдельный контактный сценарий.
+      if (s.objectType !== 'commercial' && !s.result) {
+        await tg('sendMessage',{
+          chat_id:id,
+          text:'⚠️ Сначала завершите расчёт стоимости. Нажмите «🔄 Рассчитать заново» и пройдите вопросы до конца.',
+          ...keyboard([['🔄 Рассчитать заново']])
+        });
+        return res.status(200).json({ok:true});
+      }
       const phone = String(m.contact.phone_number || '').trim();
       const firstName = String(m.contact.first_name || '').trim();
       const lastName = String(m.contact.last_name || '').trim();
@@ -307,7 +317,15 @@ module.exports = async function handler(req,res) {
     }
     if (text==='🏠 Квартира' || text==='🏡 Дом') {
       const objectType=text.startsWith('🏡')?'h':'a';
-      await ask(id,'floor','📐 Напишите общую площадь объекта в м², например: 80',{objectType});
+      // Сразу удаляем клавиатуру «Квартира / Дом / Коммерция»,
+      // чтобы старое меню не оставалось активным на следующем шаге.
+      clear(id);
+      save(id, { objectType, step:'floor' });
+      await tg('sendMessage',{
+        chat_id:id,
+        text:'📐 Напишите общую площадь объекта в м², например: 80',
+        reply_markup:{remove_keyboard:true}
+      });
       return res.status(200).json({ok:true});
     }
 
