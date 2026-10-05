@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "count": 16,
+  "images": [
+    {
+      "name": "photo_2022-07-25_14-22-12 (2).jpg",
+      "album": "Большие кабаны",
+      "url": "./assets/portfolio/photo_2022-07-25_14-22-12_2_.jpg"
+    },
+    {
+      "name": "photo_2022-07-25_14-22-12.jpg",
+      "album": "Большие кабаны",
+      "url": "./assets/portfolio/photo_2022-07-25_14-22-12.jpg"
+    },
+    {
+      "name": "photo_2022-07-25_14-22-14 (2).jpg",
+      "album": "Большие кабаны",
+      "url": "./assets/portfolio/photo_2022-07-25_14-22-14_2_.jpg"
+    },
+    {
+      "name": "photo_2022-07-25_14-22-14.jpg",
+      "album": "Большие кабаны",
+      "url": "./assets/portfolio/photo_2022-07-25_14-22-14.jpg"
+    },
+    {
+      "name": "photo_2022-07-25_14-22-25.jpg",
+      "album": "Большие кабаны",
+      "url": "./assets/portfolio/photo_2022-07-25_14-22-25.jpg"
+    },
+    {
+      "name": "20251025_170437.jpg",
+      "album": "Брайт парк",
+      "url": "./assets/portfolio/20251025_170437.jpg"
+    },
+    {
+      "name": "20251025_170537.jpg",
+      "album": "Брайт парк",
+      "url": "./assets/portfolio/20251025_170537.jpg"
+    },
+    {
+      "name": "20251025_170548.jpg",
+      "album": "Брайт парк",
+      "url": "./assets/portfolio/20251025_170548.jpg"
+    },
+    {
+      "name": "photo_2026-03-26_16-46-25.jpg",
+      "album": "Портовая",
+      "url": "./assets/portfolio/photo_2026-03-26_16-46-25.jpg"
+    },
+    {
+      "name": "photo_2026-03-26_16-19-37.jpg",
+      "album": "Сокуры",
+      "url": "./assets/portfolio/photo_2026-03-26_16-19-37.jpg"
+    },
+    {
+      "name": "20231223_114444.jpg",
+      "album": "Терегулова",
+      "url": "./assets/portfolio/20231223_114444.jpg"
+    },
+    {
+      "name": "20231223_114456.jpg",
+      "album": "Терегулова",
+      "url": "./assets/portfolio/20231223_114456.jpg"
+    },
+    {
+      "name": "20231223_114507.jpg",
+      "album": "Терегулова",
+      "url": "./assets/portfolio/20231223_114507.jpg"
+    },
+    {
+      "name": "20231223_114512.jpg",
+      "album": "Терегулова",
+      "url": "./assets/portfolio/20231223_114512.jpg"
+    },
+    {
+      "name": "20231223_114518.jpg",
+      "album": "Терегулова",
+      "url": "./assets/portfolio/20231223_114518.jpg"
+    },
+    {
+      "name": "20231223_114527.jpg",
+      "album": "Терегулова",
+      "url": "./assets/portfolio/20231223_114527.jpg"
+    }
+  ]
+}
