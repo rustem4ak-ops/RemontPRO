@@ -82,10 +82,11 @@ function calculate(input = {}, rates = DEFAULT_RATES) {
 
   if (n(input.windows) > 0) add('Окна', n(input.windows)*rates.windows, n(input.windows), 'шт.', rates.windows);
 
-  if (input.cleanElectrical) { const p=rateCleanElectrical(floor,rates.cleanElectrical); add('Чистовая электрика',floor*p,floor,'м²',p); }
-  if (input.cleanPlumbing) add('Чистовая сантехника',bath*rates.cleanPlumbing,bath,'м² санузла',rates.cleanPlumbing);
-  if (input.cleaning) add('Клининг',floor*rates.cleaning,floor,'м²',rates.cleaning);
-  if (input.trash) { const p=rateTrash(floor,rates.trash); add('Вывоз мусора',floor*p,floor,'м²',p); }
+  // Завершающие работы всегда входят в расчёт автоматически.
+  { const p=rateCleanElectrical(floor,rates.cleanElectrical); add('Чистовая электрика',floor*p,floor,'м²',p); }
+  add('Чистовая сантехника',bath*rates.cleanPlumbing,bath,'м² санузла',rates.cleanPlumbing);
+  add('Клининг',floor*rates.cleaning,floor,'м²',rates.cleaning);
+  { const p=rateTrash(floor,rates.trash); add('Вывоз мусора',floor*p,floor,'м²',p); }
 
   for (const w of (input.customWorks||[])) { const q=n(w.quantity); const p=n(w.price); add(String(w.name||'Работа'),q*p,q,w.unit||'м²',p); }
 
