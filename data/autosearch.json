@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-05T09:14:43.204Z",
+  "updatedAt": "2026-10-05T09:35:34.986Z",
   "stats": {
     "found": 11,
     "new": 0,
@@ -32,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:39.958Z",
+      "firstSeenAt": "2026-10-05T09:35:30.895Z",
       "status": "new"
     },
     {
@@ -169,7 +169,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:39.957Z",
+      "firstSeenAt": "2026-10-05T09:35:30.895Z",
       "status": "new"
     },
     {
@@ -212,7 +212,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:39.958Z",
+      "firstSeenAt": "2026-10-05T09:35:30.895Z",
       "status": "new"
     },
     {
@@ -234,7 +234,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:40.690Z",
+      "firstSeenAt": "2026-10-05T09:35:32.504Z",
       "status": "new"
     },
     {
@@ -255,7 +255,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:40.690Z",
+      "firstSeenAt": "2026-10-05T09:35:32.504Z",
       "status": "new"
     },
     {
@@ -276,7 +276,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:39.939Z",
+      "firstSeenAt": "2026-10-05T09:35:30.891Z",
       "status": "new"
     },
     {
@@ -297,7 +297,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:39.958Z",
+      "firstSeenAt": "2026-10-05T09:35:30.895Z",
       "status": "new"
     },
     {
@@ -339,7 +339,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:40.690Z",
+      "firstSeenAt": "2026-10-05T09:35:32.504Z",
       "status": "new"
     },
     {
@@ -360,7 +360,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:40.690Z",
+      "firstSeenAt": "2026-10-05T09:35:32.504Z",
       "status": "new"
     },
     {
@@ -381,7 +381,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:40.690Z",
+      "firstSeenAt": "2026-10-05T09:35:32.504Z",
       "status": "new"
     },
     {
@@ -402,7 +402,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T09:14:40.690Z",
+      "firstSeenAt": "2026-10-05T09:35:32.504Z",
       "status": "new"
     },
     {
