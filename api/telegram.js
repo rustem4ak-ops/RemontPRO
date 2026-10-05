@@ -191,20 +191,12 @@ async function callback(q) {
     case 'W1': s.walls={wallpaper:{area:0}}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
     case 'W2': s.walls={paint:{area:0}}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
     case 'W3': s.walls={decorative:{area:0}}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
-    case 'CE0': s.cleanElectrical=false; return buttons(id,'cleanPlumbing','🚿 Чистовая сантехника',[[{text:'Да',callback_data:'CP1'}],[{text:'Нет',callback_data:'CP0'}]],s);
-    case 'CE1': s.cleanElectrical=true; return buttons(id,'cleanPlumbing','🚿 Чистовая сантехника',[[{text:'Да',callback_data:'CP1'}],[{text:'Нет',callback_data:'CP0'}]],s);
-    case 'CP0': s.cleanPlumbing=false; return buttons(id,'cleaning','🧹 Клининг',[[{text:'Да',callback_data:'CL1'}],[{text:'Нет',callback_data:'CL0'}]],s);
-    case 'CP1': s.cleanPlumbing=true; return buttons(id,'cleaning','🧹 Клининг',[[{text:'Да',callback_data:'CL1'}],[{text:'Нет',callback_data:'CL0'}]],s);
-    case 'CL0': s.cleaning=false; return buttons(id,'trash','🚛 Вывоз мусора',[[{text:'Да',callback_data:'TR1'}],[{text:'Нет',callback_data:'TR0'}]],s);
-    case 'CL1': s.cleaning=true; return buttons(id,'trash','🚛 Вывоз мусора',[[{text:'Да',callback_data:'TR1'}],[{text:'Нет',callback_data:'TR0'}]],s);
-    case 'TR0': s.trash=false; return result(id,s);
-    case 'TR1': s.trash=true; return result(id,s);
     default: return tg('sendMessage',{chat_id:id,text:'Нажмите «🏠 Начать» и запустите новый расчёт.'});
   }
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.6.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'3.7.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
