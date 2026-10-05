@@ -130,10 +130,10 @@ function input(s) {
     laminate: true,
     plinth: s.plinth || 'none',
     walls: s.walls || {},
-    cleanElectrical: !!s.cleanElectrical,
-    cleanPlumbing: !!s.cleanPlumbing,
-    cleaning: !!s.cleaning,
-    trash: !!s.trash
+    cleanElectrical: true,
+    cleanPlumbing: true,
+    cleaning: true,
+    trash: true
   };
 }
 
@@ -187,10 +187,10 @@ async function callback(q) {
     case 'PL0': s.plinth='none'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
     case 'PL1': s.plinth='plastic'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
     case 'PL2': s.plinth='polyurethane'; return buttons(id,'walls','🧱 Стены',[[{text:'Без отделки',callback_data:'W0'}],[{text:'Обои',callback_data:'W1'}],[{text:'Покраска',callback_data:'W2'}],[{text:'Декоративка',callback_data:'W3'}]],s);
-    case 'W0': s.walls={}; return buttons(id,'cleanElectrical','💡 Чистовая электрика',[[{text:'Да',callback_data:'CE1'}],[{text:'Нет',callback_data:'CE0'}]],s);
-    case 'W1': s.walls={wallpaper:{area:0}}; return buttons(id,'cleanElectrical','💡 Чистовая электрика',[[{text:'Да',callback_data:'CE1'}],[{text:'Нет',callback_data:'CE0'}]],s);
-    case 'W2': s.walls={paint:{area:0}}; return buttons(id,'cleanElectrical','💡 Чистовая электрика',[[{text:'Да',callback_data:'CE1'}],[{text:'Нет',callback_data:'CE0'}]],s);
-    case 'W3': s.walls={decorative:{area:0}}; return buttons(id,'cleanElectrical','💡 Чистовая электрика',[[{text:'Да',callback_data:'CE1'}],[{text:'Нет',callback_data:'CE0'}]],s);
+    case 'W0': s.walls={}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
+    case 'W1': s.walls={wallpaper:{area:0}}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
+    case 'W2': s.walls={paint:{area:0}}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
+    case 'W3': s.walls={decorative:{area:0}}; s.cleanElectrical=true; s.cleanPlumbing=true; s.cleaning=true; s.trash=true; return result(id,s);
     case 'CE0': s.cleanElectrical=false; return buttons(id,'cleanPlumbing','🚿 Чистовая сантехника',[[{text:'Да',callback_data:'CP1'}],[{text:'Нет',callback_data:'CP0'}]],s);
     case 'CE1': s.cleanElectrical=true; return buttons(id,'cleanPlumbing','🚿 Чистовая сантехника',[[{text:'Да',callback_data:'CP1'}],[{text:'Нет',callback_data:'CP0'}]],s);
     case 'CP0': s.cleanPlumbing=false; return buttons(id,'cleaning','🧹 Клининг',[[{text:'Да',callback_data:'CL1'}],[{text:'Нет',callback_data:'CL0'}]],s);
