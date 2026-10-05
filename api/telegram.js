@@ -119,7 +119,7 @@ async function start(id) {
 }
 async function ask(id, step, text, s) {
   save(id, { ...s, step });
-  return tg('sendMessage', { chat_id: id, text });
+  return tg('sendMessage', { chat_id: id, text, reply_markup: { remove_keyboard: true } });
 }
 async function buttons(id, step, text, rows, s) {
   save(id, { ...s, step });
@@ -205,7 +205,7 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'4.10.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'4.11.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
@@ -301,7 +301,8 @@ module.exports = async function handler(req,res) {
     if (text==='🏢 Коммерция') {
       clear(id);
       save(id, { objectType:'commercial', step:'commercial' });
-      await tg('sendMessage',{chat_id:id,text:'🏢 <b>Коммерческий объект</b>\n\n' + commercialText,parse_mode:'HTML',...keyboard([['📞 Оставить номер телефона'],['🔄 Рассчитать заново']])});
+      await tg('sendMessage',{chat_id:id,text:'🏢 <b>Коммерческий объект</b>\n\n' + commercialText,parse_mode:'HTML',reply_markup:{remove_keyboard:true}});
+      await tg('sendMessage',{chat_id:id,text:'📞 Чтобы оставить заявку, нажмите кнопку ниже.',...keyboard([['📞 Оставить номер телефона'],['🔄 Рассчитать заново']])});
       return res.status(200).json({ok:true});
     }
     if (text==='🏠 Квартира' || text==='🏡 Дом') {
