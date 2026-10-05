@@ -1,6 +1,13 @@
 {
   "version": 2,
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/assets/(.*)", "destination": "/site/assets/$1" },
+    { "source": "/remontforma-logo-header.png", "destination": "/site/remontforma-logo-header.png" },
+    { "source": "/remontforma-logo-final.jpg", "destination": "/site/remontforma-logo-final.jpg" },
+    { "source": "/remontforma-logo.jpg", "destination": "/site/remontforma-logo.jpg" },
+    { "source": "/remontforma-logo.svg", "destination": "/site/remontforma-logo.svg" },
+    { "source": "/manifest.json", "destination": "/site/manifest.json" },
     { "source": "/", "destination": "/site/index.html" },
     { "source": "/index.html", "destination": "/site/index.html" },
     { "source": "/autosearch", "destination": "/site/autosearch.html" },
