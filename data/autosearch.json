@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "updatedAt": "2026-10-05T21:52:51.740Z",
+  "updatedAt": "2026-10-05T22:04:32.086Z",
   "stats": {
     "found": 47,
     "new": 0,
@@ -32,7 +32,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:47.199Z",
+      "firstSeenAt": "2026-10-05T22:04:26.073Z",
       "status": "new"
     },
     {
@@ -215,7 +215,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:47.194Z",
+      "firstSeenAt": "2026-10-05T22:04:25.982Z",
       "status": "new"
     },
     {
@@ -237,7 +237,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:47.199Z",
+      "firstSeenAt": "2026-10-05T22:04:26.073Z",
       "status": "new"
     },
     {
@@ -302,7 +302,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:47.199Z",
+      "firstSeenAt": "2026-10-05T22:04:26.073Z",
       "status": "new"
     },
     {
@@ -324,7 +324,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:48.164Z",
+      "firstSeenAt": "2026-10-05T22:04:27.301Z",
       "status": "new"
     },
     {
@@ -345,7 +345,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:48.164Z",
+      "firstSeenAt": "2026-10-05T22:04:27.302Z",
       "status": "new"
     },
     {
@@ -366,7 +366,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:47.199Z",
+      "firstSeenAt": "2026-10-05T22:04:26.073Z",
       "status": "new"
     },
     {
@@ -387,7 +387,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:47.199Z",
+      "firstSeenAt": "2026-10-05T22:04:26.073Z",
       "status": "new"
     },
     {
@@ -429,7 +429,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:48.163Z",
+      "firstSeenAt": "2026-10-05T22:04:27.301Z",
       "status": "new"
     },
     {
@@ -450,7 +450,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:48.164Z",
+      "firstSeenAt": "2026-10-05T22:04:27.301Z",
       "status": "new"
     },
     {
@@ -471,7 +471,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:48.164Z",
+      "firstSeenAt": "2026-10-05T22:04:27.301Z",
       "status": "new"
     },
     {
@@ -492,7 +492,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:48.164Z",
+      "firstSeenAt": "2026-10-05T22:04:27.302Z",
       "status": "new"
     },
     {
@@ -513,7 +513,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.414Z",
+      "firstSeenAt": "2026-10-05T22:04:30.280Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -535,7 +535,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.414Z",
+      "firstSeenAt": "2026-10-05T22:04:30.280Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -557,7 +557,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -579,7 +579,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -601,7 +601,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -623,7 +623,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -645,7 +645,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -667,7 +667,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -689,7 +689,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -711,7 +711,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:50.415Z",
+      "firstSeenAt": "2026-10-05T22:04:30.281Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -733,7 +733,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.073Z",
+      "firstSeenAt": "2026-10-05T22:04:31.317Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -755,7 +755,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.073Z",
+      "firstSeenAt": "2026-10-05T22:04:31.317Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -777,7 +777,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.073Z",
+      "firstSeenAt": "2026-10-05T22:04:31.317Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -799,7 +799,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.073Z",
+      "firstSeenAt": "2026-10-05T22:04:31.317Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -821,7 +821,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.073Z",
+      "firstSeenAt": "2026-10-05T22:04:31.317Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -843,7 +843,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.073Z",
+      "firstSeenAt": "2026-10-05T22:04:31.317Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -865,7 +865,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -887,7 +887,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -909,7 +909,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -931,7 +931,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -953,7 +953,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -975,7 +975,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -997,7 +997,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1019,7 +1019,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1041,7 +1041,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1063,7 +1063,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1085,7 +1085,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1107,7 +1107,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1129,7 +1129,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1151,7 +1151,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
@@ -1173,7 +1173,7 @@
       ],
       "city": true,
       "publishedAt": null,
-      "firstSeenAt": "2026-10-05T21:52:51.740Z",
+      "firstSeenAt": "2026-10-05T22:04:32.086Z",
       "status": "new",
       "leadType": "tender"
     },
