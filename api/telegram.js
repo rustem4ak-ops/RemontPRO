@@ -65,6 +65,12 @@ function escHtml(v) {
   });
 }
 
+function objectLabel(s) {
+  if (s.objectType === 'commercial' || s.objectType === 'c') return 'Коммерция';
+  if (s.objectType === 'h') return 'Дом';
+  return 'Квартира';
+}
+
 function buildLeadMessage(name, phone, s) {
   const r = s.result || {};
   const rows = Array.isArray(r.rows) ? r.rows : [];
@@ -81,7 +87,7 @@ function buildLeadMessage(name, phone, s) {
     '',
     '👤 Имя: <b>' + escHtml(name) + '</b>',
     '📞 Телефон: <b>' + escHtml(phone) + '</b>',
-    '🏠 Объект: <b>' + (s.objectType === 'h' ? 'Дом' : 'Квартира') + '</b>',
+    '🏢 Тип объекта: <b>' + objectLabel(s) + '</b>',
     '📐 Площадь: <b>' + money(r.floor) + ' м²</b>',
     '🚿 Санузел: <b>' + money(r.bath) + ' м²</b>',
     '🪟 Окон: <b>' + Number(s.windows || 0) + '</b>',
@@ -106,7 +112,8 @@ async function start(id) {
   // и тогда весь /start завершается ошибкой. Сам расчёт должен работать независимо от картинки.
   return tg('sendMessage', {
     chat_id: id,
-    text: '👋 РЕМОНТФОРМА — ремонт под ключ в Казани.\n\nРассчитаем предварительную стоимость за несколько минут. Без звонка менеджеру: просто ответьте на вопросы.\n\nВыберите тип объекта:',
+    text: '👋 <b>РЕМОНТФОРМА</b> — ремонт под ключ в Казани.\n\n<b>Рассчитаем предварительную стоимость</b> за несколько минут. Без звонка менеджеру — просто ответьте на вопросы.\n\n<b>Выберите тип объекта:</b>',
+    parse_mode: 'HTML',
     ...keyboard([['🏠 Квартира'], ['🏡 Дом'], ['🏢 Коммерция']])
   });
 }
@@ -152,7 +159,7 @@ async function result(id, s) {
   const lines = [
     '<b>РЕМОНТФОРМА — предварительный расчёт</b>',
     '',
-    '🏠 Объект: <b>' + (s.objectType === 'h' ? 'Дом' : 'Квартира') + '</b>',
+    '🏢 Тип объекта: <b>' + objectLabel(s) + '</b>',
     '📐 Общая площадь: <b>' + r.floor + ' м²</b>',
     '🚿 Санузел: <b>' + r.bath + ' м²</b>',
     '📐 Основная площадь: <b>' + r.mainArea + ' м²</b>',
@@ -198,7 +205,7 @@ async function callback(q) {
 }
 
 module.exports = async function handler(req,res) {
-  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'4.9.0'});
+  if (req.method === 'GET') return res.status(200).json({ok:true,service:'РЕМОНТФОРМА Telegram Bot',version:'4.10.0'});
   if (req.method !== 'POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   try {
     const u = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
@@ -271,7 +278,7 @@ module.exports = async function handler(req,res) {
               medium: 'telegram_bot',
               calculator: s.result || { total: 0, pricePerM2: 0, rows: [] },
               object: {
-                type: s.objectType === 'h' ? 'Дом' : 'Квартира',
+                type: objectLabel(s),
                 floor: s.floor || 0,
                 bath: s.bath || 0,
                 balcony: 0,
@@ -293,7 +300,8 @@ module.exports = async function handler(req,res) {
     }
     if (text==='🏢 Коммерция') {
       clear(id);
-      await tg('sendMessage',{chat_id:id,text:commercialText,...keyboard([['📞 Оставить номер телефона'],['🔄 Рассчитать заново']])});
+      save(id, { objectType:'commercial', step:'commercial' });
+      await tg('sendMessage',{chat_id:id,text:'🏢 <b>Коммерческий объект</b>\n\n' + commercialText,parse_mode:'HTML',...keyboard([['📞 Оставить номер телефона'],['🔄 Рассчитать заново']])});
       return res.status(200).json({ok:true});
     }
     if (text==='🏠 Квартира' || text==='🏡 Дом') {
