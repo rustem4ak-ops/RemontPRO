@@ -223,10 +223,10 @@ function input(s) {
     laminate: true,
     plinth: s.plinth || 'none',
     walls: s.walls || {},
-    cleanElectrical: !!s.cleanElectrical,
-    cleanPlumbing: !!s.cleanPlumbing,
-    cleaning: !!s.cleaning,
-    trash: !!s.trash
+    cleanElectrical: true,
+    cleanPlumbing: true,
+    cleaning: true,
+    trash: true
   };
 }
 
@@ -433,19 +433,35 @@ async function handleCallback(update) {
 
     case 'W0':
       s.walls = {};
-      return nextCleanElectrical(id, s);
+      s.cleanElectrical = true;
+      s.cleanPlumbing = true;
+      s.cleaning = true;
+      s.trash = true;
+      return showResult(id, s);
 
     case 'W1':
       s.walls = { wallpaper: { area: 0 } };
-      return nextCleanElectrical(id, s);
+      s.cleanElectrical = true;
+      s.cleanPlumbing = true;
+      s.cleaning = true;
+      s.trash = true;
+      return showResult(id, s);
 
     case 'W2':
       s.walls = { paint: { area: 0 } };
-      return nextCleanElectrical(id, s);
+      s.cleanElectrical = true;
+      s.cleanPlumbing = true;
+      s.cleaning = true;
+      s.trash = true;
+      return showResult(id, s);
 
     case 'W3':
       s.walls = { decorative: { area: 0 } };
-      return nextCleanElectrical(id, s);
+      s.cleanElectrical = true;
+      s.cleanPlumbing = true;
+      s.cleaning = true;
+      s.trash = true;
+      return showResult(id, s);
 
     case 'CE0':
     case 'CE1':
