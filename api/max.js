@@ -335,34 +335,6 @@ async function nextWalls(id, s) {
   ], s);
 }
 
-async function nextCleanElectrical(id, s) {
-  return choose(id, 'cleanElectrical', '💡 Чистовая электрика', [
-    [cb('Да', 'CE1')],
-    [cb('Нет', 'CE0')]
-  ], s);
-}
-
-async function nextCleanPlumbing(id, s) {
-  return choose(id, 'cleanPlumbing', '🚿 Чистовая сантехника', [
-    [cb('Да', 'CP1')],
-    [cb('Нет', 'CP0')]
-  ], s);
-}
-
-async function nextCleaning(id, s) {
-  return choose(id, 'cleaning', '🧹 Клининг', [
-    [cb('Да', 'CL1')],
-    [cb('Нет', 'CL0')]
-  ], s);
-}
-
-async function nextTrash(id, s) {
-  return choose(id, 'trash', '🚛 Вывоз мусора', [
-    [cb('Да', 'TR1')],
-    [cb('Нет', 'TR0')]
-  ], s);
-}
-
 async function handleCallback(update) {
   const c = update.callback || update.message_callback || {};
   const payload = String(c.payload || c.callback_data || c.data || '');
@@ -460,29 +432,6 @@ async function handleCallback(update) {
       s.cleanElectrical = true;
       s.cleanPlumbing = true;
       s.cleaning = true;
-      s.trash = true;
-      return showResult(id, s);
-
-    case 'CE0':
-    case 'CE1':
-      s.cleanElectrical = payload === 'CE1';
-      return nextCleanPlumbing(id, s);
-
-    case 'CP0':
-    case 'CP1':
-      s.cleanPlumbing = payload === 'CP1';
-      return nextCleaning(id, s);
-
-    case 'CL0':
-    case 'CL1':
-      s.cleaning = payload === 'CL1';
-      return nextTrash(id, s);
-
-    case 'TR0':
-      s.trash = false;
-      return showResult(id, s);
-
-    case 'TR1':
       s.trash = true;
       return showResult(id, s);
 
@@ -787,7 +736,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА MAX Bot',
-      version: '4.7.0',
+      version: '4.8.0',
       configured: !!TOKEN
     });
   }
