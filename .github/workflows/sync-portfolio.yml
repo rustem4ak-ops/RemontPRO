@@ -9,6 +9,9 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
 
 jobs:
   sync:
@@ -81,6 +84,18 @@ jobs:
           s=s.replace(old,new,1)
           open(p,'w',encoding='utf-8').write(s)
           PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: './site'
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Commit portfolio photos
         shell: bash
