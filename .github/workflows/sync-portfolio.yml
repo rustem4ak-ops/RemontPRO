@@ -37,7 +37,7 @@ jobs:
           seen=set()
           def get(path):
               q=urllib.parse.urlencode({'public_key':KEY,'path':path,'limit':'1000','preview_size':'XXXL'})
-              req=urllib.request.Request(API+'?'+q,headers={'User-Agent':'RemontFormaPortfolio/6.0'})
+              req=urllib.request.Request(API+'?'+q,headers={'User-Agent':'RemontFormaPortfolio/7.0'})
               with urllib.request.urlopen(req,timeout=30) as r:
                   return json.load(r)
           def walk(path,album):
@@ -64,8 +64,11 @@ jobs:
                           req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
                           with urllib.request.urlopen(req,timeout=60) as r:
                               raw=r.read()
-                          from PIL import Image
-                          im=Image.open(io.BytesIO(raw)).convert('RGB')
+                          from PIL import Image, ImageOps
+                          im=Image.open(io.BytesIO(raw))
+                          # Принудительно применяем EXIF Orientation и сохраняем уже физически повернутый кадр.
+                          # Это убирает боковые/перевернутые фото на iPhone и GitHub Pages.
+                          im=ImageOps.exif_transpose(im).convert('RGB')
                           im.thumbnail((1400,1400),Image.Resampling.LANCZOS)
                           im.save(dest,'WEBP',quality=72,method=6)
                           out.append({'name':name,'album':album or 'Реализованные ремонты','url':'./assets/portfolio/'+os.path.basename(dest)})
