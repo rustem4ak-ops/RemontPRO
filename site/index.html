@@ -393,7 +393,6 @@ body{
       <div class="eyebrow">Услуги</div>
       <h2>Сначала покажем реальные фотографии работ.</h2>
       <p>Все фотографии в этом блоке взяты из нового архива. Показываем их одним большим листом, чтобы сразу было видно качество и результат.</p>
-      <div class="portfolioProof"><span>✓ Реальные реализованные объекты</span><span>✓ Готовые интерьеры</span><span>✓ Ремонт под ключ в Казани</span></div>
     </div>
     <div class="portfolioActions">
       <button class="btn primary" onclick="openCalc()">Рассчитать мой ремонт</button>
@@ -907,40 +906,25 @@ function portfolioTitle(x){
 function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
 
 async function loadPortfolio(){
-  const box=document.getElementById('portfolioGallery');
   const featured=document.getElementById('portfolioFeatured');
-  const needGallery=Boolean(featured);
-  if(box) box.innerHTML='';
-  if(!needGallery) return;
-
-  try{
-    const j={
-      ok:true,
-      count:1,
-      images:[
-        {
-          name:'Новые работы — 6 фото',
-          album:'Новые работы',
-          folder:'Новые работы',
-          url:'./assets/portfolio/new-portfolio-sheet.webp',
-          preview:'./assets/portfolio/new-portfolio-sheet.webp'
-        }
-      ]
-    };
-
-    portfolioImages=j.images.map(x=>({...x,preview:x.preview||x.url,url:x.url||x.preview}));
-    portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
-    portfolioImages.sort(portfolioSort);
-
-    const featuredAlbums=['Новые работы'];
-    featured.innerHTML=featuredAlbums.map(album=>{
-      const items=portfolioImages.filter(x=>(x.album||x.folder)===album);
-      const collage=items.map((x,i)=>'<div class="featuredTile"><img loading="eager" decoding="async" src="'+(x.url||x.preview)+'" alt="РЕМОНТФОРМА — новые фотографии работ"></div>').join('');
-      return '<div class="featuredObject"><div class="featuredObjectPhotos">'+collage+'</div><div class="featuredObjectCaption"><span>НОВЫЕ РАБОТЫ</span><b>'+escapeHtml(portfolioAddress({album:album}))+'</b></div></div>';
-    }).join('');
-  }catch(e){
-    featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span></div>';
-  }
+  if(!featured) return;
+  const local='./assets/portfolio/new-portfolio-sheet.webp';
+  portfolioImages=[{
+    name:'Новые работы — 6 фото',
+    album:'Новые работы',
+    folder:'Новые работы',
+    url:local,
+    preview:local,
+    _score:1000
+  }];
+  portfolioFiltered=portfolioImages.slice();
+  featured.innerHTML=
+    '<div class="featuredObject">'+
+      '<button type="button" class="featuredTile featuredSheetTile" onclick="openFeatured(0)" aria-label="Открыть фотографии работ">'+
+        '<img loading="eager" fetchpriority="high" decoding="async" width="1200" height="800" src="'+local+'" alt="РЕМОНТФОРМА — реальные фотографии выполненных работ">'+
+      '</button>'+
+      '<div class="featuredObjectCaption"><span>РЕАЛЬНЫЕ РАБОТЫ</span><b>Фотографии выполненных объектов</b></div>'+
+    '</div>';
 }
 function showMorePortfolio(){portfolioVisibleCount+=9;renderPortfolio(portfolioFolder)}
 function filterPortfolio(folder,btn){
@@ -1099,3 +1083,13 @@ try{
 <!-- deploy-recovery: restore known working site build -->
 
 <!-- github-pages-fallback: frontend can run independently of Vercel hosting -->
+
+<style id="portfolio-instant-fix">
+.portfolioProof{display:none!important}
+.featuredObjectPhotos{display:block!important;aspect-ratio:3/2!important;background:#eef0f2!important}
+.featuredSheetTile{display:block!important;width:100%!important;height:100%!important;padding:0!important;border:0!important;background:#eef0f2!important;cursor:zoom-in!important;overflow:hidden!important}
+.featuredSheetTile img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;transform:none!important;rotate:0deg!important}
+@media(max-width:800px){
+  .featuredObjectPhotos{aspect-ratio:3/2!important}
+}
+</style>

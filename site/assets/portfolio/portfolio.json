@@ -5,7 +5,9 @@
     {
       "name": "Новые работы — 6 фото",
       "album": "Новые работы",
-      "url": "./assets/portfolio/new-portfolio-sheet.webp"
+      "folder": "Новые работы",
+      "url": "./assets/portfolio/new-portfolio-sheet.webp",
+      "preview": "./assets/portfolio/new-portfolio-sheet.webp"
     }
   ]
 }
