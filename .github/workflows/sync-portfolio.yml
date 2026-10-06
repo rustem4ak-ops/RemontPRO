@@ -81,17 +81,7 @@ jobs:
           PY
 
       - name: Make GitHub Pages use local portfolio first
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          p='site/index.html'
-          s=open(p,encoding='utf-8').read()
-          old="    let j=null;\n    try{\n      const a=await fetch('https://remont-pro-nine.vercel.app/api/portfolio',{cache:'force-cache'});"
-          new="    let j=null;\n    try{\n      const local=await fetch('./assets/portfolio/portfolio.json',{cache:'no-store'});\n      const lj=await local.json();\n      if(local.ok&&lj.ok&&Array.isArray(lj.images)&&lj.images.length) j=lj;\n    }catch(_){}\n    if(!j) try{\n      const a=await fetch('https://remont-pro-nine.vercel.app/api/portfolio',{cache:'force-cache'});"
-          if old not in s: raise SystemExit('portfolio marker not found')
-          s=s.replace(old,new,1)
-          open(p,'w',encoding='utf-8').write(s)
-          PY
+        run: echo "site/index.html already uses local portfolio assets"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
