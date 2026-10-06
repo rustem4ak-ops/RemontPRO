@@ -289,7 +289,51 @@ body{
   .featuredObjectCaption{left:12px;top:12px}
   .featuredObjectCaption span{font-size:11px;padding:7px 10px}
 }
-</style>
+/* Final portfolio alignment */
+.portfolioHero{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  width:100%!important;
+  text-align:center!important;
+}
+.portfolioIntro{
+  width:100%!important;
+  max-width:900px!important;
+  margin:0 auto!important;
+  text-align:center!important;
+}
+.portfolioIntro h2{
+  max-width:900px!important;
+  margin:10px auto 14px!important;
+  text-align:center!important;
+}
+.portfolioIntro p{
+  max-width:760px!important;
+  margin:0 auto!important;
+  text-align:center!important;
+}
+.portfolioProof{
+  width:100%!important;
+  justify-content:center!important;
+}
+.portfolioActions{
+  width:100%!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  margin:24px auto 0!important;
+  text-align:center!important;
+}
+@media(max-width:800px){
+  .portfolioActions{
+    justify-content:center!important;
+    width:100%!important;
+  }
+  .portfolioActions .btn{
+    flex:0 1 auto!important;
+  }
+}\n</style>
 <style>
 .contactModal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,10,12,.72);backdrop-filter:blur(10px)}
 .contactModal.open{display:flex}
@@ -353,7 +397,7 @@ body{
   
   <div class="portfolioCta"><div><h3>Хотите такой же результат?</h3><p>Оставьте параметры объекта — <strong>предварительный расчёт</strong> получите за несколько минут.</p></div><button class="btn primary" onclick="openCalc()">Получить расчёт</button></div>
 </div></section>
-<div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt="Реализованный ремонт"><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
+<div id="portfolioLightbox" class="portfolioLightbox"><button class="lbClose" onclick="closePortfolio()">×</button><button class="lbPrev" onclick="portfolioMove(-1)">‹</button><img id="portfolioLarge" alt=""><button class="lbNext" onclick="portfolioMove(1)">›</button><div id="portfolioCaption" class="portfolioCaption"></div></div>
 
 <section class="section reviewsSection"><div class="wrap">
   <div class="center">
@@ -886,7 +930,7 @@ async function loadPortfolio(){
             preview:item.preview||item.file,url:item.preview||item.file,
             size:Number(item.size||0),featured,
             label:featured?portfolioLabel({name:item.name}):null,
-            title:featured?portfolioTitle({name:item.name}):'Реализованный ремонт',
+            title:featured?portfolioTitle({name:item.name}):'',
             order:featured?FEATURED_NAMES.indexOf(item.name)+1:100
           });
         }
