@@ -142,9 +142,9 @@ body{
   background-position:center;
   isolation:isolate;
 }
-#services .service:nth-child(1){background-image:url('./assets/portfolio/20260401_123337.webp')}
-#services .service:nth-child(2){background-image:url('./assets/portfolio/20260401_123342.webp')}
-#services .service:nth-child(3){background-image:url('./assets/portfolio/20260401_123633.webp')}
+#services .service:nth-child(1){background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85')}
+#services .service:nth-child(2){background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85')}
+#services .service:nth-child(3){background-image:url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85')}
 #services .service:before{
   content:'';
   position:absolute;
@@ -815,17 +815,7 @@ function printEstimate(){
 }
 let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все',portfolioVisibleCount=9,reviewVisibleCount=3;
 
-const FEATURED_NAMES=[
-  '20260401_123337.jpg',
-  '20260401_123342.jpg',
-  '20260401_123633.jpg',
-  '20260401_123643.jpg',
-  '20231223_114527.jpg',
-  '20231223_114512.jpg',
-  '20231223_114444.jpg',
-  'photo_2026-03-26_16-19-37.jpg',
-  'photo_2026-03-26_16-46-25.jpg'
-];
+const FEATURED_NAMES=['photo_2022-07-25_14-22-12 (2).jpg','20251025_170437.jpg','20260401_123337.jpg','20231223_114444.jpg'];
 
 function portfolioScore(x){
   if(FEATURED_NAMES.includes(x.name)) return 1000-(FEATURED_NAMES.indexOf(x.name)*10);
