@@ -718,27 +718,47 @@ function stageHtml(title,matcher,rows){
     '</div>';
 }
 
-async function loadResult(){
+function calculateLocal(input={}){
+  const n=v=>Math.max(0,Number(v)||0);
+  const floor=n(input.floor), bath=n(input.bath), balcony=n(input.balcony);
+  const main=Math.max(0,floor-bath-balcony), wallsArea=main*2.8;
+  const MARKUP=1.30;
+  const rates={electrical:{partial:2500,full:3500},plumbing:{partial:1000,full:2500},bathroom:50000,tile:{under4:10000,from4:8000,from10:4000,from20:3000,from40:2500},laminate:1000,plasticPlinth:400,polyurethanePlinth:1300,walls:{wallpaper:1500,paint:4000,decorative:2500},cleanElectrical:{under40:1000,from40to80:700,from80to150:600,over150:500},cleanPlumbing:6000,cleaning:400,trash:{upTo150:1000,over150:800},windows:20000};
+  const rows=[];
+  const add=(name,cost,quantity,unit='м²',price=0)=>{if(cost>0)rows.push({name,quantity:Math.round(quantity*100)/100,unit,price:Math.round(price*MARKUP*100)/100,cost:Math.round(cost*MARKUP)})};
+  if(input.electrical==='partial')add('Электрика — частичная замена',floor*rates.electrical.partial,floor,'м²',rates.electrical.partial);
+  if(input.electrical==='full')add('Электрика — полная замена',floor*rates.electrical.full,floor,'м²',rates.electrical.full);
+  if(input.plumbing==='partial')add('Сантехника — частичная замена',floor*rates.plumbing.partial,floor,'м²',rates.plumbing.partial);
+  if(input.plumbing==='full')add('Сантехника — полная замена',floor*rates.plumbing.full,floor,'м²',rates.plumbing.full);
+  if(input.bathroom==='classic')add('Классический санузел',bath*rates.bathroom,bath,'м²',rates.bathroom);
+  let tileArea=0;
+  if(input.tile==='manual'){
+    tileArea=Math.min(main,n(input.tileArea));
+    const p=tileArea<4?rates.tile.under4:tileArea<10?rates.tile.from4:tileArea<20?rates.tile.from10:tileArea<40?rates.tile.from20:rates.tile.from40;
+    add('Плитка — ручная площадь',tileArea*p,tileArea,'м²',p);
+  }
+  if(input.laminate){const q=Math.max(0,main-tileArea);add('Ламинат / кварцвинил',q*rates.laminate,q,'м²',rates.laminate)}
+  if(input.plinth==='plastic')add('Плинтус пластиковый',main*rates.plasticPlinth,main,'м²',rates.plasticPlinth);
+  if(input.plinth==='polyurethane')add('Плинтус полиуретановый',main*rates.polyurethanePlinth,main,'м²',rates.polyurethanePlinth);
+  const wallItems=[['wallpaper','Подготовка под обои + обои',rates.walls.wallpaper],['paint','Подготовка под покраску + покраска',rates.walls.paint],['decorative','Подготовка под декоративку + декоративка',rates.walls.decorative]].filter(([k])=>input.walls?.[k]);
+  const wallRemain=wallItems.length?wallsArea:0;
+  wallItems.forEach(([k,name,p])=>add(name,(wallRemain/wallItems.length)*p,wallRemain/wallItems.length,'м²',p));
+  if(n(input.windows)>0)add('Окна',n(input.windows)*rates.windows,n(input.windows),'шт.',rates.windows);
+  const ce=floor<40?1000:floor<=80?700:floor<=150?600:500; add('Чистовая электрика',floor*ce,floor,'м²',ce);
+  if(bath>0)add('Чистовая сантехника',bath*rates.cleanPlumbing,bath,'м² санузла',rates.cleanPlumbing);
+  add('Клининг',floor*rates.cleaning,floor,'м²',rates.cleaning);
+  const tr=floor<=150?1000:800; add('Вывоз мусора',floor*tr,floor,'м²',tr);
+  const total=rows.reduce((s,x)=>s+x.cost,0);
+  return {floor,bath,balcony,mainArea:main,wallsArea:Math.round(wallsArea*100)/100,rows,subtotal:total,markup:30,markupSum:Math.round(total/1.3*0.3),total,pricePerM2:floor?Math.round(total/floor*100)/100:0};
+}
+
+function loadResult(){
   const r=document.getElementById('finalResult');
-
   try{
-    const response=await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(buildCalculatorBody())
-    });
-
-    const j=await response.json();
-
-    if(!j.ok) throw new Error(j.error||'Ошибка расчёта');
-
-    S.result=j.result;
-
-    const q=j.result;
+    const q=calculateLocal(buildCalculatorBody());
+    S.result=q;
     const rows=q.rows||[];
-
-    r.innerHTML=
-      '<div class="muted">Объект: '+escapeHtml(S.type)+' · '+q.floor+' м² · основная площадь '+q.mainArea+' м²</div>'+
+    r.innerHTML='<div class="muted">Объект: '+escapeHtml(S.type)+' · '+q.floor+' м² · основная площадь '+q.mainArea+' м²</div>'+
       stageHtml('1️⃣ Черновая электрика + черновая сантехника',x=>/Электрика|Сантехника/.test(x.name),rows)+
       stageHtml('2️⃣ Плиточные работы',x=>/Классический санузел|Плитка/.test(x.name),rows)+
       stageHtml('3️⃣ Напольные работы',x=>/Ламинат \/ кварцвинил|Плинтус/.test(x.name),rows)+
@@ -749,119 +769,8 @@ async function loadResult(){
       '<div class="resultTotal" style="font-size:15px"><span>Цена за м² по полу</span><span>'+money(q.pricePerM2)+'</span></div>'+
       '<div class="hint">Предварительный расчёт. Точная смета формируется после замера и согласования состава работ.</div>';
   }catch(e){
-    r.innerHTML='<div class="hint">Не удалось получить расчёт. Попробуйте ещё раз.</div>';
-  }
-}
-
-function openCommercialLead(){
-  document.getElementById('wizard').innerHTML=
-    '<div class="stepTitle">Ремонт коммерческого помещения</div>'+
-    '<p class="muted">Ремонт в коммерции зависит от проекта и объёмов работ. Оставьте номер телефона, чтобы обсудить подробности.</p>'+
-    '<div class="leadBox">'+
-      '<div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div>'+
-      '<div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div>'+
-      '<div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div>'+
-    '</div>';
-
-  document.getElementById('progressText').textContent='Заявка';
-  document.getElementById('bar').style.width='100%';
-  document.getElementById('backBtn').classList.add('hidden');
-  document.getElementById('nextBtn').textContent='Отправить заявку';
-  document.getElementById('nextBtn').onclick=submitLead;
-  S.result={total:0,pricePerM2:0,rows:[],floor:0,mainArea:0};
-}
-
-function openLead(){
-  if(!S.result){
-    alert('Сначала дождитесь расчёта');
-    return;
-  }
-
-  document.getElementById('wizard').innerHTML=
-    '<div class="stepTitle">Получить точную смету</div>'+
-    '<p class="muted">Оставьте номер телефона. Мы свяжемся с вами, уточним объект и договоримся о замере.</p>'+
-    '<div class="leadBox">'+
-      '<div class="field"><label>Имя</label><input id="leadName" placeholder="Ваше имя"></div>'+
-      '<div class="field"><label>Телефон *</label><input id="leadPhone" type="tel" placeholder="+7 900 000-00-00"></div>'+
-      '<div class="field"><label>Комментарий</label><textarea id="leadComment" rows="3" placeholder="Что важно учесть?"></textarea></div>'+
-    '</div>';
-
-  document.getElementById('progressText').textContent='Заявка';
-  document.getElementById('bar').style.width='100%';
-  document.getElementById('backBtn').classList.add('hidden');
-  document.getElementById('nextBtn').textContent='Отправить заявку';
-  document.getElementById('nextBtn').onclick=submitLead;
-}
-
-async function submitLead(){
-  const phone=val('leadPhone').trim();
-
-  if(!phone){
-    alert('Введите телефон');
-    return;
-  }
-
-  const payload={
-    name:val('leadName').trim(),
-    phone,
-    comment:val('leadComment').trim(),
-    source:S.source||'site',
-    medium:S.medium||'',
-    campaign:S.campaign||'',
-    referrer:document.referrer||'',
-    object:{
-      type:S.type,
-      floor:S.floor,
-      bath:S.bath,
-      balcony:0,
-      windows:S.windows
-    },
-    calculator:S.result,
-    selection:{
-      electrical:S.electrical,
-      plumbing:S.plumbing,
-      bathroom:S.bathroom,
-      tile:'manual',
-      tileArea:S.tileArea,
-      floorFinish:S.floorFinish,
-      plinth:S.plinth,
-      walls:S.walls,
-      cleanElectrical:S.cleanElectrical,
-      cleanPlumbing:S.cleanPlumbing,
-      cleaning:S.cleaning,
-      trash:S.trash
-    }
-  };
-
-  document.getElementById('nextBtn').disabled=true;
-
-  try{
-    const a=await fetch(LEAD,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-
-    const j=await a.json();
-
-    if(!j.ok) throw new Error(j.error||'Ошибка');
-
-    document.getElementById('wizard').innerHTML=
-      '<div class="success">'+
-        '<h3>✅ Заявка отправлена</h3>'+
-        '<p>Спасибо! Мы получили ваш предварительный расчёт и контакты.</p>'+
-        '<div class="buttons">'+
-          '<a class="btn primary" href="https://t.me/+79172433455">Открыть Telegram</a>'+
-          '<button class="btn" style="background:#15171a;color:#fff" onclick="printEstimate()">Скачать PDF</button>'+
-        '</div>'+
-      '</div>';
-
-    document.getElementById('backBtn').classList.add('hidden');
-    document.getElementById('nextBtn').style.display='none';
-  }catch(e){
-    alert('Не удалось отправить заявку. Попробуйте связаться с нами в Telegram.');
-  }finally{
-    document.getElementById('nextBtn').disabled=false;
+    console.error('Local calculator error',e);
+    r.innerHTML='<div class="hint">Не удалось получить расчёт. Проверьте введённые данные.</div>';
   }
 }
 
