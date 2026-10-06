@@ -4,8 +4,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "index.html"
+      - "*.html"
+      - "*.js"
+      - "*.css"
+      - "*.json"
       - "api/**"
+      - "src/**"
+      - "public/**"
       - "assets/**"
       - "shared/**"
       - "favicon.svg"
