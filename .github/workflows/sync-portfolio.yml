@@ -1,12 +1,8 @@
 name: Manual portfolio sync (disabled by default)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/sync-portfolio.yml'
-      - 'site/index.html'
   workflow_dispatch:
+
 
 permissions:
   contents: write
