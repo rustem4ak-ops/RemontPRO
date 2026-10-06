@@ -21,10 +21,10 @@
 
 /* Sales portfolio */
 .portfolioHero{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:end;margin-top:34px}
-.portfolioIntro{max-width:680px}.portfolioIntro h2{font-size:clamp(34px,4.5vw,52px);line-height:1.02;margin:10px 0 14px}
+.portfolioIntro{max-width:680px;text-align:center;margin:0 auto}.portfolioIntro h2{font-size:clamp(34px,4.5vw,52px);line-height:1.02;margin:10px 0 14px}
 .portfolioIntro p{font-size:17px;line-height:1.6;color:#626870;max-width:620px}
-.portfolioProof{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.portfolioProof span{background:#fff;border:1px solid #dfe3e7;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:850}
-.portfolioActions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.portfolioProof{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}.portfolioProof span{background:#fff;border:1px solid #dfe3e7;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:850}
+.portfolioActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .portfolioActions .btn{box-shadow:0 8px 25px #0000000d}
 .portfolioFeatured{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:20px!important}
 .featuredObject{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 14px 35px rgba(20,24,28,.09);border:1px solid #e1e4e7}
@@ -828,7 +828,7 @@ async function loadPortfolio(){
   const box=document.getElementById('portfolioGallery');
   const folders=document.getElementById('portfolioFolders');
   const featured=document.getElementById('portfolioFeatured');
-  const needGallery=Boolean(box&&featured&&folders);
+  const needGallery=Boolean(featured);
   if(needGallery) box.innerHTML='<div class="portfolioLoading">Загружаем реальные объекты…</div>';
 
   async function loadFromYandex(){
@@ -890,7 +890,7 @@ async function loadPortfolio(){
       return '<div class="featuredObject"><div class="featuredObjectPhotos">'+collage+'</div><div class="featuredObjectCaption"><span>РЕМОНТФОРМА</span><b>'+escapeHtml(portfolioAddress({album:album}))+'</b></div></div>';
     }).join('');
     
-        renderPortfolio('Все');
+        // Secondary gallery removed; featured project collages are the active portfolio view.
   }catch(e){
     featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span><br><a class="btn" style="display:inline-block;margin-top:14px;background:#17191c;color:#fff" href="https://disk.yandex.ru/d/X4VLvyoCDpNVYA" target="_blank" rel="noopener">Открыть все работы</a></div>';
     box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
