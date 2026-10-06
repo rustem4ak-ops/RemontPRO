@@ -69,3 +69,19 @@ jobs:
           done
           echo "Production site did not return the expected page."
           exit 1
+
+      - name: Verify calculator API
+        run: |
+          api_code=$(curl -s -o /tmp/calc.json -w "%{http_code}" -X POST \
+            -H "Content-Type: application/json" \
+            --data '{"floor":60,"bath":6,"windows":4,"electrical":"none","plumbing":"none","tile":"manual","tileArea":10,"laminate":true,"plinth":"none","walls":{}}' \
+            --max-time 20 https://remont-pro-nine.vercel.app/api/calculate)
+          echo "Calculator API HTTP $api_code"
+          test "$api_code" = "200"
+          grep -q '"ok":true' /tmp/calc.json
+          grep -q '"total"' /tmp/calc.json
+
+      - name: Verify calculator is present in homepage
+        run: |
+          grep -q 'function openCalc' /tmp/site.html
+          grep -q 'function calculateLocal' /tmp/site.html
