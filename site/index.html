@@ -20,11 +20,11 @@
 @media(max-width:800px){.nav{top:0;width:100%;min-height:50px;padding:5px 16px;border-radius:0}.heroGrid{padding-top:78px}.navlinks{display:none}.trustGrid{grid-template-columns:repeat(2,1fr)}.heroGrid,.grid3,.steps,.portfolio,.reviews{grid-template-columns:1fr}.hero{padding-bottom:45px}.heroGrid{padding-top:50px}h1{letter-spacing:-2px}.section{padding:55px 0}.floatingCta{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:900;background:#15171a;color:#fff;border-radius:16px;padding:10px;box-shadow:0 15px 40px #0005;gap:8px}.floatingCta .btn{flex:1;text-align:center;padding:12px 8px}.floatingCta .primary{background:#b9ff4a;color:#10120d}}
 
 /* Sales portfolio */
-.portfolioHero{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:end;margin-top:34px}
-.portfolioIntro{max-width:680px;text-align:center;margin:0 auto}.portfolioIntro h2{font-size:clamp(34px,4.5vw,52px);line-height:1.02;margin:10px 0 14px}
+.portfolioHero{display:block;margin-top:34px;text-align:center}
+.portfolioIntro{max-width:860px;text-align:center;margin:0 auto}.portfolioIntro h2{font-size:clamp(34px,4.5vw,52px);line-height:1.02;margin:10px auto 14px}
 .portfolioIntro p{font-size:17px;line-height:1.6;color:#626870;max-width:620px}
 .portfolioProof{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}.portfolioProof span{background:#fff;border:1px solid #dfe3e7;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:850}
-.portfolioActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.portfolioActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
 .portfolioActions .btn{box-shadow:0 8px 25px #0000000d}
 .portfolioFeatured{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:20px!important}
 .featuredObject{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 14px 35px rgba(20,24,28,.09);border:1px solid #e1e4e7}
@@ -261,6 +261,34 @@ body{
 
 .reviewHidden{display:none!important}.reviewHidden.reviewVisible{display:block!important}
 @media(max-width:800px){.portfolioIntro,.portfolioIntro h2,.portfolioIntro p{text-align:center}.portfolioActions{justify-content:center}}
+/* Final portfolio presentation */
+.portfolioHero{display:block;text-align:center;margin-top:28px}
+.portfolioIntro{max-width:900px;margin:0 auto;text-align:center}
+.portfolioIntro h2{max-width:900px;margin:10px auto 14px}
+.portfolioIntro p{max-width:760px;margin:0 auto;color:#626870;line-height:1.6}
+.portfolioProof{justify-content:center}
+.portfolioActions{justify-content:center;margin-top:22px}
+.portfolioFeatured{display:grid!important;grid-template-columns:1fr!important;gap:24px!important;margin-top:38px}
+.featuredObject{position:relative;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 18px 45px rgba(20,24,28,.12);border:1px solid #e1e4e7}
+.featuredObjectPhotos{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;aspect-ratio:16/9;gap:4px;background:#e7e9eb}
+.featuredTile{position:relative;overflow:hidden;min-height:0}
+.featuredTile img{width:100%;height:100%;display:block;object-fit:cover;transform:none!important;rotate:0deg!important}
+.featuredObjectCaption{position:absolute;left:18px;top:18px;padding:0;z-index:4}
+.featuredObjectCaption span{display:inline-block;background:#b9ff4a;color:#10120d;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:950;letter-spacing:.5px;box-shadow:0 7px 22px rgba(0,0,0,.18)}
+.featuredObjectCaption b{display:none}
+.reviewHidden{display:none!important}
+.reviewHidden.reviewVisible{display:block!important}
+.reviewsMoreWrap{text-align:center;margin-top:24px}
+@media(max-width:800px){
+  .portfolioHero{margin-top:18px}
+  .portfolioIntro{max-width:100%}
+  .portfolioIntro h2{font-size:34px}
+  .portfolioActions{margin-top:18px}
+  .portfolioFeatured{gap:14px!important;margin-top:26px}
+  .featuredObjectPhotos{aspect-ratio:4/3}
+  .featuredObjectCaption{left:12px;top:12px}
+  .featuredObjectCaption span{font-size:11px;padding:7px 10px}
+}
 </style>
 <style>
 .contactModal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,10,12,.72);backdrop-filter:blur(10px)}
@@ -885,7 +913,7 @@ async function loadPortfolio(){
 
     if(!needGallery) return;
 
-    const featuredAlbums=['Большие кабаны','ЖК Уно','Терегулова','Брайт парк'];
+    const featuredAlbums=['ЖК Уно','Большие кабаны','Терегулова','Брайт парк'];
     featured.innerHTML=featuredAlbums.map(album=>{
       const items=portfolioImages.filter(x=>(x.album||x.folder)===album).slice(0,4);
       if(album==='Брайт парк' && items.length===3) items.push(items[0]);
@@ -936,7 +964,7 @@ function openFeatured(i){
 }
 function showPortfolioImage(x){
   document.getElementById('portfolioLarge').src=x.preview||x.url||'';
-  document.getElementById('portfolioCaption').textContent=(x.album||x.folder||'Реализованный объект')+' · '+portfolioLabel(x)+' · РЕМОНТФОРМА';
+  document.getElementById('portfolioCaption').textContent=portfolioAddress(x);
   document.getElementById('portfolioLightbox').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -951,7 +979,19 @@ function showMoreReviews(){
   hidden.slice(0,3).forEach(x=>x.classList.add('reviewVisible'));
   const btn=document.getElementById('reviewsMore');
   const left=[...document.querySelectorAll('[data-review-hidden]')].filter(x=>!x.classList.contains('reviewVisible')).length;
-  if(btn){btn.style.display=left?'inline-block':'none';if(left)btn.textContent='Показать ещё отзывы ('+left+')'}
+  if(btn){
+    btn.style.display=left?'inline-block':'none';
+    if(left) btn.textContent='Показать ещё отзывы ('+left+')';
+  }
+}
+function initReviews(){
+  document.querySelectorAll('[data-review-hidden]').forEach(x=>x.classList.remove('reviewVisible'));
+  const btn=document.getElementById('reviewsMore');
+  const left=document.querySelectorAll('[data-review-hidden]').length;
+  if(btn){
+    btn.style.display=left?'inline-block':'none';
+    if(left) btn.textContent='Показать ещё отзывы ('+left+')';
+  }
 }
 function openContactModal(){
   const m=document.getElementById('contactModal');
@@ -1008,6 +1048,7 @@ try{
 try{render()}catch(e){console.error('Calculator render error',e)}
 try{
   const portfolioSection=document.getElementById('portfolio');
+  initReviews();
   const startPortfolio=()=>{try{loadPortfolio()}catch(e){console.error('Portfolio start error',e)}};
   if('IntersectionObserver' in window && portfolioSection){
     const po=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){po.disconnect();startPortfolio()}},{rootMargin:'900px 0px'});
