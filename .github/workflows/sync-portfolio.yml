@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install image optimizer
+        run: python3 -m pip install --user pillow -q
+
       - name: Download portfolio from Yandex Disk
         shell: bash
         run: |
