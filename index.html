@@ -454,7 +454,8 @@ const S={
   result:null,
   source:'',
   medium:'',
-  campaign:''
+  campaign:'',
+  leadMode:''
 };
 
 const money=x=>Math.round(Number(x)||0).toLocaleString('ru-RU')+' ₽';
@@ -470,6 +471,7 @@ function openCalc(){
   document.body.style.overflow='hidden';
   S.step=0;
   S.result=null;
+  S.leadMode='';
   S.source=UTM.get('utm_source')||UTM.get('source')||'site';
   S.medium=UTM.get('utm_medium')||'';
   S.campaign=UTM.get('utm_campaign')||'';
@@ -576,14 +578,24 @@ function render(){
       '</div>';
   }
 
-  if(S.step===10){
+  if(S.step===10 && S.leadMode==='commercial'){
+    h='<div class="stepTitle">Коммерческий объект</div>'+
+      '<div class="leadBox">'+
+      '<b>План по коммерческому ремонту</b>'+
+      '<p class="muted">После заявки уточним назначение помещения, площадь и требования к отделке. Затем организуем замер, подготовим состав работ и точную смету.</p>'+
+      '<p><b>Оставьте номер телефона</b> — свяжемся с вами и обсудим объект.</p>'+
+      '<div class="field"><label>Телефон *</label><input id="calculatorLeadPhone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00"></div>'+
+      '<button type="button" class="btn primary" style="width:100%;margin-top:8px" onclick="submitCalculatorLead()">Отправить заявку</button>'+
+      '<div id="calculatorLeadStatus" class="contactStatus"></div>'+
+      '</div>';
+  } else if(S.step===10){
     h='<div class="stepTitle">Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
   }
 
   z.innerHTML=h;
 
-  n.textContent=isResult?'Получить точную смету':'Далее →';
-  n.onclick=nextStep;
+  n.textContent=(S.step===10 && S.leadMode==='commercial')?'Закрыть':(isResult?'Получить точную смету':'Далее →');
+  n.onclick=(S.step===10 && S.leadMode==='commercial')?closeCalc:nextStep;
 
   if(S.step===1){
     const el=document.getElementById('floor');
@@ -617,15 +629,7 @@ function render(){
 }
 
 function pick(k,v){
-  if(k==='type'){
-    S.type=v;
-    if(v==='Коммерция'){
-      openCommercialLead();
-      return;
-    }
-  }else{
-    S[k]=v;
-  }
+  S[k]=v;
   render();
 }
 
@@ -670,7 +674,9 @@ async function nextStep(){
   if(!validateCurrentStep()) return;
 
   if(S.step===0 && S.type==='Коммерция'){
-    openCommercialLead();
+    S.step=10;
+    S.leadMode='commercial';
+    render();
     return;
   }
 
@@ -933,16 +939,36 @@ async function submitQuickContact(){
 }
 document.getElementById('contactModal')?.addEventListener('click',e=>{if(e.target.id==='contactModal')closeContactModal()});
 
+async function submitCalculatorLead(){
+  const phone=val('calculatorLeadPhone').trim();
+  const status=document.getElementById('calculatorLeadStatus');
+  if(!phone){status.textContent='Введите номер телефона';return}
+  const btn=document.querySelector('#calculatorLeadPhone')?.closest('.leadBox')?.querySelector('button');
+  if(btn) btn.disabled=true;
+  status.textContent='Отправляем…';
+  try{
+    const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
+    const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href
+    })});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.ok) throw new Error(j.error||'Не удалось отправить');
+    status.textContent='✓ Заявка отправлена. Мы свяжемся с вами.';
+    document.getElementById('calculatorLeadPhone').value='';
+  }catch(e){
+    status.textContent='Не удалось отправить. Попробуйте ещё раз.';
+  }finally{
+    if(btn) btn.disabled=false;
+  }
+}
+
 function openLead(){
   const q=S.result;
   const summary=q
     ? 'Нужна точная смета. Объект: '+S.type+', площадь '+q.floor+' м², предварительно '+money(q.total)+'.'
     : 'Нужна точная смета по моему ремонту.';
   const modal=document.getElementById('contactModal');
-  if(!modal){
-    location.href='https://t.me/+79172433455';
-    return;
-  }
+  if(!modal) return;
   closeCalc();
   openContactModal();
   const comment=document.getElementById('quickContactComment');
