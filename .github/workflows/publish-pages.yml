@@ -32,14 +32,71 @@ jobs:
         with:
           enablement: true
 
-      - name: Ensure portfolio JPEG asset
+      - name: Build high-quality portfolio collage from Yandex Disk
         run: |
-          mkdir -p site/assets/portfolio
-          curl -fsSL --retry 3 --retry-all-errors \
-            "https://raw.githubusercontent.com/rustem4ak-ops/RemontPRO/047a754dc1fca9a8c5b507afb28011966ed6f8bc/site/assets/portfolio/remontforma-collage.jpg" \
-            -o site/assets/portfolio/remontforma-collage.jpg
-          file site/assets/portfolio/remontforma-collage.jpg
-          test -s site/assets/portfolio/remontforma-collage.jpg
+          python - <<'PY'
+          import io, json, os, urllib.parse, urllib.request
+          from PIL import Image, ImageOps, ImageDraw
+
+          public_key = "https://disk.yandex.ru/d/X4VLvyoCDpNVYA"
+          wanted = [
+              "20231223_114456.jpg",
+              "e4844574-e9c1-4b81-8abd-9ffe8a164ffc.jfif",
+              "Точечный рисунок (2).jpg",
+              "photo_2026-03-26_16-19-37.jpg",
+              "photo_2026-03-26_16-19-00.jpg",
+              "20231223_114527.jpg",
+          ]
+
+          def api(path=""):
+              q = urllib.parse.urlencode({"public_key": public_key, **({"path": path} if path else {})})
+              with urllib.request.urlopen("https://cloud-api.yandex.net/v1/disk/public/resources?" + q, timeout=30) as r:
+                  return json.load(r)
+
+          def download(path):
+              q = urllib.parse.urlencode({"public_key": public_key, "path": path})
+              with urllib.request.urlopen("https://cloud-api.yandex.net/v1/disk/public/resources/download?" + q, timeout=30) as r:
+                  href = json.load(r)["href"]
+              with urllib.request.urlopen(href, timeout=60) as r:
+                  return r.read()
+
+          found = {}
+          queue = [""]
+          while queue and len(found) < len(wanted):
+              path = queue.pop(0)
+              data = api(path)
+              for item in data.get("_embedded", {}).get("items", []):
+                  name = item.get("name", "")
+                  ipath = item.get("path", "")
+                  if item.get("type") == "dir":
+                      queue.append(ipath)
+                  elif name in wanted:
+                      found[name] = ipath
+
+          missing = [x for x in wanted if x not in found]
+          if missing:
+              raise SystemExit("Missing portfolio photos on Yandex: " + ", ".join(missing))
+
+          imgs = []
+          for name in wanted:
+              raw = download(found[name])
+              im = Image.open(io.BytesIO(raw))
+              im = ImageOps.exif_transpose(im).convert("RGB")
+              imgs.append(im)
+
+          canvas = Image.new("RGB", (1800, 1200), "white")
+          for i, im in enumerate(imgs):
+              x = (i % 3) * 600
+              y = (i // 3) * 600
+              tile = ImageOps.fit(im, (598, 598), method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+              canvas.paste(tile, (x, y))
+
+          os.makedirs("site/assets/portfolio", exist_ok=True)
+          canvas.save("site/assets/portfolio/remontforma-collage.webp", "WEBP", quality=90, method=6)
+          print("Built", "site/assets/portfolio/remontforma-collage.webp", canvas.size)
+          PY
+          file site/assets/portfolio/remontforma-collage.webp
+          test -s site/assets/portfolio/remontforma-collage.webp
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
