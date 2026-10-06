@@ -1045,43 +1045,7 @@ try{
 @media(max-width:800px){#portfolioFeatured .featuredSheetTile img{min-height:0!important;width:100%!important;height:auto!important}}
 </style>
 
-<script id="cta-hard-fix">
-(function(){
-  function openLeadHard(comment){
-    var calc=document.getElementById('calcModal');
-    var modal=document.getElementById('contactModal');
-    if(calc) calc.classList.remove('open');
-    if(modal){
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden','false');
-      document.body.style.overflow='hidden';
-      var c=document.getElementById('quickContactComment');
-      if(c) c.value=comment||'Нужна точная смета по моему ремонту.';
-      setTimeout(function(){
-        var p=document.getElementById('quickContactPhone');
-        if(p) p.focus();
-      },80);
-    }
-  }
-
-  document.addEventListener('click',function(e){
-    var commercial=e.target.closest && e.target.closest('.choice[data-key="type"][data-value="Коммерция"]');
-    if(commercial){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openLeadHard('Нужна точная смета на ремонт коммерческого помещения.');
-      return;
-    }
-
-    var estimate=e.target.closest && e.target.closest('#nextBtn');
-    if(estimate && (estimate.textContent||'').indexOf('Получить точную смету')!==-1){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openLeadHard('Нужна точная смета по моему ремонту.');
-    }
-  },true);
-})();
-</script>
+<!-- CTA logic is handled by the calculator state machine above. No global click interception. -->
 </body></html>
 <!-- deploy-recovery: sequential portfolio photos -->
 
