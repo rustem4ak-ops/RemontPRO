@@ -908,7 +908,9 @@ function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
 async function loadPortfolio(){
   const featured=document.getElementById('portfolioFeatured');
   if(!featured) return;
-  const local='./assets/portfolio/new-portfolio-sheet.webp';
+  // GitHub Pages: используем локальный файл из /site/assets, без Vercel/Yandex.
+  // Абсолютный путь исключает ошибки с <base href="/RemontPRO/">.
+  const local='/RemontPRO/assets/portfolio/new-portfolio-sheet.webp?v=20261006';
   portfolioImages=[{
     name:'Новые работы — 6 фото',
     album:'Новые работы',
@@ -920,9 +922,9 @@ async function loadPortfolio(){
   portfolioFiltered=portfolioImages.slice();
   featured.innerHTML=
     '<div class="featuredObject">'+
-      '<button type="button" class="featuredTile featuredSheetTile" onclick="openFeatured(0)" aria-label="Открыть фотографии работ">'+
-        '<img loading="eager" fetchpriority="high" decoding="async" width="1200" height="800" src="'+local+'" alt="РЕМОНТФОРМА — реальные фотографии выполненных работ">'+
-      '</button>'+
+      '<div class="featuredTile featuredSheetTile">'+
+        '<img loading="eager" fetchpriority="high" decoding="async" width="720" height="320" src="'+local+'" alt="РЕМОНТФОРМА — реальные фотографии выполненных работ">'+
+      '</div>'+
       '<div class="featuredObjectCaption"><span>РЕАЛЬНЫЕ РАБОТЫ</span><b>Фотографии выполненных объектов</b></div>'+
     '</div>';
 }
@@ -1091,5 +1093,40 @@ try{
 .featuredSheetTile img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;transform:none!important;rotate:0deg!important}
 @media(max-width:800px){
   .featuredObjectPhotos{aspect-ratio:3/2!important}
+}
+</style>
+
+<style id="portfolio-final-fix">
+/* Финальная версия блока работ: фото всегда видны, без обрезки. */
+#portfolioFeatured{display:block!important;width:100%!important;margin-top:34px!important}
+#portfolioFeatured .featuredObject{display:block!important;width:100%!important;background:#fff!important;overflow:hidden!important}
+#portfolioFeatured .featuredSheetTile{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:#eef0f2!important;
+  overflow:hidden!important;
+}
+#portfolioFeatured .featuredSheetTile img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+  rotate:0deg!important;
+  background:#eef0f2!important;
+}
+#portfolioLightbox{display:none!important}
+#portfolioLightbox *{display:none!important}
+@media(max-width:800px){
+  #portfolioFeatured{margin-top:22px!important}
+  #portfolioFeatured .featuredSheetTile img{width:100%!important;height:auto!important}
 }
 </style>
