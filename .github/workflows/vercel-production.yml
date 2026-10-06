@@ -3,6 +3,15 @@ name: Deploy RemontPRO to Vercel
 on:
   push:
     branches: [main]
+    paths:
+      - "index.html"
+      - "api/**"
+      - "assets/**"
+      - "shared/**"
+      - "favicon.svg"
+      - "package.json"
+      - "package-lock.json"
+      - "vercel.json"
   workflow_dispatch:
 
 concurrency:
