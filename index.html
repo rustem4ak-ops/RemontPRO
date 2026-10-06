@@ -929,6 +929,28 @@ async function submitQuickContact(){
 }
 document.getElementById('contactModal')?.addEventListener('click',e=>{if(e.target.id==='contactModal')closeContactModal()});
 
+function openLead(){
+  closeCalc();
+  openContactModal();
+  const comment=document.getElementById('quickContactComment');
+  const q=S.result;
+  if(comment){
+    const summary=q
+      ? 'Нужна точная смета. Объект: '+S.type+', площадь '+q.floor+' м², предварительно '+money(q.total)+'.'
+      : 'Нужна точная смета по моему ремонту.';
+    comment.value=summary;
+  }
+}
+
+function openCommercialLead(){
+  closeCalc();
+  openContactModal();
+  const comment=document.getElementById('quickContactComment');
+  if(comment){
+    comment.value='Нужна точная смета на ремонт коммерческого помещения.';
+  }
+}
+
 function printEstimate(){const q=S.result;document.getElementById('pdfArea').innerHTML='<h1>РЕМОНТФОРМА</h1><h2>Предварительный расчёт ремонта</h2><p>Объект: '+S.type+'</p><p>Площадь: '+q.floor+' м² · Санузел: '+q.bath+' м² · Балкон: '+q.balcony+' м²</p>'+q.rows.map(x=>'<p>'+x.name+' — '+x.quantity+' '+x.unit+' × '+money(x.price)+' = <b>'+money(x.cost)+'</b></p>').join('')+'<hr><h2>Итого: '+money(q.total)+'</h2><p>Цена за м² по полу: '+money(q.pricePerM2)+'</p><p>Предварительный расчёт. Точная смета после замера.</p>';window.print()}
 // Always open a fresh visit at the top of the homepage.
 try{
