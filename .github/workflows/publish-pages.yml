@@ -32,6 +32,9 @@ jobs:
         with:
           enablement: true
 
+      - name: Install image tools
+        run: python -m pip install --disable-pip-version-check --no-input Pillow
+
       - name: Build high-quality portfolio collage from Yandex Disk
         run: |
           python - <<'PY'
