@@ -32,6 +32,15 @@ jobs:
         with:
           enablement: true
 
+      - name: Ensure portfolio JPEG asset
+        run: |
+          mkdir -p site/assets/portfolio
+          curl -fsSL --retry 3 --retry-all-errors \
+            "https://raw.githubusercontent.com/rustem4ak-ops/RemontPRO/047a754dc1fca9a8c5b507afb28011966ed6f8bc/site/assets/portfolio/remontforma-collage.jpg" \
+            -o site/assets/portfolio/remontforma-collage.jpg
+          file site/assets/portfolio/remontforma-collage.jpg
+          test -s site/assets/portfolio/remontforma-collage.jpg
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
         with:
