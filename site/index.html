@@ -290,6 +290,13 @@ body{
   .featuredObjectCaption span{font-size:11px;padding:7px 10px}
 }
 /* Final portfolio alignment */
+/* Final portfolio archive sheet */
+.portfolioFeatured{display:grid!important;grid-template-columns:1fr!important;gap:24px!important;margin-top:38px!important}
+.featuredObjectPhotos{display:block!important;aspect-ratio:3/2!important;background:#eef0f2!important}
+.featuredTile{width:100%;height:100%;overflow:hidden}
+.featuredTile img{width:100%!important;height:100%!important;display:block!important;object-fit:contain!important;background:#eef0f2!important;transform:none!important;rotate:0deg!important}
+@media(max-width:800px){.featuredObjectPhotos{aspect-ratio:3/2!important}}
+
 .portfolioHero{
   display:flex!important;
   flex-direction:column!important;
@@ -383,9 +390,9 @@ body{
 <section class="section" id="portfolio" style="background:#eceef0"><div class="wrap">
   <div class="portfolioHero">
     <div class="portfolioIntro">
-      <div class="eyebrow">Портфолио РЕМОНТФОРМА</div>
-      <h2>Сначала покажем то, за что выбирают подрядчика.</h2>
-      <p>Четыре показательных объекта — реальные фотографии готового ремонта. В каждом примере сразу четыре кадра одного объекта.</p>
+      <div class="eyebrow">Услуги</div>
+      <h2>Сначала покажем реальные фотографии работ.</h2>
+      <p>Все фотографии в этом блоке взяты из нового архива. Показываем их одним большим листом, чтобы сразу было видно качество и результат.</p>
       <div class="portfolioProof"><span>✓ Реальные реализованные объекты</span><span>✓ Готовые интерьеры</span><span>✓ Ремонт под ключ в Казани</span></div>
     </div>
     <div class="portfolioActions">
@@ -892,7 +899,7 @@ function portfolioScore(x){
   if(x.featured) return 900-(Number(x.order)||0);
   return 10;
 }
-function portfolioAddress(x){const a=String(x.album||x.folder||'').trim();const map={'Большие кабаны':'Большие Кабаны','Брайт парк':'ЖК Брайт Парк','ЖК Уно':'ЖК Уно','Портовая':'ул. Портовая','Сокуры':'с. Сокуры','Терегулова':'ул. Терегулова'};return map[a]||a||'Реализованный объект'}
+function portfolioAddress(x){const a=String(x.album||x.folder||'').trim();const map={'Большие кабаны':'Большие Кабаны','Брайт парк':'ЖК Брайт Парк','ЖК Уно':'ЖК Уно','Портовая':'ул. Портовая','Сокуры':'с. Сокуры','Терегулова':'ул. Терегулова','Новые работы':'Новые работы'};return map[a]||a||'Реализованный объект'}
 function portfolioLabel(x){if(x.label)return x.label;return portfolioAddress(x)}
 function portfolioTitle(x){
   return x.title || ('РЕМОНТФОРМА · '+portfolioLabel(x));
@@ -901,74 +908,38 @@ function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
 
 async function loadPortfolio(){
   const box=document.getElementById('portfolioGallery');
-  const folders=document.getElementById('portfolioFolders');
   const featured=document.getElementById('portfolioFeatured');
   const needGallery=Boolean(featured);
-  if(box) box.innerHTML='<div class="portfolioLoading">Загружаем реальные объекты…</div>';
-
-  async function loadFromYandex(){
-    const PUBLIC_KEY='https://disk.yandex.ru/d/X4VLvyoCDpNVYA';
-    const API='https://cloud-api.yandex.net/v1/disk/public/resources';
-    async function walk(path,album,depth){
-      if(depth>6) return [];
-      const url=API+'?public_key='+encodeURIComponent(PUBLIC_KEY)+'&path='+encodeURIComponent(path||'/')+'&limit=1000&preview_size=XXXL';
-      const r=await fetch(url,{cache:'no-store',referrerPolicy:'no-referrer'});
-      const d=await r.json();
-      if(!r.ok) throw new Error('Yandex Disk: HTTP '+r.status);
-      const items=(d&&d._embedded&&d._embedded.items)||[];
-      const out=[];
-      for(const item of items){
-        const itemPath=(path&&path!=='/'?path.replace(/\/$/,'')+'/':'/')+item.name;
-        if(item.type==='dir'){
-          out.push(...await walk(itemPath,item.name,depth+1));
-        }else if(item.type==='file'&&/^image\//i.test(item.mime_type||'')&&(item.preview||item.file)){
-          const featured=FEATURED_NAMES.includes(item.name);
-          out.push({
-            name:item.name,path:itemPath,
-            folder:album||'Реализованные ремонты',
-            album:album||'Реализованные ремонты',
-            preview:item.preview||item.file,url:item.preview||item.file,
-            size:Number(item.size||0),featured,
-            label:featured?portfolioLabel({name:item.name}):null,
-            title:featured?portfolioTitle({name:item.name}):'',
-            order:featured?FEATURED_NAMES.indexOf(item.name)+1:100
-          });
-        }
-      }
-      return out;
-    }
-    const images=await walk('/','Реализованные ремонты',0);
-    if(!images.length) throw new Error('Яндекс Диск не вернул фотографии');
-    return {ok:true,images};
-  }
+  if(box) box.innerHTML='';
+  if(!needGallery) return;
 
   try{
-    let j=null;
-    try{
-      const a=await fetch('./assets/portfolio/portfolio.json',{cache:'force-cache'});
-      const jj=await a.json();
-      if(a.ok&&jj.ok&&Array.isArray(jj.images)&&jj.images.length) j=jj;
-    }catch(_){}
-    if(!j) j=await loadFromYandex();
+    const j={
+      ok:true,
+      count:1,
+      images:[
+        {
+          name:'Новые работы — 6 фото',
+          album:'Новые работы',
+          folder:'Новые работы',
+          url:'./assets/portfolio/new-portfolio-sheet.webp',
+          preview:'./assets/portfolio/new-portfolio-sheet.webp'
+        }
+      ]
+    };
 
-    portfolioImages=j.images.filter(x=>(x&&(x.preview||x.url))).map(x=>({...x,preview:x.preview||x.url,url:x.url||x.preview}));
+    portfolioImages=j.images.map(x=>({...x,preview:x.preview||x.url,url:x.url||x.preview}));
     portfolioImages.forEach((x,i)=>x._score=portfolioScore(x)-i*0.0001);
     portfolioImages.sort(portfolioSort);
 
-    if(!needGallery) return;
-
-    const featuredAlbums=['ЖК Уно','Большие кабаны','Терегулова','Брайт парк'];
+    const featuredAlbums=['Новые работы'];
     featured.innerHTML=featuredAlbums.map(album=>{
-      const items=portfolioImages.filter(x=>(x.album||x.folder)===album).slice(0,4);
-      if(album==='Брайт парк' && items.length===3) items.push(items[0]);
-      const collage=items.map((x,i)=>'<div class="featuredTile"><img loading="lazy" decoding="async" src="'+(x.url||x.preview)+'" alt="'+escapeHtml(album)+' — фото '+(i+1)+'"></div>').join('');
-      return '<div class="featuredObject"><div class="featuredObjectPhotos">'+collage+'</div><div class="featuredObjectCaption"><span>РЕМОНТФОРМА</span><b>'+escapeHtml(portfolioAddress({album:album}))+'</b></div></div>';
+      const items=portfolioImages.filter(x=>(x.album||x.folder)===album);
+      const collage=items.map((x,i)=>'<div class="featuredTile"><img loading="eager" decoding="async" src="'+(x.url||x.preview)+'" alt="РЕМОНТФОРМА — новые фотографии работ"></div>').join('');
+      return '<div class="featuredObject"><div class="featuredObjectPhotos">'+collage+'</div><div class="featuredObjectCaption"><span>НОВЫЕ РАБОТЫ</span><b>'+escapeHtml(portfolioAddress({album:album}))+'</b></div></div>';
     }).join('');
-    
-        // Secondary gallery removed; featured project collages are the active portfolio view.
   }catch(e){
-    featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span><br><a class="btn" style="display:inline-block;margin-top:14px;background:#17191c;color:#fff" href="https://disk.yandex.ru/d/X4VLvyoCDpNVYA" target="_blank" rel="noopener">Открыть все работы</a></div>';
-    if(box) box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
+    featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span></div>';
   }
 }
 function showMorePortfolio(){portfolioVisibleCount+=9;renderPortfolio(portfolioFolder)}

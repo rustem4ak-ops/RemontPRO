@@ -1,4 +1,4 @@
-name: Sync portfolio photos from Yandex Disk
+name: Manual portfolio sync (disabled by default)
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
       - name: Install image optimizer
         run: python3 -m pip install --user pillow -q
 
-      - name: Download portfolio from Yandex Disk
+      - name: Download portfolio from Yandex Disk (manual only)
         shell: bash
         run: |
           set -euo pipefail
@@ -98,7 +98,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Commit portfolio photos
+      - name: Commit portfolio photos (manual only)
         shell: bash
         run: |
           git config user.name "github-actions[bot]"

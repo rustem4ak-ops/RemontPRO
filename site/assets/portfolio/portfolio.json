@@ -1,106 +1,11 @@
 {
   "ok": true,
-  "count": 20,
+  "count": 1,
   "images": [
     {
-      "name": "photo_2022-07-25_14-22-12 (2).jpg",
-      "album": "Большие кабаны",
-      "url": "./assets/portfolio/photo_2022-07-25_14-22-12_2_.webp"
-    },
-    {
-      "name": "photo_2022-07-25_14-22-12.jpg",
-      "album": "Большие кабаны",
-      "url": "./assets/portfolio/photo_2022-07-25_14-22-12.webp"
-    },
-    {
-      "name": "photo_2022-07-25_14-22-14 (2).jpg",
-      "album": "Большие кабаны",
-      "url": "./assets/portfolio/photo_2022-07-25_14-22-14_2_.webp"
-    },
-    {
-      "name": "photo_2022-07-25_14-22-14.jpg",
-      "album": "Большие кабаны",
-      "url": "./assets/portfolio/photo_2022-07-25_14-22-14.webp"
-    },
-    {
-      "name": "photo_2022-07-25_14-22-25.jpg",
-      "album": "Большие кабаны",
-      "url": "./assets/portfolio/photo_2022-07-25_14-22-25.webp"
-    },
-    {
-      "name": "20251025_170437.jpg",
-      "album": "Брайт парк",
-      "url": "./assets/portfolio/20251025_170437.webp"
-    },
-    {
-      "name": "20251025_170537.jpg",
-      "album": "Брайт парк",
-      "url": "./assets/portfolio/20251025_170537.webp"
-    },
-    {
-      "name": "20251025_170548.jpg",
-      "album": "Брайт парк",
-      "url": "./assets/portfolio/20251025_170548.webp"
-    },
-    {
-      "name": "20260401_123337.jpg",
-      "album": "ЖК Уно",
-      "url": "./assets/portfolio/20260401_123337.webp"
-    },
-    {
-      "name": "20260401_123342.jpg",
-      "album": "ЖК Уно",
-      "url": "./assets/portfolio/20260401_123342.webp"
-    },
-    {
-      "name": "20260401_123633.jpg",
-      "album": "ЖК Уно",
-      "url": "./assets/portfolio/20260401_123633.webp"
-    },
-    {
-      "name": "20260401_123643.jpg",
-      "album": "ЖК Уно",
-      "url": "./assets/portfolio/20260401_123643.webp"
-    },
-    {
-      "name": "photo_2026-03-26_16-46-25.jpg",
-      "album": "Портовая",
-      "url": "./assets/portfolio/photo_2026-03-26_16-46-25.webp"
-    },
-    {
-      "name": "photo_2026-03-26_16-19-37.jpg",
-      "album": "Сокуры",
-      "url": "./assets/portfolio/photo_2026-03-26_16-19-37.webp"
-    },
-    {
-      "name": "20231223_114444.jpg",
-      "album": "Терегулова",
-      "url": "./assets/portfolio/20231223_114444.webp"
-    },
-    {
-      "name": "20231223_114456.jpg",
-      "album": "Терегулова",
-      "url": "./assets/portfolio/20231223_114456.webp"
-    },
-    {
-      "name": "20231223_114507.jpg",
-      "album": "Терегулова",
-      "url": "./assets/portfolio/20231223_114507.webp"
-    },
-    {
-      "name": "20231223_114512.jpg",
-      "album": "Терегулова",
-      "url": "./assets/portfolio/20231223_114512.webp"
-    },
-    {
-      "name": "20231223_114518.jpg",
-      "album": "Терегулова",
-      "url": "./assets/portfolio/20231223_114518.webp"
-    },
-    {
-      "name": "20231223_114527.jpg",
-      "album": "Терегулова",
-      "url": "./assets/portfolio/20231223_114527.webp"
+      "name": "Новые работы — 6 фото",
+      "album": "Новые работы",
+      "url": "./assets/portfolio/new-portfolio-sheet.webp"
     }
   ]
 }
