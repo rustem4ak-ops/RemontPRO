@@ -1,0 +1,71 @@
+name: Deploy RemontPRO to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Link to existing Vercel project
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel link --yes \
+            --project remont-pro \
+            --scope rustem4ak-ops \
+            --token "$VERCEL_TOKEN"
+
+      - name: Pull production settings and environment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull --yes \
+            --environment=production \
+            --token "$VERCEL_TOKEN"
+
+      - name: Build locally in GitHub Actions
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel build --prod --token "$VERCEL_TOKEN"
+
+      - name: Deploy prebuilt production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" > deployment-url.txt
+          echo "Production deployment: $(cat deployment-url.txt)"
+
+      - name: Verify production URL
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -L -s -o /tmp/site.html -w "%{http_code}" --max-time 20 https://remont-pro-nine.vercel.app/)
+            echo "Attempt $i: HTTP $code"
+            if [ "$code" = "200" ] && grep -qi "РЕМОНТФОРМА\|Ремонт" /tmp/site.html; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Production site did not return the expected page."
+          exit 1
