@@ -32,15 +32,6 @@ jobs:
         with:
           enablement: true
 
-      - name: Restore verified high-quality portfolio image
-        run: |
-          mkdir -p site/assets/portfolio
-          curl -fsSL --retry 5 --retry-all-errors \
-            "https://raw.githubusercontent.com/rustem4ak-ops/RemontPRO/93b52bc84d6ec0211af02525df1064b17f4088c7/site/assets/portfolio/remontforma-collage.webp" \
-            -o site/assets/portfolio/remontforma-collage.webp
-          file site/assets/portfolio/remontforma-collage.webp
-          test -s site/assets/portfolio/remontforma-collage.webp
-
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
         with:
