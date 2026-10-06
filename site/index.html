@@ -829,7 +829,7 @@ async function loadPortfolio(){
   const folders=document.getElementById('portfolioFolders');
   const featured=document.getElementById('portfolioFeatured');
   const needGallery=Boolean(featured);
-  if(needGallery) box.innerHTML='<div class="portfolioLoading">Загружаем реальные объекты…</div>';
+  if(box) box.innerHTML='<div class="portfolioLoading">Загружаем реальные объекты…</div>';
 
   async function loadFromYandex(){
     const PUBLIC_KEY='https://disk.yandex.ru/d/X4VLvyoCDpNVYA';
@@ -893,7 +893,7 @@ async function loadPortfolio(){
         // Secondary gallery removed; featured project collages are the active portfolio view.
   }catch(e){
     featured.innerHTML='<div class="portfolioEmpty"><b>Не удалось загрузить фотографии.</b><br><span class="muted">'+escapeHtml(e.message||'Ошибка загрузки')+'</span><br><a class="btn" style="display:inline-block;margin-top:14px;background:#17191c;color:#fff" href="https://disk.yandex.ru/d/X4VLvyoCDpNVYA" target="_blank" rel="noopener">Открыть все работы</a></div>';
-    box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
+    if(box) box.innerHTML='<div class="portfolioEmpty"><b>Портфолио временно недоступно.</b><br><button class="btn" style="margin-top:14px;background:#17191c;color:#fff" onclick="loadPortfolio()">Повторить</button></div>';
   }
 }
 function showMorePortfolio(){portfolioVisibleCount+=9;renderPortfolio(portfolioFolder)}
