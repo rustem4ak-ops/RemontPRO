@@ -1020,7 +1020,7 @@ function closeContactModal(){
   if(!m)return;
   m.classList.remove('open');m.setAttribute('aria-hidden','true');
 }
-async async function submitQuickContact(){
+async function submitQuickContact(){
   const name=val('quickContactName').trim();
   const phone=val('quickContactPhone').trim();
   const comment=val('quickContactComment').trim();
@@ -1042,7 +1042,7 @@ async async function submitQuickContact(){
     const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
-      source:'site-calculator',
+      source:S.source||'site-calculator',
       referrer:document.referrer||'',
       url:location.href,
       calculator,
