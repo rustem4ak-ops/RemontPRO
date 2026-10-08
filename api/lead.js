@@ -48,6 +48,37 @@ async function maxSend(text) {
       if (r.ok && data && data.message) {
         return last;
       }
+
+      // MAX может не принять HTML-разметку. Повторяем отправку тем же
+      // содержанием, но без HTML-тегов — чтобы заявка не терялась.
+      if (r.ok) {
+        continue;
+      }
+
+      try {
+        var plainText = text.replace(/<[^>]+>/g, '');
+        var fallback = await fetch('https://platform-api2.max.ru' + targets[i], {
+          method: 'POST',
+          headers: {
+            'Authorization': token,
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            text: plainText,
+            notify: true
+          })
+        });
+        var fallbackData = await fallback.json().catch(function() { return {}; });
+        last = { ok: fallback.ok, status: fallback.status, data: fallbackData };
+        if (fallback.ok && fallbackData && fallbackData.message) {
+          return last;
+        }
+      } catch (fallbackError) {
+        last = {
+          ok: false,
+          error: String(fallbackError && fallbackError.message ? fallbackError.message : fallbackError)
+        };
+      }
     } catch (e) {
       last = {
         ok: false,
