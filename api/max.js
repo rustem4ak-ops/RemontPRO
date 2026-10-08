@@ -104,7 +104,7 @@ function stateStoreConfig() {
     process.env.KV_REST_API_TOKEN ||
     process.env.UPSTASH_REDIS_REST_TOKEN ||
     process.env.VERCEL_KV_REST_API_TOKEN;
-  return base && token ? { base: base.replace(/\\/$/, ''), token } : null;
+  return base && token ? { base: base.replace(/\/$/, ''), token } : null;
 }
 
 async function stateStoreRequest(path, options = {}) {
