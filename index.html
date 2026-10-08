@@ -615,7 +615,7 @@ function render(){
     h='<div class="stepTitle">1. Тип объекта</div><div class="choices">'+
       opt('🏠 Квартира','Квартира','type')+
       opt('🏡 Дом','Дом','type')+
-      '<button type="button" class="choice" onclick="openCommercialContact();return false;"><span>🏢 Коммерция</span></button>'+
+      ''+opt('🏢 Коммерция','Коммерция','type')+''+
       '</div>';
   }
 
@@ -779,9 +779,12 @@ async function nextStep(){
   if(!validateCurrentStep()) return;
 
   if(S.step===0 && S.type==='Коммерция'){
-    S.step=10;
     S.leadMode='commercial';
-    render();
+    S.source='calculator-commercial';
+    closeCalc();
+    openContactModal();
+    var comment=document.getElementById('quickContactComment');
+    if(comment) comment.value='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
     return;
   }
 
