@@ -380,7 +380,7 @@ body{
 <div><div class="teaser">🧮 <b>Онлайн-расчёт</b><br><span>Ответьте на вопросы, получите предварительную стоимость и при желании оставьте контакты для точной сметы.</span></div><button class="btn primary" style="width:100%;margin-top:12px" onclick="openCalc()">Рассчитать ремонт</button></div></div></div></header>
 
 <div class="trust"><div class="wrap"><div class="trustGrid"><div class="trustItem"><b>Под ключ</b><span>Организация всех основных этапов ремонта</span></div><div class="trustItem"><b>Прозрачный расчёт</b><span>Предварительная стоимость до замера</span></div><div class="trustItem"><b>Казань</b><span>Работаем с квартирами, домами и коммерцией</span></div><div class="trustItem"><b>Один подрядчик</b><span>Единая точка связи по ремонту</span></div></div></div></div>
-<div id="calcModal" class="modal"><div class="modalBg" onclick="closeCalc()"></div><div class="modalBox"><button class="close" onclick="closeCalc()">×</button><div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div><p class="muted" style="margin:7px 0 0">Рассчитайте предварительную стоимость за несколько минут — без звонка менеджеру.</p><div id="progressText" class="progressText"></div><div class="progress"><div id="bar" class="bar"></div></div><div id="wizard"></div><div class="calcActions"><button id="backBtn" class="btn back hidden" onclick="prevStep()">← Назад</button><button id="nextBtn" type="button" class="btn primary" onclick="handleNextButton(event)">Далее →</button></div></div></div>
+<div id="calcModal" class="modal"><div class="modalBg" onclick="closeCalc()"></div><div class="modalBox"><button class="close" onclick="closeCalc()">×</button><div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div><p class="muted" style="margin:7px 0 0">Рассчитайте предварительную стоимость за несколько минут — без звонка менеджеру.</p><div id="progressText" class="progressText"></div><div class="progress"><div id="bar" class="bar"></div></div><div id="wizard"></div><div class="calcActions"><button id="backBtn" class="btn back hidden" onclick="prevStep()">← Назад</button><button id="nextBtn" type="button" class="btn primary">Далее →</button></div></div></div>
 <div id="pdfArea" class="printOnly"></div>
 
 <section class="section" id="services"><div class="wrap"><div class="center"><div class="eyebrow">Услуги</div><h2>Полный ремонт под ключ</h2><p class="muted">От первого замера до сдачи готового объекта.</p></div><div class="grid3"><div class="service" data-service="apartment"><div class="num">01</div><h3>Квартиры</h3><p class="muted">Черновая и чистовая отделка, электрика, сантехника и все этапы ремонта.</p></div><div class="service" data-service="house"><div class="num">02</div><h3>Дома</h3><p class="muted">Комплексная организация ремонта частных домов с контролем этапов.</p></div><div class="service" data-service="commercial"><div class="num">03</div><h3>Коммерция</h3><p class="muted">Ремонт помещений под офисы, магазины и другие коммерческие задачи.</p></div></div></div></section>
@@ -595,7 +595,7 @@ function render(){
   z.innerHTML=h;
 
   n.textContent=(S.step===10 && S.leadMode==='commercial')?'Закрыть':(isResult?'Получить точную смету':'Далее →');
-  n.onclick=(S.step===10 && S.leadMode==='commercial')?closeCalc:nextStep;
+  n.onclick=(S.step===10 && S.leadMode==='commercial')?closeCalc:handleNextButton;
 
   if(S.step===1){
     const el=document.getElementById('floor');
