@@ -931,7 +931,8 @@ async function submitQuickContact(){
       floor:Number(S.floor)||0,
       bath:Number(S.bath)||0,
       balcony:0,
-      windows:Number(S.windows)||0
+      windows:Number(S.windows)||0,
+      tileArea:Number(S.tileArea)||0
     };
     const r=await fetch('https://remont-pro-nine.vercel.app/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
