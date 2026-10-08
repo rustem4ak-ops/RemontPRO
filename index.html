@@ -431,6 +431,33 @@ body{
   #portfolioFeatured.portfolioSequential .featuredObjectCaption b{font-size:13px!important}
 }
 </style>
+<style id="calculator-mobile-native-fix">
+@media(max-width:800px){
+  #calcModal{
+    z-index:2147483000!important;
+    background:rgba(0,0,0,.72)!important;
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+    transform:translateZ(0)!important;
+  }
+  #calcModal.open{display:flex!important;pointer-events:auto!important}
+  #calcModal .modalBox{
+    z-index:2147483001!important;
+    position:relative!important;
+    pointer-events:auto!important;
+    transform:translateZ(0)!important;
+  }
+  #calcModal .choice,
+  #calcModal #nextBtn,
+  #calcModal #backBtn{
+    position:relative!important;
+    z-index:2147483002!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="hero"><div class="wrap"><nav class="nav"><a class="logo" href="./" aria-label="РЕМОНТФОРМА">
