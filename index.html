@@ -1079,7 +1079,102 @@ try{
 </style>
 
 <!-- CTA logic is handled by the calculator state machine above. No global click interception. -->
-</body></html>
+
+<!-- calculator-mobile-stability-fix -->
+<style id="calculator-mobile-stability-css">
+  #calcModal{z-index:2000!important;pointer-events:none!important}
+  #calcModal.open{pointer-events:auto!important}
+  #calcModal .modalBox{z-index:2001!important;pointer-events:auto!important}
+  #calcModal .calcActions{z-index:2005!important;pointer-events:auto!important}
+  #calcModal .calcActions button,
+  #calcModal .choice{position:relative!important;z-index:2006!important;pointer-events:auto!important;touch-action:manipulation!important}
+</style>
+<script>
+(function(){
+  'use strict';
+
+  function bootCalculatorStability(){
+    var modal=document.getElementById('calcModal');
+    var wizard=document.getElementById('wizard');
+    var next=document.getElementById('nextBtn');
+    if(!modal || !wizard || !next) return;
+
+    function bind(){
+      wizard=document.getElementById('wizard')||wizard;
+      next=document.getElementById('nextBtn')||next;
+      if(!wizard || !next) return;
+
+      // One native click path for every calculator choice.
+      if(!wizard.__rfStableBound){
+        wizard.__rfStableBound=true;
+        wizard.addEventListener('click',function(e){
+          var choice=e.target && e.target.closest ? e.target.closest('.choice[data-key]') : null;
+          if(!choice || !wizard.contains(choice)) return;
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          if(typeof window.pick==='function'){
+            window.pick(choice.getAttribute('data-key'),choice.getAttribute('data-value'));
+          }
+          // Commercial must advance immediately after selection, never close the modal.
+          if(choice.getAttribute('data-key')==='type' &&
+             choice.getAttribute('data-value')==='Коммерция' &&
+             typeof window.nextStep==='function'){
+            window.nextStep();
+          }
+        },true);
+      }
+
+      if(!next.__rfStableBound){
+        next.__rfStableBound=true;
+        next.addEventListener('click',function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          if(typeof window.nextStep==='function') window.nextStep();
+        },true);
+      }
+    }
+
+    bind();
+
+    // The main calculator re-renders its buttons. Re-bind after every render without
+    // replacing the application's state machine.
+    if(typeof window.render==='function' && !window.render.__rfStableWrapped){
+      var originalRender=window.render;
+      function stableRender(){
+        var result=originalRender.apply(this,arguments);
+        bind();
+        return result;
+      }
+      stableRender.__rfStableWrapped=true;
+      window.render=stableRender;
+    }
+
+    // Keep the existing openCalc state reset, then immediately restore the stable
+    // native handlers after the modal has been rendered.
+    if(typeof window.openCalc==='function' && !window.openCalc.__rfStableWrapped){
+      var originalOpen=window.openCalc;
+      function stableOpen(){
+        var result=originalOpen.apply(this,arguments);
+        bind();
+        return result;
+      }
+      stableOpen.__rfStableWrapped=true;
+      window.openCalc=stableOpen;
+    }
+
+    // Guard against any stale inline handler being reattached by render().
+    var observer=new MutationObserver(function(){ bind(); });
+    observer.observe(wizard,{childList:true,subtree:true});
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',bootCalculatorStability,{once:true});
+  }else{
+    bootCalculatorStability();
+  }
+})();
+</script>
+\n</body></html>
 <!-- deploy-recovery: sequential portfolio photos -->
 
 <!-- github-pages-fallback: frontend can run independently of Vercel hosting -->
