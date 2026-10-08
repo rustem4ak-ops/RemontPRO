@@ -231,10 +231,11 @@ module.exports = async function handler(req, res) {
     var maxSent = false;
     var maxError = '';
 
-    if (process.env.TELEGRAM_ADMIN_CHAT_ID) {
+    var telegramChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID;
+    if (telegramChatId) {
       try {
         var t = await tg('sendMessage', {
-          chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID,
+          chat_id: telegramChatId,
           text: message,
           parse_mode: 'HTML'
         });
@@ -244,7 +245,7 @@ module.exports = async function handler(req, res) {
         if (!telegramSent) {
           var plain = message.replace(/<[^>]+>/g, '');
           var t2 = await tg('sendMessage', {
-            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID,
+            chat_id: telegramChatId,
             text: plain
           });
 
@@ -254,7 +255,7 @@ module.exports = async function handler(req, res) {
         try {
           var plainFallback = message.replace(/<[^>]+>/g, '');
           var t3 = await tg('sendMessage', {
-            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID,
+            chat_id: telegramChatId,
             text: plainFallback
           });
 
