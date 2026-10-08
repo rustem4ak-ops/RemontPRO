@@ -4,7 +4,7 @@
 // MAX_BOT_TOKEN + MAX_ADMIN_USER_ID (лично) или MAX_ADMIN_CHAT_ID (чат) — MAX уведомление.
 
 function tg(method, body) {
-  var token = process.env.TELEGRAM_BOT_TOKEN;
+  var token = process.env.TELEGRAM_BOT_TOKEN || process.env.TG_BOT_TOKEN;
   if (!token) return Promise.resolve(null);
 
   return fetch('https://api.telegram.org/bot' + token + '/' + method, {
@@ -45,7 +45,7 @@ async function maxSend(text) {
       var data = await r.json().catch(function() { return {}; });
       last = { ok: r.ok, status: r.status, data: data };
 
-      if (r.ok && data && data.message) {
+      if (r.ok) {
         return last;
       }
 
@@ -70,7 +70,7 @@ async function maxSend(text) {
         });
         var fallbackData = await fallback.json().catch(function() { return {}; });
         last = { ok: fallback.ok, status: fallback.status, data: fallbackData };
-        if (fallback.ok && fallbackData && fallbackData.message) {
+        if (fallback.ok) {
           return last;
         }
       } catch (fallbackError) {
@@ -105,7 +105,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА Lead API',
-      telegram: Boolean(process.env.TELEGRAM_ADMIN_CHAT_ID),
+      telegram: Boolean(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID),
       max: Boolean(
         process.env.MAX_BOT_TOKEN &&
         (process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID)
@@ -234,7 +234,7 @@ module.exports = async function handler(req, res) {
     if (process.env.TELEGRAM_ADMIN_CHAT_ID) {
       try {
         var t = await tg('sendMessage', {
-          chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+          chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID,
           text: message,
           parse_mode: 'HTML'
         });
@@ -244,7 +244,7 @@ module.exports = async function handler(req, res) {
         if (!telegramSent) {
           var plain = message.replace(/<[^>]+>/g, '');
           var t2 = await tg('sendMessage', {
-            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID,
             text: plain
           });
 
@@ -254,7 +254,7 @@ module.exports = async function handler(req, res) {
         try {
           var plainFallback = message.replace(/<[^>]+>/g, '');
           var t3 = await tg('sendMessage', {
-            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID,
+            chat_id: process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID,
             text: plainFallback
           });
 
@@ -271,7 +271,7 @@ module.exports = async function handler(req, res) {
       try {
         var m = await maxSend(message);
 
-        maxSent = Boolean(m && m.ok && m.data && m.data.message);
+        maxSent = Boolean(m && m.ok);
 
         if (!maxSent) {
           maxError = m && (
