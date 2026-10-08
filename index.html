@@ -603,8 +603,6 @@ function render(){
     return false;
   };
   n.onclick=action;
-  n.onpointerup=action;
-  n.ontouchend=action;
 
   if(S.step===1){
     const el=document.getElementById('floor');
@@ -642,22 +640,18 @@ function pick(k,v){
   render();
 }
 
-document.addEventListener('pointerup',e=>{
-  const el=e.target.closest('.choice[data-key]');
-  if(!el)return;
-  e.preventDefault();
-  e.stopPropagation();
-  pick(el.dataset.key,el.dataset.value);
-},{capture:true});
-document.addEventListener('click',e=>{
-  const el=e.target.closest('.choice[data-key]');
-  if(!el)return;
-  e.preventDefault();
-  e.stopPropagation();
-  pick(el.dataset.key,el.dataset.value);
-},{capture:true});
-
-// Calculator buttons use direct handlers; no document-level touch interception.
+// Calculator choice buttons use one delegated handler on the wizard itself.
+// This keeps mobile taps and desktop clicks on the same native click path.
+const wizard=document.getElementById('wizard');
+if(wizard){
+  wizard.onclick=function(e){
+    const el=e.target.closest('.choice[data-key]');
+    if(!el || !wizard.contains(el)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    pick(el.dataset.key,el.dataset.value);
+  };
+}
 
 function validateCurrentStep(){
   if(S.step===1 && (!S.floor || S.floor<=0)){
