@@ -5,7 +5,7 @@
 
 function tg(method, body) {
   var token = process.env.TELEGRAM_BOT_TOKEN || process.env.TG_BOT_TOKEN;
-  if (!token) return Promise.resolve(null);
+  if (!token) return Promise.resolve({ ok: false, error: 'TELEGRAM_BOT_TOKEN не задан' });
 
   return fetch('https://api.telegram.org/bot' + token + '/' + method, {
     method: 'POST',
@@ -229,6 +229,7 @@ module.exports = async function handler(req, res) {
     var message = lines.join('\n');
     var telegramSent = false;
     var maxSent = false;
+    var telegramError = '';
     var maxError = '';
 
     var telegramChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID;
@@ -241,6 +242,9 @@ module.exports = async function handler(req, res) {
         });
 
         telegramSent = Boolean(t && t.ok);
+        if (!telegramSent) {
+          telegramError = (t && (t.description || t.error)) || 'Telegram не подтвердил отправку';
+        }
 
         if (!telegramSent) {
           var plain = message.replace(/<[^>]+>/g, '');
@@ -250,8 +254,10 @@ module.exports = async function handler(req, res) {
           });
 
           telegramSent = Boolean(t2 && t2.ok);
+          if (!telegramSent) telegramError = (t2 && (t2.description || t2.error)) || telegramError;
         }
-      } catch (telegramError) {
+      } catch (telegramException) {
+        telegramError = String(telegramException && telegramException.message ? telegramException.message : telegramException);
         try {
           var plainFallback = message.replace(/<[^>]+>/g, '');
           var t3 = await tg('sendMessage', {
@@ -260,6 +266,7 @@ module.exports = async function handler(req, res) {
           });
 
           telegramSent = Boolean(t3 && t3.ok);
+          if (!telegramSent) telegramError = (t3 && (t3.description || t3.error)) || telegramError;
         } catch (_) {}
       }
     }
@@ -294,6 +301,7 @@ module.exports = async function handler(req, res) {
         telegramSent: false,
         maxSent: false,
         error: 'Не удалось отправить заявку ни в Telegram, ни в MAX',
+        telegramError: telegramError || 'Telegram не настроен или не ответил',
         maxError: maxError
       });
     }
@@ -302,6 +310,7 @@ module.exports = async function handler(req, res) {
       ok: true,
       telegramSent: telegramSent,
       maxSent: maxSent,
+      telegramError: telegramError || null,
       maxError: maxError || null
     });
   } catch (e) {
