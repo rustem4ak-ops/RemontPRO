@@ -924,8 +924,23 @@ async function submitQuickContact(){
   if(!phone){status.textContent='Введите номер телефона';return}
   btn.disabled=true;status.textContent='Отправляем…';
   try{
+    const q=S.result||{};
+    const calculator=q && Array.isArray(q.rows) ? q : {total:0,pricePerM2:0,rows:[]};
+    const object={
+      type:S.type||'Не указан',
+      floor:Number(S.floor)||0,
+      bath:Number(S.bath)||0,
+      balcony:0,
+      windows:Number(S.windows)||0
+    };
     const r=await fetch('https://remont-pro-nine.vercel.app/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      name,phone,comment,source:'site-contact',referrer:document.referrer||'',url:location.href
+      name,phone,
+      comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
+      source:'site-calculator',
+      referrer:document.referrer||'',
+      url:location.href,
+      calculator,
+      object
     })});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||!j.ok)throw new Error(j.error||'Не удалось отправить');
