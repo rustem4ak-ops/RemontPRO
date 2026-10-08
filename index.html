@@ -946,7 +946,7 @@ async function submitQuickContact(){
       windows:Number(S.windows)||0,
       tileArea:Number(S.tileArea)||0
     };
-    const r=await fetch('https://remont-pro-nine.vercel.app/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
       source:'site-calculator',
@@ -1280,10 +1280,14 @@ try{
     if(!modal || !modal.classList.contains('open')) return;
     var p=e.touches&&e.touches[0] ? e.touches[0] : (e.changedTouches&&e.changedTouches[0] ? e.changedTouches[0] : e);
     if(!p || typeof p.clientX!=='number' || typeof p.clientY!=='number') return;
-    var el=document.elementFromPoint(p.clientX,p.clientY);
-    if(!el || !el.closest) return;
-    var choice=el.closest('#calcModal .choice[data-key]');
-    var next=el.closest('#calcModal #nextBtn');
+    var els=document.elementsFromPoint ? document.elementsFromPoint(p.clientX,p.clientY) : [document.elementFromPoint(p.clientX,p.clientY)];
+    var choice=null, next=null;
+    for(var i=0;i<els.length;i++){
+      if(!els[i] || !els[i].closest) continue;
+      if(!choice) choice=els[i].closest('#calcModal .choice[data-key]');
+      if(!next) next=els[i].closest('#calcModal #nextBtn');
+      if(choice || next) break;
+    }
     if(!choice && !next) return;
     e.preventDefault();
     e.stopImmediatePropagation();
