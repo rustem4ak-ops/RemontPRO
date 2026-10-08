@@ -1231,6 +1231,45 @@ try{
   }
 })();
 </script>
+
+<!-- calculator-mobile-touch-v3 -->
+<script>
+(function(){
+  function installMobileCalculator(){
+    var root=document.getElementById('calcModal');
+    if(!root || root.__rfV3) return;
+    root.__rfV3=true;
+    var fired=0;
+    function handle(e){
+      if(!root.classList.contains('open')) return;
+      var p=e.touches && e.touches[0] ? e.touches[0] : e;
+      if(!p || typeof p.clientX!=='number') return;
+      var el=document.elementFromPoint(p.clientX,p.clientY);
+      if(!el) return;
+      var choice=el.closest && el.closest('#calcModal .choice[data-key]');
+      var next=el.closest && el.closest('#calcModal #nextBtn');
+      if(!choice && !next) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var now=Date.now();
+      if(now-fired<350) return;
+      fired=now;
+      if(choice && typeof window.pick==='function'){
+        window.pick(choice.dataset.key,choice.dataset.value);
+        if(choice.dataset.key==='type' && choice.dataset.value==='Коммерция' && typeof window.nextStep==='function'){
+          setTimeout(window.nextStep,0);
+        }
+      }else if(next && typeof window.nextStep==='function'){
+        window.nextStep();
+      }
+    }
+    root.addEventListener('touchstart',handle,{capture:true,passive:false});
+    root.addEventListener('pointerdown',handle,{capture:true,passive:false});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',installMobileCalculator,{once:true});
+  else installMobileCalculator();
+})();
+</script>
 \n</body></html>
 <!-- deploy-recovery: sequential portfolio photos -->
 
