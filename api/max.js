@@ -87,8 +87,87 @@ function maxRequest(path, method = 'GET', body) {
   });
 }
 
+// Состояние диалога нельзя хранить только в globalThis: Vercel запускает
+// webhook в разных serverless-инстансах. Иначе после ответа пользователя
+// (например, на вопрос о площади санузла) get(id) может вернуть пусто и
+// бот ошибочно запустит приветствие заново.
 const sessions = globalThis.__RF_MAX_SESSIONS || (globalThis.__RF_MAX_SESSIONS = new Map());
 const liveLeadSeen = globalThis.__RF_MAX_LIVE_LEADS || (globalThis.__RF_MAX_LIVE_LEADS = new Set());
+const SESSION_TTL = 24 * 60 * 60;
+
+function stateStoreConfig() {
+  const base =
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.VERCEL_KV_REST_API_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.VERCEL_KV_REST_API_TOKEN;
+  return base && token ? { base: base.replace(/\\/$/, ''), token } : null;
+}
+
+async function stateStoreRequest(path, options = {}) {
+  const cfg = stateStoreConfig();
+  if (!cfg) return null;
+  const response = await fetch(cfg.base + path, {
+    ...options,
+    headers: {
+      Authorization: 'Bearer ' + cfg.token,
+      'content-type': 'application/json',
+      ...(options.headers || {})
+    }
+  });
+  if (!response.ok) throw new Error('State store HTTP ' + response.status);
+  return response.json();
+}
+
+function stateKey(id) {
+  return 'rf:max:session:' + String(id);
+}
+
+function save(id, state) {
+  const key = String(id);
+  sessions.set(key, state);
+  const cfg = stateStoreConfig();
+  if (cfg) {
+    const value = encodeURIComponent(JSON.stringify(state));
+    stateStoreRequest('/set/' + encodeURIComponent(stateKey(key)) + '/' + value + '/EX/' + SESSION_TTL)
+      .catch(error => console.error('[MAX state save]', error.message));
+  }
+}
+
+async function get(id) {
+  const key = String(id);
+  const local = sessions.get(key);
+  if (local) return local;
+
+  const cfg = stateStoreConfig();
+  if (!cfg) return undefined;
+
+  try {
+    const result = await stateStoreRequest('/get/' + encodeURIComponent(stateKey(key)));
+    if (!result || result.result == null) return undefined;
+    const state = typeof result.result === 'string' ? JSON.parse(result.result) : result.result;
+    if (state && typeof state === 'object') {
+      sessions.set(key, state);
+      return state;
+    }
+  } catch (error) {
+    console.error('[MAX state get]', error.message);
+  }
+  return undefined;
+}
+
+function clear(id) {
+  const key = String(id);
+  sessions.delete(key);
+  const cfg = stateStoreConfig();
+  if (cfg) {
+    stateStoreRequest('/del/' + encodeURIComponent(stateKey(key)))
+      .catch(error => console.error('[MAX state clear]', error.message));
+  }
+}
 
 async function monitorMaxGroupMessage(update){
   const m=update.message||{};
@@ -365,7 +444,7 @@ async function handleCallback(update) {
     answerCallback(callbackId).catch(() => {});
   }
 
-  const s = get(id) || {};
+  const s = (await get(id)) || {};
 
   switch (payload) {
     case 'RESTART':
@@ -679,7 +758,7 @@ async function handleMessage(update) {
     return start(id);
   }
 
-  const s = get(id);
+  const s = await get(id);
 
   if (s?.step === 'result' || s?.step === 'commercialLead') {
     const phone = contactFromMessage(m);
