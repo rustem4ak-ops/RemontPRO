@@ -340,7 +340,8 @@ body{
   .portfolioActions .btn{
     flex:0 1 auto!important;
   }
-}\n</style>
+}
+</style>
 <style>
 .contactModal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,10,12,.72);backdrop-filter:blur(10px)}
 .contactModal.open{display:flex}
@@ -363,6 +364,71 @@ body{
   .nav,.teaser,.trust,.reviewsSection .review,#services .service,#services .step{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
   .hero:after{display:none}
   .section:before,.section:after{display:none}
+}
+</style>
+<style id="portfolio-instant-fix">
+.portfolioProof{display:none!important}
+.featuredObjectPhotos{display:block!important;aspect-ratio:3/2!important;background:#eef0f2!important}
+.featuredSheetTile{display:block!important;width:100%!important;height:100%!important;padding:0!important;border:0!important;background:#eef0f2!important;cursor:zoom-in!important;overflow:hidden!important}
+.featuredSheetTile img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;transform:none!important;rotate:0deg!important}
+@media(max-width:800px){
+  .featuredObjectPhotos{aspect-ratio:3/2!important}
+}
+</style>
+<style id="portfolio-final-fix">
+/* Финальная версия портфолио: шесть фотографий идут последовательно, без коллажа. */
+#portfolioFeatured.portfolioSequential{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+  width:100%!important;
+  margin-top:34px!important;
+}
+#portfolioFeatured.portfolioSequential .featuredObject{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  min-width:0!important;
+  background:#fff!important;
+  border:1px solid #e1e4e7!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+}
+#portfolioFeatured.portfolioSequential .featuredSheetTile{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:4/3!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:#eef0f2!important;
+  overflow:hidden!important;
+}
+#portfolioFeatured.portfolioSequential .featuredSheetTile img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  transform:none!important;
+  rotate:0deg!important;
+}
+#portfolioFeatured.portfolioSequential .featuredObjectCaption{padding:12px 14px 14px!important}
+#portfolioFeatured.portfolioSequential .featuredObjectCaption span{font-size:9px!important}
+#portfolioFeatured.portfolioSequential .featuredObjectCaption b{font-size:15px!important}
+#portfolioLightbox{display:none!important}
+#portfolioLightbox *{display:none!important}
+@media(max-width:800px){
+  #portfolioFeatured.portfolioSequential{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    margin-top:22px!important;
+  }
+  #portfolioFeatured.portfolioSequential .featuredSheetTile{aspect-ratio:3/4!important}
+  #portfolioFeatured.portfolioSequential .featuredObjectCaption{padding:9px 10px 11px!important}
+  #portfolioFeatured.portfolioSequential .featuredObjectCaption b{font-size:13px!important}
 }
 </style>
 </head>
@@ -1081,303 +1147,40 @@ try{
 
 <!-- CTA logic is handled by the calculator state machine above. No global click interception. -->
 
-<!-- calculator-mobile-stability-fix -->
-<style id="calculator-mobile-stability-css">
-  #calcModal{z-index:2000!important;pointer-events:none!important}
-  #calcModal.open{pointer-events:auto!important}
-  #calcModal .modalBox{z-index:2001!important;pointer-events:auto!important}
-  #calcModal .calcActions{z-index:2005!important;pointer-events:auto!important}
-  #calcModal .calcActions button,
-  #calcModal .choice{position:relative!important;z-index:2006!important;pointer-events:auto!important;touch-action:manipulation!important}
-</style>
-<script>
+
+<script id="calculator-clean-mobile">
 (function(){
   'use strict';
-
-  function bootCalculatorStability(){
+  function install(){
     var modal=document.getElementById('calcModal');
     var wizard=document.getElementById('wizard');
     var next=document.getElementById('nextBtn');
-    if(!modal || !wizard || !next) return;
+    var back=document.getElementById('backBtn');
+    if(!modal||!wizard||!next) return;
+    if(modal.__rfCleanInstalled) return;
+    modal.__rfCleanInstalled=true;
 
-    function bind(){
-      wizard=document.getElementById('wizard')||wizard;
-      next=document.getElementById('nextBtn')||next;
-      if(!wizard || !next) return;
-
-      // One native click path for every calculator choice.
-      if(!wizard.__rfStableBound){
-        wizard.__rfStableBound=true;
-        wizard.addEventListener('click',function(e){
-          var choice=e.target && e.target.closest ? e.target.closest('.choice[data-key]') : null;
-          if(!choice || !wizard.contains(choice)) return;
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          if(typeof window.pick==='function'){
-            window.pick(choice.getAttribute('data-key'),choice.getAttribute('data-value'));
-          }
-          // Commercial must advance immediately after selection, never close the modal.
-          if(choice.getAttribute('data-key')==='type' &&
-             choice.getAttribute('data-value')==='Коммерция' &&
-             typeof window.nextStep==='function'){
-            window.nextStep();
-          }
-        },true);
-      }
-
-      if(!next.__rfStableBound){
-        next.__rfStableBound=true;
-        next.addEventListener('click',function(e){
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          if(typeof window.nextStep==='function') window.nextStep();
-        },true);
-      }
-    }
-
-    bind();
-
-    // The main calculator re-renders its buttons. Re-bind after every render without
-    // replacing the application's state machine.
-    if(typeof window.render==='function' && !window.render.__rfStableWrapped){
-      var originalRender=window.render;
-      function stableRender(){
-        var result=originalRender.apply(this,arguments);
-        bind();
-        return result;
-      }
-      stableRender.__rfStableWrapped=true;
-      window.render=stableRender;
-    }
-
-    // Keep the existing openCalc state reset, then immediately restore the stable
-    // native handlers after the modal has been rendered.
-    if(typeof window.openCalc==='function' && !window.openCalc.__rfStableWrapped){
-      var originalOpen=window.openCalc;
-      function stableOpen(){
-        var result=originalOpen.apply(this,arguments);
-        bind();
-        return result;
-      }
-      stableOpen.__rfStableWrapped=true;
-      window.openCalc=stableOpen;
-    }
-
-    // Guard against any stale inline handler being reattached by render().
-    var observer=new MutationObserver(function(){ bind(); });
-    observer.observe(wizard,{childList:true,subtree:true});
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',bootCalculatorStability,{once:true});
-  }else{
-    bootCalculatorStability();
-  }
-})();
-</script>
-\n
-<!-- calculator-mobile-touch-fallback-v2 -->
-<style id="calculator-mobile-touch-v2">
-#calcModal{z-index:99999!important}
-#calcModal.open{display:flex!important}
-#calcModal .modalBox{z-index:100000!important}
-#calcModal .calcActions{z-index:100001!important}
-#calcModal .choice,#calcModal .calcActions button{z-index:100002!important;position:relative!important;pointer-events:auto!important}
-</style>
-<script>
-(function(){
-  'use strict';
-  function calcTouchFallback(){
-    var modal=document.getElementById('calcModal');
-    if(!modal || modal.__rfTouchV2) return;
-    modal.__rfTouchV2=true;
-
-    modal.addEventListener('touchend',function(e){
-      if(!modal.classList.contains('open')) return;
-      var t=e.changedTouches && e.changedTouches[0];
-      if(!t) return;
-      var el=document.elementFromPoint(t.clientX,t.clientY);
-      if(!el) return;
-
-      var choice=el.closest ? el.closest('#calcModal .choice[data-key]') : null;
-      var button=el.closest ? el.closest('#nextBtn') : null;
-
-      if(choice){
-        e.preventDefault();
-        e.stopPropagation();
-        if(typeof window.pick==='function'){
-          window.pick(choice.getAttribute('data-key'),choice.getAttribute('data-value'));
-          if(choice.getAttribute('data-key')==='type' &&
-             choice.getAttribute('data-value')==='Коммерция' &&
-             typeof window.nextStep==='function'){
-            window.nextStep();
-          }
-        }
-        return;
-      }
-
-      if(button){
-        e.preventDefault();
-        e.stopPropagation();
-        if(typeof window.nextStep==='function') window.nextStep();
-      }
-    },{capture:true,passive:false});
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',calcTouchFallback,{once:true});
-  }else{
-    calcTouchFallback();
-  }
-})();
-</script>
-
-<!-- calculator-mobile-touch-v3 -->
-<script>
-(function(){
-  function installMobileCalculator(){
-    var root=document.getElementById('calcModal');
-    if(!root || root.__rfV3) return;
-    root.__rfV3=true;
-    var fired=0;
-    function handle(e){
-      if(!root.classList.contains('open')) return;
-      var p=e.touches && e.touches[0] ? e.touches[0] : e;
-      if(!p || typeof p.clientX!=='number') return;
-      var el=document.elementFromPoint(p.clientX,p.clientY);
-      if(!el) return;
-      var choice=el.closest && el.closest('#calcModal .choice[data-key]');
-      var next=el.closest && el.closest('#calcModal #nextBtn');
-      if(!choice && !next) return;
+    wizard.addEventListener('click',function(e){
+      var choice=e.target.closest('.choice[data-key]');
+      if(!choice || !wizard.contains(choice)) return;
       e.preventDefault();
-      e.stopImmediatePropagation();
-      var now=Date.now();
-      if(now-fired<350) return;
-      fired=now;
-      if(choice && typeof window.pick==='function'){
-        window.pick(choice.dataset.key,choice.dataset.value);
-        if(choice.dataset.key==='type' && choice.dataset.value==='Коммерция' && typeof window.nextStep==='function'){
-          setTimeout(window.nextStep,0);
-        }
-      }else if(next && typeof window.nextStep==='function'){
-        window.nextStep();
-      }
+      if(typeof window.pick==='function') window.pick(choice.dataset.key,choice.dataset.value);
+    });
+
+    next.addEventListener('click',function(e){
+      e.preventDefault();
+      if(typeof window.nextStep==='function') window.nextStep();
+    });
+
+    if(back){
+      back.addEventListener('click',function(e){
+        e.preventDefault();
+        if(typeof window.prevStep==='function') window.prevStep();
+      });
     }
-    root.addEventListener('touchstart',handle,{capture:true,passive:false});
-    root.addEventListener('pointerdown',handle,{capture:true,passive:false});
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',installMobileCalculator,{once:true});
-  else installMobileCalculator();
-})();
-</script>
-\n
-<!-- calculator-global-mobile-rescue-v4 -->
-<script>
-(function(){
-  'use strict';
-  function rescue(e){
-    var modal=document.getElementById('calcModal');
-    if(!modal || !modal.classList.contains('open')) return;
-    var p=e.touches&&e.touches[0] ? e.touches[0] : (e.changedTouches&&e.changedTouches[0] ? e.changedTouches[0] : e);
-    if(!p || typeof p.clientX!=='number' || typeof p.clientY!=='number') return;
-    var els=document.elementsFromPoint ? document.elementsFromPoint(p.clientX,p.clientY) : [document.elementFromPoint(p.clientX,p.clientY)];
-    var choice=null, next=null;
-    for(var i=0;i<els.length;i++){
-      if(!els[i] || !els[i].closest) continue;
-      if(!choice) choice=els[i].closest('#calcModal .choice[data-key]');
-      if(!next) next=els[i].closest('#calcModal #nextBtn');
-      if(choice || next) break;
-    }
-    if(!choice && !next) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    var now=Date.now();
-    if(window.__rfMobileActionAt && now-window.__rfMobileActionAt<500) return;
-    window.__rfMobileActionAt=now;
-    if(choice){
-      var key=choice.getAttribute('data-key');
-      var value=choice.getAttribute('data-value');
-      if(typeof window.pick==='function') window.pick(key,value);
-      if(key==='type' && value==='Коммерция' && typeof window.nextStep==='function'){
-        setTimeout(function(){ if(window.__rfMobileActionAt===now) window.nextStep(); },0);
-      }
-      return;
-    }
-    if(next && typeof window.nextStep==='function') window.nextStep();
-  }
-  ['touchstart','touchend','pointerup','click'].forEach(function(type){
-    document.addEventListener(type,rescue,{capture:true,passive:false});
-  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
 })();
 </script>
 </body></html>
-<!-- deploy-recovery: sequential portfolio photos -->
-
-<!-- github-pages-fallback: frontend can run independently of Vercel hosting -->
-
-<style id="portfolio-instant-fix">
-.portfolioProof{display:none!important}
-.featuredObjectPhotos{display:block!important;aspect-ratio:3/2!important;background:#eef0f2!important}
-.featuredSheetTile{display:block!important;width:100%!important;height:100%!important;padding:0!important;border:0!important;background:#eef0f2!important;cursor:zoom-in!important;overflow:hidden!important}
-.featuredSheetTile img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;transform:none!important;rotate:0deg!important}
-@media(max-width:800px){
-  .featuredObjectPhotos{aspect-ratio:3/2!important}
-}
-</style>
-
-<style id="portfolio-final-fix">
-/* Финальная версия портфолио: шесть фотографий идут последовательно, без коллажа. */
-#portfolioFeatured.portfolioSequential{
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:16px!important;
-  width:100%!important;
-  margin-top:34px!important;
-}
-#portfolioFeatured.portfolioSequential .featuredObject{
-  display:flex!important;
-  flex-direction:column!important;
-  width:100%!important;
-  min-width:0!important;
-  background:#fff!important;
-  border:1px solid #e1e4e7!important;
-  border-radius:18px!important;
-  overflow:hidden!important;
-}
-#portfolioFeatured.portfolioSequential .featuredSheetTile{
-  display:block!important;
-  width:100%!important;
-  height:auto!important;
-  aspect-ratio:4/3!important;
-  padding:0!important;
-  margin:0!important;
-  border:0!important;
-  background:#eef0f2!important;
-  overflow:hidden!important;
-}
-#portfolioFeatured.portfolioSequential .featuredSheetTile img{
-  display:block!important;
-  width:100%!important;
-  height:100%!important;
-  min-height:0!important;
-  object-fit:cover!important;
-  object-position:center!important;
-  transform:none!important;
-  rotate:0deg!important;
-}
-#portfolioFeatured.portfolioSequential .featuredObjectCaption{padding:12px 14px 14px!important}
-#portfolioFeatured.portfolioSequential .featuredObjectCaption span{font-size:9px!important}
-#portfolioFeatured.portfolioSequential .featuredObjectCaption b{font-size:15px!important}
-#portfolioLightbox{display:none!important}
-#portfolioLightbox *{display:none!important}
-@media(max-width:800px){
-  #portfolioFeatured.portfolioSequential{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
-    margin-top:22px!important;
-  }
-  #portfolioFeatured.portfolioSequential .featuredSheetTile{aspect-ratio:3/4!important}
-  #portfolioFeatured.portfolioSequential .featuredObjectCaption{padding:9px 10px 11px!important}
-  #portfolioFeatured.portfolioSequential .featuredObjectCaption b{font-size:13px!important}
-}
-</style>
