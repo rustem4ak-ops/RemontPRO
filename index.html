@@ -977,7 +977,8 @@ async function submitCalculatorLead(){
   try{
     const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
     const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href
+      name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href,
+      object:{type:'Коммерция',floor:0,bath:0,tileArea:0}
     })});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||!j.ok) throw new Error(j.error||'Не удалось отправить');
@@ -1171,6 +1172,62 @@ try{
     document.addEventListener('DOMContentLoaded',bootCalculatorStability,{once:true});
   }else{
     bootCalculatorStability();
+  }
+})();
+</script>
+\n
+<!-- calculator-mobile-touch-fallback-v2 -->
+<style id="calculator-mobile-touch-v2">
+#calcModal{z-index:99999!important}
+#calcModal.open{display:flex!important}
+#calcModal .modalBox{z-index:100000!important}
+#calcModal .calcActions{z-index:100001!important}
+#calcModal .choice,#calcModal .calcActions button{z-index:100002!important;position:relative!important;pointer-events:auto!important}
+</style>
+<script>
+(function(){
+  'use strict';
+  function calcTouchFallback(){
+    var modal=document.getElementById('calcModal');
+    if(!modal || modal.__rfTouchV2) return;
+    modal.__rfTouchV2=true;
+
+    modal.addEventListener('touchend',function(e){
+      if(!modal.classList.contains('open')) return;
+      var t=e.changedTouches && e.changedTouches[0];
+      if(!t) return;
+      var el=document.elementFromPoint(t.clientX,t.clientY);
+      if(!el) return;
+
+      var choice=el.closest ? el.closest('#calcModal .choice[data-key]') : null;
+      var button=el.closest ? el.closest('#nextBtn') : null;
+
+      if(choice){
+        e.preventDefault();
+        e.stopPropagation();
+        if(typeof window.pick==='function'){
+          window.pick(choice.getAttribute('data-key'),choice.getAttribute('data-value'));
+          if(choice.getAttribute('data-key')==='type' &&
+             choice.getAttribute('data-value')==='Коммерция' &&
+             typeof window.nextStep==='function'){
+            window.nextStep();
+          }
+        }
+        return;
+      }
+
+      if(button){
+        e.preventDefault();
+        e.stopPropagation();
+        if(typeof window.nextStep==='function') window.nextStep();
+      }
+    },{capture:true,passive:false});
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',calcTouchFallback,{once:true});
+  }else{
+    calcTouchFallback();
   }
 })();
 </script>
