@@ -527,7 +527,7 @@ const S={
 const money=x=>Math.round(Number(x)||0).toLocaleString('ru-RU')+' ₽';
 
 const opt=(text,val,key) =>
-  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'"><span>'+text+'</span></button>';
+  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'" onclick="pick(this.dataset.key,this.dataset.value);return false;"><span>'+text+'</span></button>';
 
 const yesNo=(text,key,value) =>
   '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'"><span>'+text+'</span></button>';
@@ -706,18 +706,6 @@ function pick(k,v){
   render();
 }
 
-// Calculator choice buttons use one delegated handler on the wizard itself.
-// This keeps mobile taps and desktop clicks on the same native click path.
-const wizard=document.getElementById('wizard');
-if(wizard){
-  wizard.onclick=function(e){
-    const el=e.target.closest('.choice[data-key]');
-    if(!el || !wizard.contains(el)) return;
-    e.preventDefault();
-    e.stopPropagation();
-    pick(el.dataset.key,el.dataset.value);
-  };
-}
 
 function validateCurrentStep(){
   if(S.step===1 && (!S.floor || S.floor<=0)){
