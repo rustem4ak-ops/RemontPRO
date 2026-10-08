@@ -433,23 +433,27 @@ body{
 </style>
 <style id="calculator-mobile-native-fix">
 @media(max-width:800px){
+  /* Do not transform a fixed modal: iOS Safari can change hit-testing for transformed fixed layers. */
   #calcModal{
     z-index:2147483000!important;
     background:rgba(0,0,0,.72)!important;
     -webkit-backdrop-filter:none!important;
     backdrop-filter:none!important;
-    transform:translateZ(0)!important;
+    transform:none!important;
+    isolation:isolate!important;
   }
   #calcModal.open{display:flex!important;pointer-events:auto!important}
   #calcModal .modalBox{
     z-index:2147483001!important;
     position:relative!important;
     pointer-events:auto!important;
-    transform:translateZ(0)!important;
+    transform:none!important;
+    isolation:isolate!important;
   }
   #calcModal .choice,
   #calcModal #nextBtn,
-  #calcModal #backBtn{
+  #calcModal #backBtn,
+  #calcModal .close{
     position:relative!important;
     z-index:2147483002!important;
     pointer-events:auto!important;
@@ -557,7 +561,7 @@ const opt=(text,val,key) =>
   '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'" onclick="pick(this.dataset.key,this.dataset.value);return false;"><span>'+text+'</span></button>';
 
 const yesNo=(text,key,value) =>
-  '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'"><span>'+text+'</span></button>';
+  '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'" onclick="pickBool(this.dataset.boolKey,this.dataset.boolValue);return false;"><span>'+text+'</span></button>';
 
 function openCalc(){
   document.getElementById('calcModal').classList.add('open');
@@ -717,19 +721,17 @@ function render(){
     el.oninput=e=>S.tileArea=Number(e.target.value)||0;
   }
 
-  document.querySelectorAll('[data-bool-key]').forEach(el=>{
-    el.onclick=()=>{
-      const key=el.dataset.boolKey;
-      S[key]=el.dataset.boolValue==='true';
-      render();
-    };
-  });
 
   if(S.step===10) loadResult();
 }
 
 function pick(k,v){
   S[k]=v;
+  render();
+}
+
+function pickBool(k,v){
+  S[k]=String(v)==='true';
   render();
 }
 
