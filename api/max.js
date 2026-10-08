@@ -493,6 +493,12 @@ function buildLeadMessage(name, phone, s) {
   const lines = [
     '🆕 <b>Новая заявка</b>',
     '',
+    '🏠 Объект: <b>' + esc(objectName(s.objectType)) + '</b>',
+    '📐 Общая площадь: <b>' + (Number(s.floor) || 0) + ' м²</b>',
+    '🚿 Санузел: <b>' + (Number(s.bath) || 0) + ' м²</b>',
+    '🔲 Плитка — пол: <b>' + (Number(s.tileArea) || 0) + ' м²</b>',
+    '🪟 Окна: <b>' + (Number(s.windows) || 0) + '</b>',
+    '',
     '👤 Имя: <b>' + esc(name || 'Не указано') + '</b>',
     '📞 Номер телефона: <b>' + esc(phone) + '</b>',
     '📍 Источник: <b>max</b>',
@@ -614,6 +620,7 @@ async function sendLead(id, message, s, phone) {
             type: objectName(s.objectType),
             floor: s.floor || 0,
             bath: s.bath || 0,
+            tileArea: s.tileArea || 0,
             balcony: 0,
             windows: s.windows || 0
           }
