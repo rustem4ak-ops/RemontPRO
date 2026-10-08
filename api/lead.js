@@ -157,8 +157,19 @@ module.exports = async function handler(req, res) {
       )
     ].filter(Boolean);
 
+    var object = b.object || {};
+    var objectType = object.type || 'Не указан';
+    var objectFloor = Number(object.floor) || 0;
+    var objectBath = Number(object.bath) || 0;
+    var objectTileArea = Number(object.tileArea) || 0;
+
     var lines = [
       '🆕 <b>Новая заявка</b>',
+      '',
+      '🏠 Объект: <b>' + esc(objectType) + '</b>',
+      '📐 Общая площадь: <b>' + objectFloor + ' м²</b>',
+      '🚿 Санузел: <b>' + objectBath + ' м²</b>',
+      '🔲 Плитка — пол: <b>' + objectTileArea + ' м²</b>',
       '',
       '👤 Имя: <b>' + esc(b.name || 'Не указано') + '</b>',
       '📞 Номер телефона: <b>' + esc(phone) + '</b>',
