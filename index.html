@@ -475,7 +475,7 @@ body{
 </svg><span>РЕМОНТФОРМА</span></a><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div><div class="mobileContactIcons"><a class="mobileContactIcon" href="https://t.me/+79172433455" aria-label="Telegram">✈</a><a class="mobileContactIcon" href="#contacts" aria-label="Контакты">☎</a></div></nav>
 <div class="heroGrid"><div><div class="eyebrow">Казань · ремонт под ключ</div><h1>Ремонт, который начинается с точного расчёта.</h1><p class="lead">Квартиры, дома и коммерческие помещения. Замер, смета, организация работ и контроль ремонта — в одном месте.</p><div class="buttons"><button class="btn primary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/+79172433455">Написать в Telegram</a><a class="btn secondary" href="https://max.ru/u/f9LHodD0cOJnwEpVcaNYK7hFgRS8GHnjXG636yKji5vyYq0QMTgChsecLCw" target="_blank" rel="noopener">Написать в MAX</a></div></div>
 <div><div class="teaser">🧮 <b>Онлайн-расчёт</b><br><span>Ответьте на вопросы, получите предварительную стоимость и при желании оставьте контакты для точной сметы.</span></div><button type="button" class="btn primary" style="width:100%;margin-top:12px" onpointerup="openCalc();return false;">Рассчитать ремонт</button></div></div></div></header>
-<div id="calcModal" class="modal" role="dialog" aria-modal="true"><div class="modalBox"><button type="button" class="close" onpointerup="closeCalc();return false;">×</button><div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div><p class="muted" style="margin:7px 0 0">Рассчитайте предварительную стоимость за несколько минут — без звонка менеджеру.</p><div id="progressText" class="progressText"></div><div class="progress"><div id="bar" class="bar"></div></div><div id="wizard"></div><div class="calcActions"><button id="backBtn" type="button" class="btn back hidden" onpointerup="prevStep();return false;">← Назад</button><button id="nextBtn" type="button" class="btn primary">Далее →</button></div></div></div>
+<div id="calcModal" class="modal" role="dialog" aria-modal="true"><div class="modalBox"><button type="button" class="close" onpointerup="closeCalc();return false;">×</button><div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div><p class="muted" style="margin:7px 0 0">Рассчитайте предварительную стоимость за несколько минут — без звонка менеджеру.</p><div id="progressText" class="progressText"></div><div class="progress"><div id="bar" class="bar"></div></div><div id="wizard"></div><div class="calcActions"><button id="backBtn" type="button" class="btn back hidden" onpointerup="prevStep();return false;">← Назад</button><button id="nextBtn" type="button" class="btn primary" onclick="handleNextButton(event);return false;">Далее →</button></div></div></div>
 
 <div class="trust"><div class="wrap"><div class="trustGrid"><div class="trustItem"><b>Под ключ</b><span>Организация всех основных этапов ремонта</span></div><div class="trustItem"><b>Прозрачный расчёт</b><span>Предварительная стоимость до замера</span></div><div class="trustItem"><b>Казань</b><span>Работаем с квартирами, домами и коммерцией</span></div><div class="trustItem"><b>Один подрядчик</b><span>Единая точка связи по ремонту</span></div></div></div></div>
 
@@ -559,10 +559,10 @@ const S={
 const money=x=>Math.round(Number(x)||0).toLocaleString('ru-RU')+' ₽';
 
 const opt=(text,val,key) =>
-  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'" onpointerup="pick(this.dataset.key,this.dataset.value);return false;"><span>'+text+'</span></button>';
+  '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'" onclick="pick(this.dataset.key,this.dataset.value);return false;"><span>'+text+'</span></button>';
 
 const yesNo=(text,key,value) =>
-  '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'" onpointerup="pickBool(this.dataset.boolKey,this.dataset.boolValue);return false;"><span>'+text+'</span></button>';
+  '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'" onclick="pickBool(this.dataset.boolKey,this.dataset.boolValue);return false;"><span>'+text+'</span></button>';
 
 function openCommercialContact(){
   S.type='Коммерция';
@@ -704,8 +704,8 @@ function render(){
   z.innerHTML=h;
 
   n.textContent=(S.step===10 && S.leadMode==='commercial')?'Закрыть':(isResult?'Получить точную смету':'Далее →');
-  n.onclick=null;
-  n.onpointerup=handleNextButton;
+  n.onclick=handleNextButton;
+  n.onpointerup=null;
 
   if(S.step===1){
     const el=document.getElementById('floor');
