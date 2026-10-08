@@ -704,12 +704,18 @@ function render(){
   z.innerHTML=h;
 
   n.textContent=(S.step===10 && S.leadMode==='commercial')?'Закрыть':(isResult?'Получить точную смету':'Далее →');
-  const action= function(e){
-    if(e){e.preventDefault();e.stopPropagation();}
-    if(S.step===10 && S.leadMode==='commercial') closeCalc(); else nextStep();
+  n.onclick=null;
+  n.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    nextStep();
+  }, {once:true});
+  n.ontouchend=function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    nextStep();
     return false;
   };
-  n.onclick=action;
 
   if(S.step===1){
     const el=document.getElementById('floor');
