@@ -564,6 +564,15 @@ const opt=(text,val,key) =>
 const yesNo=(text,key,value) =>
   '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'" onclick="pickBool(this.dataset.boolKey,this.dataset.boolValue);return false;"><span>'+text+'</span></button>';
 
+function openCommercialContact(){
+  S.type='Коммерция';
+  S.leadMode='commercial';
+  S.source='calculator-commercial';
+  openContactModal();
+  var comment=document.getElementById('quickContactComment');
+  if(comment && !comment.value) comment.value='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
+}
+
 function openCalc(){
   document.getElementById('calcModal').classList.add('open');
   document.body.style.overflow='hidden';
@@ -606,7 +615,7 @@ function render(){
     h='<div class="stepTitle">1. Тип объекта</div><div class="choices">'+
       opt('🏠 Квартира','Квартира','type')+
       opt('🏡 Дом','Дом','type')+
-      opt('🏢 Коммерция','Коммерция','type')+
+      '<button type="button" class="choice" onclick="openCommercialContact();return false;"><span>🏢 Коммерция</span></button>'+
       '</div>';
   }
 
@@ -1011,7 +1020,7 @@ function closeContactModal(){
   if(!m)return;
   m.classList.remove('open');m.setAttribute('aria-hidden','true');
 }
-async function submitQuickContact(){
+async async function submitQuickContact(){
   const name=val('quickContactName').trim();
   const phone=val('quickContactPhone').trim();
   const comment=val('quickContactComment').trim();
