@@ -1163,39 +1163,4 @@ try{
 <!-- CTA logic is handled by the calculator state machine above. No global click interception. -->
 
 
-<script id="calculator-clean-mobile">
-(function(){
-  'use strict';
-  function install(){
-    var modal=document.getElementById('calcModal');
-    var wizard=document.getElementById('wizard');
-    var next=document.getElementById('nextBtn');
-    var back=document.getElementById('backBtn');
-    if(!modal||!wizard||!next) return;
-    if(modal.__rfCleanInstalled) return;
-    modal.__rfCleanInstalled=true;
-
-    wizard.addEventListener('click',function(e){
-      var choice=e.target.closest('.choice[data-key]');
-      if(!choice || !wizard.contains(choice)) return;
-      e.preventDefault();
-      if(typeof window.pick==='function') window.pick(choice.dataset.key,choice.dataset.value);
-    });
-
-    next.addEventListener('click',function(e){
-      e.preventDefault();
-      if(typeof window.nextStep==='function') window.nextStep();
-    });
-
-    if(back){
-      back.addEventListener('click',function(e){
-        e.preventDefault();
-        if(typeof window.prevStep==='function') window.prevStep();
-      });
-    }
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true});
-  else install();
-})();
-</script>
 </body></html>
