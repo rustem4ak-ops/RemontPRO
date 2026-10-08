@@ -1270,7 +1270,43 @@ try{
   else installMobileCalculator();
 })();
 </script>
-\n</body></html>
+\n
+<!-- calculator-global-mobile-rescue-v4 -->
+<script>
+(function(){
+  'use strict';
+  function rescue(e){
+    var modal=document.getElementById('calcModal');
+    if(!modal || !modal.classList.contains('open')) return;
+    var p=e.touches&&e.touches[0] ? e.touches[0] : (e.changedTouches&&e.changedTouches[0] ? e.changedTouches[0] : e);
+    if(!p || typeof p.clientX!=='number' || typeof p.clientY!=='number') return;
+    var el=document.elementFromPoint(p.clientX,p.clientY);
+    if(!el || !el.closest) return;
+    var choice=el.closest('#calcModal .choice[data-key]');
+    var next=el.closest('#calcModal #nextBtn');
+    if(!choice && !next) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    var now=Date.now();
+    if(window.__rfMobileActionAt && now-window.__rfMobileActionAt<500) return;
+    window.__rfMobileActionAt=now;
+    if(choice){
+      var key=choice.getAttribute('data-key');
+      var value=choice.getAttribute('data-value');
+      if(typeof window.pick==='function') window.pick(key,value);
+      if(key==='type' && value==='Коммерция' && typeof window.nextStep==='function'){
+        setTimeout(function(){ if(window.__rfMobileActionAt===now) window.nextStep(); },0);
+      }
+      return;
+    }
+    if(next && typeof window.nextStep==='function') window.nextStep();
+  }
+  ['touchstart','touchend','pointerup','click'].forEach(function(type){
+    document.addEventListener(type,rescue,{capture:true,passive:false});
+  });
+})();
+</script>
+</body></html>
 <!-- deploy-recovery: sequential portfolio photos -->
 
 <!-- github-pages-fallback: frontend can run independently of Vercel hosting -->
