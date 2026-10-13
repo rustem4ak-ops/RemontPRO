@@ -1119,6 +1119,7 @@ async function submitQuickContact(){
       throw new Error(details || ('Ошибка отправки (HTTP '+r.status+')'));
     }
     trackAnalyticsEvent('lead_success', {method:'contact_form', channel:(j.telegramSent && j.maxSent) ? 'telegram_and_max' : (j.telegramSent ? 'telegram' : 'max')});
+    trackAnalyticsEvent('generate_lead', {method:'contact_form'});
     if (j.telegramSent) {
       status.textContent='✓ Заявка отправлена в Telegram. Мы свяжемся с вами.';
     } else if (j.maxSent) {
@@ -1157,6 +1158,7 @@ async function submitCalculatorLead(){
     }
     if(!j.telegramSent&&!j.maxSent) throw new Error('Сервер не подтвердил доставку заявки.');
     trackAnalyticsEvent('lead_success', {method:'commercial_calculator', channel:(j.telegramSent && j.maxSent) ? 'telegram_and_max' : (j.telegramSent ? 'telegram' : 'max')});
+    trackAnalyticsEvent('generate_lead', {method:'commercial_calculator'});
     status.textContent='✓ Заявка отправлена. Мы свяжемся с вами.';
     document.getElementById('calculatorLeadPhone').value='';
   }catch(e){
