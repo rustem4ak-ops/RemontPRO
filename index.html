@@ -1172,7 +1172,85 @@ try{
 @media(max-width:800px){#portfolioFeatured .featuredSheetTile img{min-height:0!important;width:100%!important;height:auto!important}}
 </style>
 
-<!-- CTA logic is handled by the calculator state machine above. No global click interception. -->
+<!-- Reliable calculator controls: one delegated click path for desktop and mobile. -->
+<style id="calculator-cross-device-fix">
+  #calcModal { z-index: 2147483000 !important; }
+  #calcModal.open { display:flex !important; pointer-events:auto !important; }
+  #calcModal .modalBox { position:relative; z-index:2147483001; pointer-events:auto; }
+  #calcModal button, #contactModal button { cursor:pointer; touch-action:manipulation; }
+  #calcModal .choice, #calcModal #nextBtn, #calcModal #backBtn,
+  #calcModal .close, #contactModal .contactModalClose,
+  #contactModal #quickContactSubmit { pointer-events:auto !important; }
+</style>
+<script id="calculator-cross-device-controls">
+(function(){
+  if (window.__remontFormaControlsInstalled) return;
+  window.__remontFormaControlsInstalled = true;
+
+  document.addEventListener('click', function(e){
+    const target = e.target instanceof Element ? e.target : null;
+    if (!target) return;
+
+    const next = target.closest('#nextBtn');
+    if (next) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if (S.step === 10 && S.leadMode === 'commercial') {
+        closeCalc();
+      } else if (S.step === 10) {
+        openLead();
+      } else {
+        nextStep();
+      }
+      return;
+    }
+
+    const back = target.closest('#backBtn');
+    if (back) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      prevStep();
+      return;
+    }
+
+    const choice = target.closest('#calcModal .choice[data-key]');
+    if (choice) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      pick(choice.dataset.key, choice.dataset.value);
+      return;
+    }
+
+    const boolChoice = target.closest('#calcModal .choice[data-bool-key]');
+    if (boolChoice) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      pickBool(boolChoice.dataset.boolKey, boolChoice.dataset.boolValue);
+      return;
+    }
+
+    if (target.closest('#calcModal .close')) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      closeCalc();
+      return;
+    }
+
+    if (target.closest('#contactModal .contactModalClose')) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      closeContactModal();
+      return;
+    }
+
+    if (target.closest('#contactModal #quickContactSubmit')) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      submitQuickContact();
+    }
+  }, true);
+})();
+</script>
 
 
 </body></html>
