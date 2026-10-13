@@ -615,7 +615,7 @@ function render(){
     h='<div class="stepTitle">1. Тип объекта</div><div class="choices">'+
       opt('🏠 Квартира','Квартира','type')+
       opt('🏡 Дом','Дом','type')+
-      ''+opt('🏢 Коммерция','Коммерция','type')+''+
+      ''+'<button type="button" class="choice '+(S.type==='Коммерция'?'active':'')+'" onclick="openCommercialContact();return false;"><span>🏢 Коммерция</span></button>'+''+
       '</div>';
   }
 
