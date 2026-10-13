@@ -376,7 +376,6 @@ body{
 }
 </style>
 <style id="portfolio-final-fix">
-/* Финальная версия портфолио: шесть фотографий идут последовательно, без коллажа. */
 #portfolioFeatured.portfolioSequential{
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -433,7 +432,6 @@ body{
 </style>
 <style id="calculator-mobile-native-fix">
 @media(max-width:800px){
-  /* Do not transform a fixed modal: iOS Safari can change hit-testing for transformed fixed layers. */
   #calcModal{
     z-index:2147483000!important;
     background:rgba(0,0,0,.72)!important;
@@ -474,16 +472,28 @@ body{
 <text x="50" y="88" text-anchor="middle" font-family="Arial,sans-serif" font-size="4.8" font-weight="700" fill="#fff">РЕМОНТ ПОД КЛЮЧ</text>
 </svg><span>РЕМОНТФОРМА</span></a><div class="navlinks"><a href="#services">Услуги</a><a href="#portfolio">Работы</a><a href="#steps">Как работаем</a><a href="#contacts">Контакты</a></div><div class="mobileContactIcons"><a class="mobileContactIcon" href="https://t.me/+79172433455" aria-label="Telegram">✈</a><a class="mobileContactIcon" href="#contacts" aria-label="Контакты">☎</a></div></nav>
 <div class="heroGrid"><div><div class="eyebrow">Казань · ремонт под ключ</div><h1>Ремонт, который начинается с точного расчёта.</h1><p class="lead">Квартиры, дома и коммерческие помещения. Замер, смета, организация работ и контроль ремонта — в одном месте.</p><div class="buttons"><button class="btn primary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/+79172433455">Написать в Telegram</a><a class="btn secondary" href="https://max.ru/u/f9LHodD0cOJnwEpVcaNYK7hFgRS8GHnjXG636yKji5vyYq0QMTgChsecLCw" target="_blank" rel="noopener">Написать в MAX</a></div></div>
-<div><div class="teaser">🧮 <b>Онлайн-расчёт</b><br><span>Ответьте на вопросы, получите предварительную стоимость и при желании оставьте контакты для точной сметы.</span></div><button type="button" class="btn primary" style="width:100%;margin-top:12px" onpointerup="openCalc();return false;">Рассчитать ремонт</button></div></div></div></header>
-<div id="calcModal" class="modal" role="dialog" aria-modal="true"><div class="modalBox"><button type="button" class="close" onpointerup="closeCalc();return false;">×</button><div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div><p class="muted" style="margin:7px 0 0">Рассчитайте предварительную стоимость за несколько минут — без звонка менеджеру.</p><div id="progressText" class="progressText"></div><div class="progress"><div id="bar" class="bar"></div></div><div id="wizard"></div><div class="calcActions"><button id="backBtn" type="button" class="btn back hidden" onpointerup="prevStep();return false;">← Назад</button><button id="nextBtn" type="button" class="btn primary">Далее →</button></div></div></div>
+<div><div class="teaser">🧮 <b>Онлайн-расчёт</b><br><span>Ответьте на вопросы, получите предварительную стоимость и при желании оставьте контакты для точной сметы.</span></div><button type="button" class="btn primary" style="width:100%;margin-top:12px" onclick="openCalc();return false;">Рассчитать ремонт</button></div></div></div></header>
+
+<div id="calcModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modalBox">
+    <button type="button" class="close" onclick="closeCalc();return false;">×</button>
+    <div class="calcTitle">🧮 Расчёт ремонта РЕМОНТФОРМА</div>
+    <p class="muted" style="margin:7px 0 0">Рассчитайте предварительную стоимость за несколько минут — без звонка менеджеру.</p>
+    <div id="progressText" class="progressText"></div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div id="wizard"></div>
+    <div class="calcActions">
+      <button id="backBtn" type="button" class="btn back hidden" onclick="prevStep();return false;">← Назад</button>
+      <button id="nextBtn" type="button" class="btn primary">Далее →</button>
+    </div>
+  </div>
+</div>
 
 <div class="trust"><div class="wrap"><div class="trustGrid"><div class="trustItem"><b>Под ключ</b><span>Организация всех основных этапов ремонта</span></div><div class="trustItem"><b>Прозрачный расчёт</b><span>Предварительная стоимость до замера</span></div><div class="trustItem"><b>Казань</b><span>Работаем с квартирами, домами и коммерцией</span></div><div class="trustItem"><b>Один подрядчик</b><span>Единая точка связи по ремонту</span></div></div></div></div>
 
 <div id="pdfArea" class="printOnly"></div>
 
 <section class="section" id="services"><div class="wrap"><div class="center"><div class="eyebrow">Услуги</div><h2>Полный ремонт под ключ</h2><p class="muted">От первого замера до сдачи готового объекта.</p></div><div class="grid3"><div class="service" data-service="apartment"><div class="num">01</div><h3>Квартиры</h3><p class="muted">Черновая и чистовая отделка, электрика, сантехника и все этапы ремонта.</p></div><div class="service" data-service="house"><div class="num">02</div><h3>Дома</h3><p class="muted">Комплексная организация ремонта частных домов с контролем этапов.</p></div><div class="service" data-service="commercial"><div class="num">03</div><h3>Коммерция</h3><p class="muted">Ремонт помещений под офисы, магазины и другие коммерческие задачи.</p></div></div></div></section>
-
-</div>
 
 <section class="section" id="portfolio" style="background:#eceef0"><div class="wrap">
   <div class="portfolioHero">
@@ -506,7 +516,6 @@ body{
   <div class="center">
     <div class="eyebrow">Отзывы</div>
     <h2>Что говорят о нашей работе</h2>
-    
   </div>
   <div class="reviews">
     <div class="review"><b>Анна</b><p>«Очень понравилось, что не пришлось постоянно контролировать каждый этап. По ходу ремонта всё объясняли, показывали и заранее предупреждали, если нужно было принять решение.»</p></div>
@@ -529,7 +538,7 @@ body{
 <footer class="footer"><div class="wrap"><strong>РЕМОНТФОРМА</strong> · Ремонт квартир, домов и коммерческих помещений под ключ · Казань</div></footer>
 
 <script>
-const API='https://remont-pro-nine.vercel.app/api/calculate', LEAD='https://remont-pro-nine.vercel.app/api/lead';
+const LEAD='/api/lead';
 const UTM=new URLSearchParams(location.search);
 
 const S={
@@ -561,16 +570,14 @@ const money=x=>Math.round(Number(x)||0).toLocaleString('ru-RU')+' ₽';
 const opt=(text,val,key) =>
   '<button type="button" class="choice '+(S[key]===val?'active':'')+'" data-key="'+key+'" data-value="'+val+'" onclick="pick(this.dataset.key,this.dataset.value);return false;"><span>'+text+'</span></button>';
 
-const yesNo=(text,key,value) =>
-  '<button type="button" class="choice '+(S[key]===value?'active':'')+'" data-bool-key="'+key+'" data-bool-value="'+value+'" onclick="pickBool(this.dataset.boolKey,this.dataset.boolValue);return false;"><span>'+text+'</span></button>';
-
 function openCommercialContact(){
   S.type='Коммерция';
   S.leadMode='commercial';
   S.source='calculator-commercial';
+  closeCalc();
   openContactModal();
   var comment=document.getElementById('quickContactComment');
-  if(comment && !comment.value) comment.value='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
+  if(comment) comment.value='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
 }
 
 function openCalc(){
@@ -607,7 +614,6 @@ function render(){
   document.getElementById('progressText').textContent=isResult?'Итог':'Шаг '+(S.step+1)+' из '+totalSteps;
   document.getElementById('bar').style.width=(isResult?100:((S.step+1)/totalSteps*100))+'%';
   b.classList.toggle('hidden',S.step===0);
-  b.onclick=prevStep;
 
   let h='';
 
@@ -615,7 +621,7 @@ function render(){
     h='<div class="stepTitle">1. Тип объекта</div><div class="choices">'+
       opt('🏠 Квартира','Квартира','type')+
       opt('🏡 Дом','Дом','type')+
-      ''+'<button type="button" class="choice '+(S.type==='Коммерция'?'active':'')+'" onclick="openCommercialContact();return false;"><span>🏢 Коммерция</span></button>'+''+
+      '<button type="button" class="choice '+(S.type==='Коммерция'?'active':'')+'" onclick="openCommercialContact();return false;"><span>🏢 Коммерция</span></button>'+
       '</div>';
   }
 
@@ -687,46 +693,39 @@ function render(){
       '</div>';
   }
 
-  if(S.step===10 && S.leadMode==='commercial'){
-    h='<div class="stepTitle">Коммерческий объект</div>'+
-      '<div class="leadBox">'+
-      '<b>План по коммерческому ремонту</b>'+
-      '<p class="muted">После заявки уточним назначение помещения, площадь и требования к отделке. Затем организуем замер, подготовим состав работ и точную смету.</p>'+
-      '<p><b>Оставьте номер телефона</b> — свяжемся с вами и обсудим объект.</p>'+
-      '<div class="field"><label>Телефон *</label><input id="calculatorLeadPhone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00"></div>'+
-      '<button type="button" class="btn primary" style="width:100%;margin-top:8px" onclick="submitCalculatorLead()">Отправить заявку</button>'+
-      '<div id="calculatorLeadStatus" class="contactStatus"></div>'+
-      '</div>';
-  } else if(S.step===10){
+  if(S.step===10){
     h='<div class="stepTitle">Предварительный расчёт</div><div id="finalResult">Считаем…</div>';
   }
 
   z.innerHTML=h;
 
-  n.textContent=(S.step===10 && S.leadMode==='commercial')?'Закрыть':(isResult?'Получить точную смету':'Далее →');
-  n.onclick=handleNextButton;
-  n.onpointerup=null;
+  if(isResult){
+    n.textContent='Получить точную смету';
+    n.onclick=function(){ openLead(); return false; };
+  }else{
+    n.textContent='Далее →';
+    n.onclick=function(){ nextStep(); return false; };
+  }
 
   if(S.step===1){
     const el=document.getElementById('floor');
-    el.oninput=e=>S.floor=Number(e.target.value)||0;
+    if(el) el.oninput=e=>S.floor=Number(e.target.value)||0;
   }
 
   if(S.step===2){
     const el=document.getElementById('bath');
-    el.oninput=e=>S.bath=Number(e.target.value)||0;
+    if(el) el.oninput=e=>S.bath=Number(e.target.value)||0;
   }
 
   if(S.step===3){
     const el=document.getElementById('windows');
-    el.oninput=e=>S.windows=Number(e.target.value)||0;
+    if(el) el.oninput=e=>S.windows=Number(e.target.value)||0;
   }
 
   if(S.step===6){
     const el=document.getElementById('tileArea');
-    el.oninput=e=>S.tileArea=Number(e.target.value)||0;
+    if(el) el.oninput=e=>S.tileArea=Number(e.target.value)||0;
   }
-
 
   if(S.step===10) loadResult();
 }
@@ -735,12 +734,6 @@ function pick(k,v){
   S[k]=v;
   render();
 }
-
-function pickBool(k,v){
-  S[k]=String(v)==='true';
-  render();
-}
-
 
 function validateCurrentStep(){
   if(S.step===1 && (!S.floor || S.floor<=0)){
@@ -771,18 +764,8 @@ function validateCurrentStep(){
   return true;
 }
 
-async function nextStep(){
+function nextStep(){
   if(!validateCurrentStep()) return;
-
-  if(S.step===0 && S.type==='Коммерция'){
-    S.leadMode='commercial';
-    S.source='calculator-commercial';
-    closeCalc();
-    openContactModal();
-    var comment=document.getElementById('quickContactComment');
-    if(comment) comment.value='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
-    return;
-  }
 
   if(S.step<10){
     S.step++;
@@ -897,98 +880,6 @@ function escapeHtml(s){
   }[m]));
 }
 
-function printEstimate(){
-  const q=S.result||{};
-  document.getElementById('pdfArea').innerHTML=
-    '<h1>РЕМОНТФОРМА</h1>'+
-    '<h2>Предварительный расчёт ремонта</h2>'+
-    '<p>Объект: '+escapeHtml(S.type)+'</p>'+
-    '<p>Площадь: '+q.floor+' м² · Санузел: '+q.bath+' м²</p>'+
-    (q.rows||[]).map(x=>'<p>'+escapeHtml(x.name)+' — '+x.quantity+' '+escapeHtml(x.unit)+' × '+money(x.price)+' = <b>'+money(x.cost)+'</b></p>').join('')+
-    '<hr><h2>Итого: '+money(q.total)+'</h2>'+
-    '<p>Цена за м² по полу: '+money(q.pricePerM2)+'</p>'+
-    '<p>Предварительный расчёт. Точная смета после замера.</p>';
-
-  window.print();
-}
-let portfolioImages=[],portfolioFiltered=[],portfolioIndex=0,portfolioFolder='Все',portfolioVisibleCount=9,reviewVisibleCount=3;
-
-const FEATURED_NAMES=['photo_2022-07-25_14-22-12 (2).jpg','20260401_123337.jpg','20231223_114444.jpg','20251025_170437.jpg']
-
-function portfolioScore(x){
-  if(FEATURED_NAMES.includes(x.name)) return 1000-(FEATURED_NAMES.indexOf(x.name)*10);
-  if(x.featured) return 900-(Number(x.order)||0);
-  return 10;
-}
-function portfolioAddress(x){const a=String(x.album||x.folder||'').trim();const map={'Большие кабаны':'Большие Кабаны','Брайт парк':'ЖК Брайт Парк','ЖК Уно':'ЖК Уно','Портовая':'ул. Портовая','Сокуры':'с. Сокуры','Терегулова':'ул. Терегулова','Новые работы':'Новые работы'};return map[a]||a||'Реализованный объект'}
-function portfolioLabel(x){if(x.label)return x.label;return portfolioAddress(x)}
-function portfolioTitle(x){
-  return x.title || ('РЕМОНТФОРМА · '+portfolioLabel(x));
-}
-function portfolioSort(a,b){return (b._score||0)-(a._score||0)}
-
-async function loadPortfolio(){
-  const featured=document.getElementById('portfolioFeatured');
-  if(!featured) return;
-  const img=featured.querySelector('.featuredSheetTile img');
-  const local=(img && (img.currentSrc || img.getAttribute('src'))) || './assets/portfolio/remontforma-collage.webp';
-  portfolioImages=[{
-    name:'Новые работы — 6 фото',
-    album:'Новые работы',
-    folder:'Новые работы',
-    url:local,
-    preview:local,
-    _score:1000
-  }];
-  portfolioFiltered=portfolioImages.slice();
-}
-function showMorePortfolio(){portfolioVisibleCount+=9;renderPortfolio(portfolioFolder)}
-function filterPortfolio(folder,btn){
-  portfolioFolder=folder;portfolioVisibleCount=9;
-  document.querySelectorAll('.portfolioFolder').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('active');renderPortfolio(folder);
-}
-function renderPortfolio(folder){
-  const box=document.getElementById('portfolioGallery'),more=document.getElementById('portfolioMore');
-  const albums=[...new Map((folder==='Все'?portfolioImages:portfolioImages.filter(x=>(x.album||x.folder)===folder)).map(x=>[(x.album||x.folder),x])).values()];
-  const visible=albums.slice(0,portfolioVisibleCount);
-  box.className='albumGrid';
-  box.innerHTML=visible.map(x=>{
-    const album=x.album||x.folder||'Реализованный объект';
-    const photos=portfolioImages.filter(y=>(y.album||y.folder)===album).sort(portfolioSort);
-    const collage=photos.slice(0,4).map(y=>'<img loading="lazy" decoding="async" src="'+(y.preview||y.url)+'" alt="'+escapeHtml(portfolioAddress(y))+'">').join('');
-    return '<div class="albumCard" onclick="openAlbum('+JSON.stringify(album).replace(/'/g,"&#39;")+')"><div class="albumPhotos">'+collage+'</div><div class="albumInfo"><b>'+escapeHtml(portfolioAddress(x))+'</b><span>'+photos.length+' фото · Открыть объект →</span></div></div>';
-  }).join('')||'<div class="portfolioEmpty">Объекты пока не найдены.</div>';
-  if(more){
-    const left=Math.max(0,albums.length-portfolioVisibleCount);
-    more.style.display=left?'inline-block':'none';
-    more.textContent=left?'Показать ещё объекты ('+left+')':'';
-  }
-}
-function openAlbum(album){
-  portfolioFiltered=portfolioImages.filter(x=>(x.album||x.folder)===album).sort(portfolioSort);
-  portfolioIndex=0;
-  if(portfolioFiltered.length)showPortfolioImage(portfolioFiltered[0]);
-}
-function openFeatured(i){
-  const x=portfolioImages[i];if(!x)return;
-  const album=x.album||x.folder;
-  portfolioFiltered=portfolioImages.filter(y=>(y.album||y.folder)===album).sort(portfolioSort);
-  portfolioIndex=Math.max(0,portfolioFiltered.indexOf(x));
-  showPortfolioImage(x);
-}
-function showPortfolioImage(x){
-  document.getElementById('portfolioLarge').src=x.preview||x.url||'';
-  document.getElementById('portfolioCaption').textContent=portfolioAddress(x);
-  document.getElementById('portfolioLightbox').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closePortfolio(){document.getElementById('portfolioLightbox').classList.remove('open');document.body.style.overflow=''}
-function portfolioMove(d){
-  if(!portfolioFiltered.length)return;
-  portfolioIndex=(portfolioIndex+d+portfolioFiltered.length)%portfolioFiltered.length;
-  showPortfolioImage(portfolioFiltered[portfolioIndex]);
-}
 function showMoreReviews(){
   const hidden=[...document.querySelectorAll('[data-review-hidden]')].filter(x=>!x.classList.contains('reviewVisible'));
   hidden.slice(0,3).forEach(x=>x.classList.add('reviewVisible'));
@@ -999,6 +890,7 @@ function showMoreReviews(){
     if(left) btn.textContent='Показать ещё отзывы ('+left+')';
   }
 }
+
 function initReviews(){
   document.querySelectorAll('[data-review-hidden]').forEach(x=>x.classList.remove('reviewVisible'));
   const btn=document.getElementById('reviewsMore');
@@ -1008,17 +900,20 @@ function initReviews(){
     if(left) btn.textContent='Показать ещё отзывы ('+left+')';
   }
 }
+
 function openContactModal(){
   const m=document.getElementById('contactModal');
   if(!m)return;
   m.classList.add('open');m.setAttribute('aria-hidden','false');
   setTimeout(()=>document.getElementById('quickContactPhone')?.focus(),80);
 }
+
 function closeContactModal(){
   const m=document.getElementById('contactModal');
   if(!m)return;
   m.classList.remove('open');m.setAttribute('aria-hidden','true');
 }
+
 async function submitQuickContact(){
   const name=val('quickContactName').trim();
   const phone=val('quickContactPhone').trim();
@@ -1038,7 +933,7 @@ async function submitQuickContact(){
       windows:Number(S.windows)||0,
       tileArea:Number(S.tileArea)||0
     };
-    const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
       source:S.source||'site-calculator',
@@ -1057,65 +952,18 @@ async function submitQuickContact(){
     status.textContent='Не удалось отправить. Попробуйте ещё раз или напишите нам в Telegram.';
   }finally{btn.disabled=false}
 }
-document.getElementById('contactModal')?.addEventListener('click',e=>{if(e.target.id==='contactModal')closeContactModal()});
-
-async function submitCalculatorLead(){
-  const phone=val('calculatorLeadPhone').trim();
-  const status=document.getElementById('calculatorLeadStatus');
-  if(!phone){status.textContent='Введите номер телефона';return}
-  const btn=document.querySelector('#calculatorLeadPhone')?.closest('.leadBox')?.querySelector('button');
-  if(btn) btn.disabled=true;
-  status.textContent='Отправляем…';
-  try{
-    const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
-    const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href,
-      object:{type:'Коммерция',floor:0,bath:0,tileArea:0}
-    })});
-    const j=await r.json().catch(()=>({}));
-    if(!r.ok||!j.ok) throw new Error(j.error||'Не удалось отправить');
-    status.textContent='✓ Заявка отправлена. Мы свяжемся с вами.';
-    document.getElementById('calculatorLeadPhone').value='';
-  }catch(e){
-    status.textContent='Не удалось отправить. Попробуйте ещё раз.';
-  }finally{
-    if(btn) btn.disabled=false;
-  }
-}
-
-function handleNextButton(e){
-  if(e){e.preventDefault();e.stopPropagation();}
-  nextStep();
-  return false;
-}
 
 function openLead(){
   const q=S.result;
   const summary=q
     ? 'Нужна точная смета. Объект: '+S.type+', площадь '+q.floor+' м², предварительно '+money(q.total)+'.'
     : 'Нужна точная смета по моему ремонту.';
-  const modal=document.getElementById('contactModal');
-  if(!modal) return;
   closeCalc();
   openContactModal();
   const comment=document.getElementById('quickContactComment');
   if(comment) comment.value=summary;
 }
 
-function openCommercialLead(){
-  const modal=document.getElementById('contactModal');
-  if(!modal){
-    location.href='https://t.me/+79172433455';
-    return;
-  }
-  closeCalc();
-  openContactModal();
-  const comment=document.getElementById('quickContactComment');
-  if(comment) comment.value='Нужна точная смета на ремонт коммерческого помещения.';
-}
-
-function printEstimate(){const q=S.result;document.getElementById('pdfArea').innerHTML='<h1>РЕМОНТФОРМА</h1><h2>Предварительный расчёт ремонта</h2><p>Объект: '+S.type+'</p><p>Площадь: '+q.floor+' м² · Санузел: '+q.bath+' м² · Балкон: '+q.balcony+' м²</p>'+q.rows.map(x=>'<p>'+x.name+' — '+x.quantity+' '+x.unit+' × '+money(x.price)+' = <b>'+money(x.cost)+'</b></p>').join('')+'<hr><h2>Итого: '+money(q.total)+'</h2><p>Цена за м² по полу: '+money(q.pricePerM2)+'</p><p>Предварительный расчёт. Точная смета после замера.</p>';window.print()}
-// Always open a fresh visit at the top of the homepage.
 try{
   if('scrollRestoration' in history) history.scrollRestoration='manual';
   if(location.hash){
@@ -1131,13 +979,11 @@ try{
   window.addEventListener('load',resetTop,{once:true});
   setTimeout(resetTop,250);
 }catch(e){console.warn('Initial scroll reset failed',e)}
+
 try{render()}catch(e){console.error('Calculator render error',e)}
-try{
-  const portfolioSection=document.getElementById('portfolio');
-  initReviews();
-  try{loadPortfolio()}catch(e){console.error('Portfolio start error',e)}
-}catch(e){console.error('Portfolio lazy-init error',e)}
+try{initReviews()}catch(e){console.error('Reviews init error',e)}
 </script>
+
 <div id="contactModal" class="contactModal" aria-hidden="true">
   <div class="contactModalCard">
     <button class="contactModalClose" onclick="closeContactModal()" aria-label="Закрыть">×</button>
@@ -1160,10 +1006,10 @@ try{
     <div id="quickContactStatus" class="contactStatus"></div>
   </div>
 </div>
+
 <div class="floatingCta"><button class="btn primary" onclick="openContactModal()">💬 Написать нам</button><button class="btn secondary" onclick="openCalc()">Рассчитать стоимость</button><a class="btn secondary" href="https://t.me/+79172433455">Telegram</a><a class="btn secondary" href="https://max.ru/u/f9LHodD0cOJnwEpVcaNYK7hFgRS8GHnjXG636yKji5vyYq0QMTgChsecLCw" target="_blank" rel="noopener">MAX</a></div>
 
 <style id="portfolio-hard-visibility-fix">
-/* Жёсткая фиксация: блок реальных работ не зависит от lazy-loading, content-visibility или JS. */
 #portfolio{content-visibility:visible!important;contain:none!important;overflow:visible!important}
 #portfolioFeatured{display:block!important;width:100%!important;min-height:0!important;visibility:visible!important;opacity:1!important}
 #portfolioFeatured .featuredObject{display:block!important;width:100%!important;visibility:visible!important;opacity:1!important}
@@ -1171,8 +1017,5 @@ try{
 #portfolioFeatured .featuredSheetTile img{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:auto!important;min-height:240px!important;max-width:none!important;object-fit:contain!important;object-position:center!important}
 @media(max-width:800px){#portfolioFeatured .featuredSheetTile img{min-height:0!important;width:100%!important;height:auto!important}}
 </style>
-
-<!-- CTA logic is handled by the calculator state machine above. No global click interception. -->
-
 
 </body></html>
