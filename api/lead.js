@@ -10,7 +10,8 @@ function tg(method, body) {
   return fetch('https://api.telegram.org/bot' + token + '/' + method, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(8000)
   }).then(function(r) { return r.json(); });
 }
 
