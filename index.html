@@ -530,6 +530,23 @@ body{
 
 <script>
 const API='https://remont-pro-nine.vercel.app/api/calculate', LEAD='https://remont-pro-nine.vercel.app/api/lead';
+
+// iPhone/Safari: не оставляем форму в состоянии «Отправляем» бесконечно.
+async function fetchLeadWithTimeout(url, options, timeoutMs=15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {...options, signal: controller.signal});
+  } catch (error) {
+    if (error && error.name === 'AbortError') {
+      throw new Error('Сервер не ответил за 15 секунд. Попробуйте ещё раз или свяжитесь с нами через мессенджер.');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const UTM=new URLSearchParams(location.search);
 
 const S={
@@ -1039,7 +1056,7 @@ async function submitQuickContact(){
       windows:Number(S.windows)||0,
       tileArea:Number(S.tileArea)||0
     };
-    const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
       source:S.source||'site-calculator',
@@ -1079,7 +1096,7 @@ async function submitCalculatorLead(){
   status.textContent='Отправляем…';
   try{
     const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
-    const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href,
       object:{type:'Коммерция',floor:0,bath:0,tileArea:0}
     })});
