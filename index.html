@@ -1146,6 +1146,32 @@ try{
   window.addEventListener('load',resetTop,{once:true});
   setTimeout(resetTop,250);
 }catch(e){console.warn('Initial scroll reset failed',e)}
+// Calculator controls: handle clicks centrally so dynamic choices work reliably on desktop and mobile.
+document.addEventListener('click',function(e){
+  const target=e.target instanceof Element?e.target:null;
+  if(!target)return;
+  const root=target.closest('#calcModal');
+  if(!root)return;
+  const choice=target.closest('.choice[data-key]');
+  const boolChoice=target.closest('.choice[data-bool-key]');
+  const next=target.closest('#nextBtn');
+  const back=target.closest('#backBtn');
+  const close=target.closest('#calcModal .close');
+  if(!choice&&!boolChoice&&!next&&!back&&!close)return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  try{
+    if(choice) pick(choice.dataset.key,choice.dataset.value);
+    else if(boolChoice) pickBool(boolChoice.dataset.boolKey,boolChoice.dataset.boolValue);
+    else if(next) handleNextButton(e);
+    else if(back) prevStep();
+    else if(close) closeCalc();
+  }catch(err){
+    console.error('Calculator control failed:',err);
+    const z=document.getElementById('wizard');
+    if(z) z.insertAdjacentHTML('afterbegin','<p role="alert" style="color:#b42318">Не удалось выполнить действие. Обновите страницу и попробуйте ещё раз.</p>');
+  }
+},true);
 try{render()}catch(e){console.error('Calculator render error',e)}
 try{
   const portfolioSection=document.getElementById('portfolio');
