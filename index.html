@@ -468,15 +468,25 @@ body{
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+  const safePageUrl = window.location.origin + window.location.pathname;
+  let safeReferrer = '';
+  try {
+    if (document.referrer) {
+      const referrerUrl = new URL(document.referrer);
+      safeReferrer = referrerUrl.origin + referrerUrl.pathname;
+    }
+  } catch (_) {}
   gtag('config', 'G-7WSE9MHMQK', {
     send_page_view: false,
-    page_location: window.location.origin + window.location.pathname,
+    page_location: safePageUrl,
+    page_referrer: safeReferrer,
     page_title: document.title,
     allow_google_signals: false,
     allow_ad_personalization_signals: false
   });
   gtag('event', 'page_view', {
-    page_location: window.location.origin + window.location.pathname,
+    page_location: safePageUrl,
+    page_referrer: safeReferrer,
     page_title: document.title
   });
 </script>
