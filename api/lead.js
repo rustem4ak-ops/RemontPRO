@@ -75,17 +75,11 @@ function esc(s) {
 
 module.exports = async function handler(req, res) {
   // Allow the production website and the GitHub Pages mirror to call this API.
-  const origin = req.headers && req.headers.origin;
-  const allowedOrigins = [
-    'https://rustem4ak-ops.github.io',
-    'https://remont-pro-nine.vercel.app'
-  ];
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Vary', 'Origin');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  }
+  // This endpoint accepts public lead submissions and does not use cookies.
+  // Wildcard CORS also supports the site's alternate hosting domains and Safari.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   if (req.method === 'GET') {
