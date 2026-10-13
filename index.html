@@ -1039,7 +1039,7 @@ async function submitQuickContact(){
       windows:Number(S.windows)||0,
       tileArea:Number(S.tileArea)||0
     };
-    const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
       source:S.source||'site-calculator',
