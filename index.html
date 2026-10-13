@@ -1048,13 +1048,23 @@ async function submitQuickContact(){
       object
     })});
     const j=await r.json().catch(()=>({}));
-    if(!r.ok||!j.ok)throw new Error(j.error||'Не удалось отправить');
-    status.textContent='✓ Контакт отправлен. Мы свяжемся с вами.';
+    if(!r.ok||!j.ok) {
+      const details = [j.error, j.telegramError, j.maxError].filter(Boolean).join(' — ');
+      throw new Error(details || ('Ошибка отправки (HTTP '+r.status+')'));
+    }
+    if (j.telegramSent) {
+      status.textContent='✓ Заявка отправлена в Telegram. Мы свяжемся с вами.';
+    } else if (j.maxSent) {
+      status.textContent='⚠ Заявка дошла в MAX, но Telegram не подтвердил отправку. Проверьте настройки Telegram в Vercel.';
+    } else {
+      throw new Error('Сервер не подтвердил доставку заявки.');
+    }
     document.getElementById('quickContactName').value='';
     document.getElementById('quickContactPhone').value='';
     document.getElementById('quickContactComment').value='';
   }catch(e){
-    status.textContent='Не удалось отправить. Попробуйте ещё раз или напишите нам в Telegram.';
+    console.error('Lead submission failed:', e);
+    status.textContent='Ошибка отправки: '+(e && e.message ? e.message : 'неизвестная ошибка')+'. Позвоните нам или напишите в мессенджер.';
   }finally{btn.disabled=false}
 }
 document.getElementById('contactModal')?.addEventListener('click',e=>{if(e.target.id==='contactModal')closeContactModal()});
