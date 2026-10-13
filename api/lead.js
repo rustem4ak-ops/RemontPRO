@@ -40,7 +40,8 @@ async function maxSend(text) {
         body: JSON.stringify({
           text: text,
           notify: true
-        })
+        }),
+        signal: AbortSignal.timeout(8000)
       });
 
       var data = await r.json().catch(function() { return {}; });
@@ -67,7 +68,8 @@ async function maxSend(text) {
           body: JSON.stringify({
             text: plainText,
             notify: true
-          })
+          }),
+          signal: AbortSignal.timeout(8000)
         });
         var fallbackData = await fallback.json().catch(function() { return {}; });
         last = { ok: fallback.ok, status: fallback.status, data: fallbackData };
