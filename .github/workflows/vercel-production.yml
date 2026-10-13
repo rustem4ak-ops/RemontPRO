@@ -17,6 +17,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - "vercel.json"
+      - ".github/workflows/vercel-production.yml"
   workflow_dispatch:
 
 concurrency:
@@ -94,6 +95,36 @@ jobs:
           test "$api_code" = "200"
           grep -q '"ok":true' /tmp/calc.json
           grep -q '"total"' /tmp/calc.json
+
+      - name: Verify lead API GET health endpoint
+        run: |
+          lead_code=$(curl -sS -o /tmp/lead-health.json -w "%{http_code}" --max-time 12 https://remont-pro-nine.vercel.app/api/lead)
+          echo "Lead API GET HTTP $lead_code"
+          cat /tmp/lead-health.json
+          test "$lead_code" = "200"
+          grep -q '"ok":true' /tmp/lead-health.json
+          grep -q '"service":"РЕМОНТФОРМА Lead API"' /tmp/lead-health.json
+
+      - name: Verify lead API POST accepts Safari plain-text JSON without sending a lead
+        run: |
+          lead_code=$(curl -sS -o /tmp/lead-post.json -w "%{http_code}" -X POST \
+            -H "Content-Type: text/plain" \
+            --data '{}' \
+            --max-time 12 https://remont-pro-nine.vercel.app/api/lead)
+          echo "Lead API empty POST HTTP $lead_code (expected 400)"
+          cat /tmp/lead-post.json
+          test "$lead_code" = "400"
+          grep -q 'Phone is required' /tmp/lead-post.json
+
+      - name: Verify lead API CORS preflight
+        run: |
+          lead_code=$(curl -sS -o /tmp/lead-options.txt -w "%{http_code}" -X OPTIONS \
+            -H "Origin: https://rustem4ak-ops.github.io" \
+            -H "Access-Control-Request-Method: POST" \
+            -H "Access-Control-Request-Headers: content-type" \
+            --max-time 12 https://remont-pro-nine.vercel.app/api/lead)
+          echo "Lead API OPTIONS HTTP $lead_code (expected 204)"
+          test "$lead_code" = "204"
 
       - name: Verify calculator is present in homepage
         run: |
