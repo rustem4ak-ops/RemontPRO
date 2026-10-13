@@ -102,14 +102,19 @@ function esc(s) {
 
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
+    var telegramTokenConfigured = Boolean(process.env.TELEGRAM_BOT_TOKEN || process.env.TG_BOT_TOKEN);
+    var telegramChatConfigured = Boolean(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID);
+    var maxConfigured = Boolean(process.env.MAX_BOT_TOKEN && (process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID));
     return res.status(200).json({
       ok: true,
       service: 'РЕМОНТФОРМА Lead API',
-      telegram: Boolean(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID),
-      max: Boolean(
-        process.env.MAX_BOT_TOKEN &&
-        (process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID)
-      )
+      telegram: telegramTokenConfigured && telegramChatConfigured,
+      telegramTokenConfigured: telegramTokenConfigured,
+      telegramChatConfigured: telegramChatConfigured,
+      max: maxConfigured,
+      message: (!telegramTokenConfigured || !telegramChatConfigured)
+        ? 'Telegram не настроен: проверьте TELEGRAM_BOT_TOKEN и TELEGRAM_ADMIN_CHAT_ID в настройках Vercel.'
+        : 'Настройки Telegram присутствуют. Отправьте тестовую заявку с сайта для проверки доставки.'
     });
   }
 
