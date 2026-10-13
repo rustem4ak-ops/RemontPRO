@@ -1,0 +1,6 @@
+name = "remontforma-api"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# Add secrets in Cloudflare Dashboard; never commit tokens here.
