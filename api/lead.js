@@ -255,67 +255,60 @@ module.exports = async function handler(req, res) {
     var maxError = '';
 
     var telegramChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || process.env.TG_ADMIN_CHAT_ID;
-    if (telegramChatId) {
-      try {
-        var t = await tg('sendMessage', {
-          chat_id: telegramChatId,
-          text: message,
-          parse_mode: 'HTML'
-        });
 
-        telegramSent = Boolean(t && t.ok);
-        if (!telegramSent) {
-          telegramError = (t && (t.description || t.error)) || 'Telegram не подтвердил отправку';
+    // Send notifications in parallel so a slow messenger does not block the other.
+    await Promise.all([
+      (async function sendTelegram() {
+        if (!telegramChatId) {
+          telegramError = 'TELEGRAM_ADMIN_CHAT_ID не задан';
+          return;
         }
-
-        if (!telegramSent) {
-          var plain = message.replace(/<[^>]+>/g, '');
-          var t2 = await tg('sendMessage', {
-            chat_id: telegramChatId,
-            text: plain
-          });
-
-          telegramSent = Boolean(t2 && t2.ok);
-          if (!telegramSent) telegramError = (t2 && (t2.description || t2.error)) || telegramError;
-        }
-      } catch (telegramException) {
-        telegramError = String(telegramException && telegramException.message ? telegramException.message : telegramException);
         try {
-          var plainFallback = message.replace(/<[^>]+>/g, '');
-          var t3 = await tg('sendMessage', {
+          var t = await tg('sendMessage', {
             chat_id: telegramChatId,
-            text: plainFallback
+            text: message,
+            parse_mode: 'HTML'
           });
-
-          telegramSent = Boolean(t3 && t3.ok);
-          if (!telegramSent) telegramError = (t3 && (t3.description || t3.error)) || telegramError;
-        } catch (_) {}
-      }
-    }
-
-    if (
-      !b.skipMax &&
-      process.env.MAX_BOT_TOKEN &&
-      (process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID)
-    ) {
-      try {
-        var m = await maxSend(message);
-
-        maxSent = Boolean(m && m.ok);
-
-        if (!maxSent) {
-          maxError = m && (
-            (m.data && (m.data.message || m.data.error)) ||
-            m.error ||
-            ('HTTP ' + (m.status || 'unknown'))
-          );
+          telegramSent = Boolean(t && t.ok);
+          if (!telegramSent) {
+            telegramError = (t && (t.description || t.error)) || 'Telegram не подтвердил отправку';
+            // Retry plain text only after an explicit Telegram API rejection.
+            var plain = message.replace(/<[^>]+>/g, '');
+            var t2 = await tg('sendMessage', {
+              chat_id: telegramChatId,
+              text: plain
+            });
+            telegramSent = Boolean(t2 && t2.ok);
+            if (!telegramSent) telegramError = (t2 && (t2.description || t2.error)) || telegramError;
+          }
+        } catch (e) {
+          telegramError = String(e && e.message ? e.message : e);
         }
-      } catch (e) {
-        maxError = String(e && e.message ? e.message : e);
-      }
-    } else {
-      maxError = 'MAX_ADMIN_USER_ID/MAX_ADMIN_CHAT_ID не задан';
-    }
+      })(),
+      (async function sendMax() {
+        if (b.skipMax) {
+          maxError = 'Отправка в MAX отключена для этой заявки';
+          return;
+        }
+        if (!process.env.MAX_BOT_TOKEN || !(process.env.MAX_ADMIN_USER_ID || process.env.MAX_ADMIN_CHAT_ID)) {
+          maxError = 'MAX_ADMIN_USER_ID/MAX_ADMIN_CHAT_ID не задан';
+          return;
+        }
+        try {
+          var m = await maxSend(message);
+          maxSent = Boolean(m && m.ok);
+          if (!maxSent) {
+            maxError = m && (
+              (m.data && (m.data.message || m.data.error)) ||
+              m.error ||
+              ('HTTP ' + (m.status || 'unknown'))
+            );
+          }
+        } catch (e) {
+          maxError = String(e && e.message ? e.message : e);
+        }
+      })()
+    ]);
 
     if (!telegramSent && !maxSent) {
       return res.status(502).json({
