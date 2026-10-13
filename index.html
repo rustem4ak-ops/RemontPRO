@@ -1056,7 +1056,7 @@ async function submitQuickContact(){
       windows:Number(S.windows)||0,
       tileArea:Number(S.tileArea)||0
     };
-    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify({
+    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
       source:S.source||'site-calculator',
@@ -1096,7 +1096,7 @@ async function submitCalculatorLead(){
   status.textContent='Отправляем…';
   try{
     const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
-    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify({
+    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href,
       object:{type:'Коммерция',floor:0,bath:0,tileArea:0}
     })});
