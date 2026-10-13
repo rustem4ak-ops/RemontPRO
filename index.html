@@ -462,6 +462,24 @@ body{
   }
 }
 </style>
+<!-- Google Analytics 4: не передаём query-параметры URL и персональные данные -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7WSE9MHMQK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-7WSE9MHMQK', {
+    send_page_view: false,
+    page_location: window.location.origin + window.location.pathname,
+    page_title: document.title,
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
+  gtag('event', 'page_view', {
+    page_location: window.location.origin + window.location.pathname,
+    page_title: document.title
+  });
+</script>
 </head>
 <body>
 <header class="hero"><div class="wrap"><nav class="nav"><a class="logo" href="./" aria-label="РЕМОНТФОРМА">
@@ -531,6 +549,32 @@ body{
 <script>
 const API='https://remont-pro-nine.vercel.app/api/calculate', LEAD='https://remont-pro-nine.vercel.app/api/lead';
 
+// GA4 events use only generic event names/labels. Never pass form fields, phone numbers,
+// names, comments, raw URLs, calculator details, or API error messages to analytics.
+function trackAnalyticsEvent(name, params={}) {
+  if (typeof window.gtag !== 'function') return;
+  const safeParams = {};
+  ['method','channel','step_number'].forEach(key => {
+    if (params[key] !== undefined) safeParams[key] = params[key];
+  });
+  window.gtag('event', name, safeParams);
+}
+document.addEventListener('click', function(event) {
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target) return;
+  const link = target.closest('a[href]');
+  if (!link) return;
+  const href = (link.getAttribute('href') || '').toLowerCase();
+  if (href.startsWith('tel:')) {
+    trackAnalyticsEvent('phone_click', {method:'tap'});
+  } else if (href.startsWith('https://t.me/') || href.startsWith('http://t.me/')) {
+    trackAnalyticsEvent('messenger_click', {channel:'telegram'});
+  } else if (href.startsWith('https://max.ru/') || href.startsWith('http://max.ru/')) {
+    trackAnalyticsEvent('messenger_click', {channel:'max'});
+  }
+}, true);
+
+
 // iPhone/Safari: не оставляем форму в состоянии «Отправляем» бесконечно.
 async function fetchLeadWithTimeout(url, options, timeoutMs=15000) {
   const controller = new AbortController();
@@ -591,6 +635,7 @@ function openCommercialContact(){
 }
 
 function openCalc(){
+  trackAnalyticsEvent('calculator_open');
   document.getElementById('calcModal').classList.add('open');
   document.body.style.overflow='hidden';
   S.step=0;
@@ -804,6 +849,8 @@ async function nextStep(){
 
   if(S.step<10){
     S.step++;
+    if(S.step===10) trackAnalyticsEvent('calculator_result');
+    else trackAnalyticsEvent('calculator_step', {step_number:S.step+1});
     render();
   }else{
     openLead();
@@ -1045,6 +1092,7 @@ async function submitQuickContact(){
   const btn=document.getElementById('quickContactSubmit');
   if(!phone){status.textContent='Введите номер телефона';return}
   btn.disabled=true;status.textContent='Отправляем…';
+  trackAnalyticsEvent('lead_submit', {method:'contact_form'});
   try{
     const q=S.result||{};
     const calculator=q && Array.isArray(q.rows) ? q : {total:0,pricePerM2:0,rows:[]};
@@ -1070,6 +1118,7 @@ async function submitQuickContact(){
       const details = [j.error, j.telegramError, j.maxError].filter(Boolean).join(' — ');
       throw new Error(details || ('Ошибка отправки (HTTP '+r.status+')'));
     }
+    trackAnalyticsEvent('lead_success', {method:'contact_form', channel:(j.telegramSent && j.maxSent) ? 'telegram_and_max' : (j.telegramSent ? 'telegram' : 'max')});
     if (j.telegramSent) {
       status.textContent='✓ Заявка отправлена в Telegram. Мы свяжемся с вами.';
     } else if (j.maxSent) {
@@ -1094,6 +1143,7 @@ async function submitCalculatorLead(){
   const btn=document.querySelector('#calculatorLeadPhone')?.closest('.leadBox')?.querySelector('button');
   if(btn) btn.disabled=true;
   status.textContent='Отправляем…';
+  trackAnalyticsEvent('lead_submit', {method:'commercial_calculator'});
   try{
     const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
     const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
@@ -1106,6 +1156,7 @@ async function submitCalculatorLead(){
       throw new Error(details||('Ошибка отправки (HTTP '+r.status+')'));
     }
     if(!j.telegramSent&&!j.maxSent) throw new Error('Сервер не подтвердил доставку заявки.');
+    trackAnalyticsEvent('lead_success', {method:'commercial_calculator', channel:(j.telegramSent && j.maxSent) ? 'telegram_and_max' : (j.telegramSent ? 'telegram' : 'max')});
     status.textContent='✓ Заявка отправлена. Мы свяжемся с вами.';
     document.getElementById('calculatorLeadPhone').value='';
   }catch(e){
