@@ -11,7 +11,7 @@ function tg(method, body) {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
-    signal: AbortSignal.timeout(8000)
+    signal: AbortSignal.timeout(3500)
   }).then(function(r) { return r.json(); });
 }
 
@@ -19,78 +19,48 @@ async function maxSend(text) {
   var token = process.env.MAX_BOT_TOKEN;
   if (!token) return null;
 
+  // Use one configured destination per request to keep mobile form responses fast.
   var userId = process.env.MAX_ADMIN_USER_ID;
   var chatId = process.env.MAX_ADMIN_CHAT_ID;
-  var targets = [];
+  var target = userId
+    ? '/messages?user_id=' + encodeURIComponent(userId)
+    : (chatId ? '/messages?chat_id=' + encodeURIComponent(chatId) : null);
+  if (!target) return null;
 
-  if (userId) targets.push('/messages?user_id=' + encodeURIComponent(userId));
-  if (chatId) targets.push('/messages?chat_id=' + encodeURIComponent(chatId));
-  if (!targets.length) return null;
-
-  var last = null;
-
-  for (var i = 0; i < targets.length; i++) {
-    try {
-      var r = await fetch('https://platform-api2.max.ru' + targets[i], {
-        method: 'POST',
-        headers: {
-          'Authorization': token,
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          text: text,
-          notify: true
-        }),
-        signal: AbortSignal.timeout(8000)
-      });
-
-      var data = await r.json().catch(function() { return {}; });
-      last = { ok: r.ok, status: r.status, data: data };
-
-      if (r.ok) {
-        return last;
-      }
-
-      // MAX может не принять HTML-разметку. Повторяем отправку тем же
-      // содержанием, но без HTML-тегов — чтобы заявка не терялась.
-      if (r.ok) {
-        continue;
-      }
-
-      try {
-        var plainText = text.replace(/<[^>]+>/g, '');
-        var fallback = await fetch('https://platform-api2.max.ru' + targets[i], {
-          method: 'POST',
-          headers: {
-            'Authorization': token,
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            text: plainText,
-            notify: true
-          }),
-          signal: AbortSignal.timeout(8000)
-        });
-        var fallbackData = await fallback.json().catch(function() { return {}; });
-        last = { ok: fallback.ok, status: fallback.status, data: fallbackData };
-        if (fallback.ok) {
-          return last;
-        }
-      } catch (fallbackError) {
-        last = {
-          ok: false,
-          error: String(fallbackError && fallbackError.message ? fallbackError.message : fallbackError)
-        };
-      }
-    } catch (e) {
-      last = {
-        ok: false,
-        error: String(e && e.message ? e.message : e)
-      };
-    }
+  async function post(message) {
+    var r = await fetch('https://platform-api2.max.ru' + target, {
+      method: 'POST',
+      headers: {
+        'Authorization': token,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ text: message, notify: true }),
+      signal: AbortSignal.timeout(3000)
+    });
+    var data = await r.json().catch(function() { return {}; });
+    return { ok: r.ok, status: r.status, data: data };
   }
 
-  return last;
+  try {
+    var result = await post(text);
+    if (result.ok) return result;
+
+    // Retry as plain text only after a definite HTTP rejection, not a timeout.
+    try {
+      var plainText = text.replace(/<[^>]+>/g, '');
+      return await post(plainText);
+    } catch (retryError) {
+      return {
+        ok: false,
+        error: String(retryError && retryError.message ? retryError.message : retryError)
+      };
+    }
+  } catch (e) {
+    return {
+      ok: false,
+      error: String(e && e.message ? e.message : e)
+    };
+  }
 }
 
 function money(n) {
