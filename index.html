@@ -620,7 +620,7 @@ async function fetchLeadWithTimeout(url, options, timeoutMs=15000) {
 // Если сервер вернул HTTP-ответ, второй раз заявку не отправляем.
 async function fetchLeadWithFallback(options) {
   try {
-    return await fetchLeadWithTimeout(LEAD, options, 8000);
+    return await fetchLeadWithTimeout(LEAD, options, 5000);
   } catch (primaryError) {
     console.warn('Cloudflare lead API unreachable; trying Vercel fallback.', primaryError);
     try {
