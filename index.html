@@ -571,7 +571,7 @@ _tmr.push({id: "3802197", type: "pageView", start: (new Date()).getTime()});
 <footer class="footer"><div class="wrap"><strong>РЕМОНТФОРМА</strong> · Ремонт квартир, домов и коммерческих помещений под ключ · Казань</div></footer>
 
 <script>
-const API='https://remont-pro-nine.vercel.app/api/calculate', LEAD='https://remontforma-api.rustem4ak.workers.dev/api/lead';
+const API='https://remont-pro-nine.vercel.app/api/calculate', LEAD='https://remontforma-api.rustem4ak.workers.dev/api/lead', LEAD_FALLBACK='https://remont-pro-nine.vercel.app/api/lead';
 
 // GA4 events use only generic event names/labels. Never pass form fields, phone numbers,
 // names, comments, raw URLs, calculator details, or API error messages to analytics.
@@ -607,11 +607,28 @@ async function fetchLeadWithTimeout(url, options, timeoutMs=15000) {
     return await fetch(url, {...options, signal: controller.signal});
   } catch (error) {
     if (error && error.name === 'AbortError') {
-      throw new Error('Сервер не ответил за 15 секунд. Попробуйте ещё раз или свяжитесь с нами через мессенджер.');
+      throw new Error('Сервер не ответил за ' + Math.round(timeoutMs / 1000) + ' секунд.');
     }
     throw error;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+// Резервная отправка: используем Vercel только если запрос к Cloudflare
+// не удалось выполнить на сетевом уровне или Cloudflare не ответил вовремя.
+// Если сервер вернул HTTP-ответ, второй раз заявку не отправляем.
+async function fetchLeadWithFallback(options) {
+  try {
+    return await fetchLeadWithTimeout(LEAD, options, 8000);
+  } catch (primaryError) {
+    console.warn('Cloudflare lead API unreachable; trying Vercel fallback.', primaryError);
+    try {
+      return await fetchLeadWithTimeout(LEAD_FALLBACK, options, 15000);
+    } catch (fallbackError) {
+      console.error('Both lead APIs failed.', fallbackError);
+      throw new Error('Не удалось подключиться к серверам отправки заявки. Проверьте интернет и попробуйте ещё раз или свяжитесь с нами через мессенджер.');
+    }
   }
 }
 
@@ -1128,7 +1145,7 @@ async function submitQuickContact(){
       windows:Number(S.windows)||0,
       tileArea:Number(S.tileArea)||0
     };
-    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+    const r=await fetchLeadWithFallback({method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
       name,phone,
       comment:comment || 'Заявка из калькулятора РЕМОНТФОРМА',
       source:S.source||'site-calculator',
@@ -1171,7 +1188,7 @@ async function submitCalculatorLead(){
   trackAnalyticsEvent('lead_submit', {method:'commercial_calculator'});
   try{
     const comment='Заявка на коммерческий ремонт. Нужна точная смета и план работ.';
-    const r=await fetchLeadWithTimeout(LEAD,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+    const r=await fetchLeadWithFallback({method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
       name:'',phone,comment,source:'calculator-commercial',referrer:document.referrer||'',url:location.href,
       object:{type:'Коммерция',floor:0,bath:0,tileArea:0}
     })});
