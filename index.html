@@ -1328,4 +1328,57 @@ try{
 
 
 
+
+<style id="telegram-android-fallback-style">
+#telegramFallback{position:fixed;left:12px;right:12px;bottom:18px;z-index:20000;display:none;padding:16px;background:#17191c;color:#fff;border:1px solid #444b53;border-radius:16px;box-shadow:0 14px 40px #0005;font:14px/1.45 Arial,sans-serif}
+#telegramFallback.open{display:block}
+#telegramFallback strong{display:block;font-size:16px;margin-bottom:6px}
+#telegramFallback p{margin:0 0 12px;color:#d1d5da}
+#telegramFallback .tgFallbackActions{display:flex;flex-wrap:wrap;gap:8px}
+#telegramFallback a,#telegramFallback button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 13px;border-radius:10px;font:700 13px Arial,sans-serif;text-decoration:none;border:1px solid #5b626b;color:#fff;background:#292e34}
+#telegramFallback a.tgPrimary{background:#b9ff4a;color:#10120d;border-color:#b9ff4a}
+#telegramFallback button{position:absolute;right:9px;top:8px;min-height:30px;padding:5px 9px}
+</style>
+<div id="telegramFallback" role="status" aria-live="polite">
+  <button type="button" id="telegramFallbackClose" aria-label="Закрыть">×</button>
+  <strong>Telegram не открылся?</strong>
+  <p>Попробуйте открыть чат через резервную ссылку. Если Telegram недоступен в вашей сети, можно написать нам в MAX.</p>
+  <div class="tgFallbackActions">
+    <a class="tgPrimary" href="https://remont-pro-nine.vercel.app/api/telegram" target="_blank" rel="noopener">Повторить через Vercel</a>
+    <a href="https://t.me/+79172433455" target="_blank" rel="noopener">Telegram в браузере</a>
+    <a href="https://max.ru/u/f9LHodD0cOJnwEpVcaNYK7hFgRS8GHnjXG636yKji5vyYq0QMTgChsecLCw" target="_blank" rel="noopener">Написать в MAX</a>
+  </div>
+</div>
+<script id="telegram-android-fallback">
+(function(){
+  var telegramUrl='https://t.me/+79172433455';
+  var fallback=document.getElementById('telegramFallback');
+  var timer=null;
+  var hiddenDuringAttempt=false;
+  var isAndroid=/Android/i.test(navigator.userAgent||'');
+  if(!fallback||!isAndroid) return;
+  function closeFallback(){fallback.classList.remove('open');}
+  var close=document.getElementById('telegramFallbackClose');
+  if(close) close.addEventListener('click',closeFallback);
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden') hiddenDuringAttempt=true;
+  });
+  document.addEventListener('click',function(event){
+    var link=event.target && event.target.closest ? event.target.closest('a[href]') : null;
+    if(!link) return;
+    var href=link.getAttribute('href')||'';
+    if(!/^https?:\/\/t\.me\//i.test(href)) return;
+    event.preventDefault();
+    hiddenDuringAttempt=false;
+    closeFallback();
+    try { window.open(href,'_blank','noopener'); }
+    catch(e) { window.location.href=href; }
+    if(timer) clearTimeout(timer);
+    timer=setTimeout(function(){
+      if(!hiddenDuringAttempt && document.visibilityState==='visible') fallback.classList.add('open');
+    },5000);
+  },true);
+})();
+</script>
+
 </body></html>
